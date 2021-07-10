@@ -9,21 +9,40 @@ import Foundation
 import MultipeerKit
 import MultipeerConnectivity
 
+
 struct Multipeer {
+    
+    
     static var transceiver = MultipeerTransceiver(configuration: MultipeerConfiguration(serviceType: "word-bomb", peerName: UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName, defaults: .standard, security: .default, invitation: .automatic))
     
-    static func disconnect(_ mpcDataSource: MultipeerDataSource, _ viewModel: WordBombGameViewModel) {
-        mpcDataSource.transceiver.stop()
-        for peer in viewModel.selectedPeers {
-            viewModel.toggle(peer)
+    static var dataSource = MultipeerDataSource(transceiver: transceiver)
+    
+    static func disconnect(_ viewModel: WordBombGameViewModel) {
+        print("manual disconnect")
+        
+        transceiver.stop()
+        
+        if viewModel.selectedPeers.count > 0 {
+            viewModel.selectedPeers = []
+            print("selected peers: \(viewModel.selectedPeers)")
+            viewModel.resetPlayers()
         }
-
-        print("manual disconnect, selected peers: \(viewModel.selectedPeers)")
+        
+        viewModel.mpcStatus = ""
         viewModel.hostingPeer = nil
     }
     
-    static func reconnect(_ mpcDataSource: MultipeerDataSource) {
-        mpcDataSource.transceiver.resume()
+    static func reconnect() {
+        
+        // RISKY????
+
+        // re-init new transceiver and dataSource
+        transceiver = MultipeerTransceiver(configuration: MultipeerConfiguration(serviceType: "word-bomb", peerName: UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName, defaults: .standard, security: .default, invitation: .automatic))
+        dataSource = MultipeerDataSource(transceiver: transceiver)
+        
+        // start new transceiver
+        transceiver.resume()
+        
     }
 }
 

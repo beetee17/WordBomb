@@ -14,10 +14,10 @@ import CoreData
 struct MultiplayerDisplayName: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
     @EnvironmentObject var mpcDataSource: MultipeerDataSource
-
+    
     @State var newDisplayName = UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName
     
-    @State var savedDisplayName = false
+    @State var changeNameWarning = false
   
     var body: some View {
         
@@ -28,9 +28,8 @@ struct MultiplayerDisplayName: View {
                 onCommit: {
                     if newDisplayName != UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName {
                         
-                        UserDefaults.standard.set(newDisplayName, forKey: "Display Name")
-                        print("save \(newDisplayName) to settings")
-                        savedDisplayName.toggle()
+                        
+                        changeNameWarning = true
                         
                     }
             
@@ -42,16 +41,25 @@ struct MultiplayerDisplayName: View {
             Spacer()
         }
         .padding(.top, 100)
-        .alert(isPresented: $savedDisplayName, content: { Alert(title: Text("Saved Display Name!"),
-               message: Text("Changes will take effect on next restart of the game"),
-               dismissButton: .default(Text("OK"))
-                   {
-                       print("dismissed")
-                       savedDisplayName = false
-                   })
-   })
-        
-        
+        .alert(isPresented: $changeNameWarning,
+               content: { Alert(title: Text("Warning"),
+                                message: Text("Changing your display name while connected to other devices may cause connection issues."),
+                                primaryButton: .default(Text("Save")) {
+                                    print("dismissed")
+                                    UserDefaults.standard.set(newDisplayName, forKey: "Display Name")
+                                    
+                                    Multipeer.disconnect(viewModel)
+                                    Multipeer.reconnect()
+                                    changeNameWarning = false
+                   
+                                   print("saved \(newDisplayName) to settings")
+                                },
+                                secondaryButton: .default(Text("Cancel")) {
+                                    print("Cancelled")
+                                    changeNameWarning = false
+                                })
+                            })
+
     }
     
 }

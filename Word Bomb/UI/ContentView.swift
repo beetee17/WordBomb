@@ -30,7 +30,7 @@ struct ContentView: View {
             
         }
         .onAppear() {
-            Multipeer.reconnect(mpcDataSource)
+            Multipeer.transceiver.resume()
             viewModel.setUpTransceiver()
         }
         .environmentObject(viewModel)

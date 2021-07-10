@@ -28,16 +28,19 @@ struct LocalMultiplayerView: View {
                     print("Host Game")
                     withAnimation { presentPeersSheet = true }
                 }
-                Button("Disconnect") {
-                    print("Disconnect")
-                    withAnimation {
-                        Multipeer.disconnect(mpcDataSource, viewModel)
-                    }
-                }
+                
+                // For debugging, can remove this
+//                Button("Disconnect") {
+//                    print("Disconnect")
+//                    withAnimation {
+//                        Multipeer.disconnect(viewModel)
+//                    }
+//                }
                 Button("Reconnect") {
                     print("Reconnect")
                     withAnimation {
-                        Multipeer.reconnect(mpcDataSource)
+                        Multipeer.disconnect(viewModel)
+                        Multipeer.reconnect()
                         
                     }
                 }

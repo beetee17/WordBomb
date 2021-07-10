@@ -187,7 +187,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     
     // MARK: - Multipeer Functionality
-    
+
     func disconnectedFrom(_ peer: Peer) {
         print("available \(Multipeer.transceiver.availablePeers)")
         // if non-host device, check if disconnected from hostPeer
@@ -197,6 +197,8 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             // remove from selected and update status
             print("found peer")
             selectedPeers.remove(at: index)
+            // notify peer of disconnection
+            Multipeer.transceiver.send(false, to: [peer])
         }
         else { print("did not find peer") }
         
@@ -212,7 +214,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             print("selected peers \(selectedPeers)")
         }
         
-        else if peer == hostingPeer{
+        else if peer == hostingPeer {
         
             // reset hostPeer to nil and update status
             hostingPeer = nil
@@ -266,15 +268,21 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             DispatchQueue.main.async {
                 print("Disconnected from \(peer)")
                 self.disconnectedFrom(peer) }
-            }
+        }
             
         
         Multipeer.transceiver.peerRemoved = { peer in
             DispatchQueue.main.async {
                 print("\(peer) Removed")
                 self.disconnectedFrom(peer) }
+        }
+        Multipeer.transceiver.peerAdded = { peer in
+            DispatchQueue.main.async {
+                print("\(peer) Added")
+                
             }
-            
+        }
+        
         Multipeer.transceiver.peerConnected = { peer in print("Connected to \(peer.name)") }
         
         //participants receiving model from host

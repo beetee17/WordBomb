@@ -58,6 +58,7 @@ struct LocalPeersView: View {
                 
             }
         }
+        .environmentObject(mpcDataSource)
         // TODO: - Change to show only once when selecting multiple peers
         .alert(isPresented: $showAlert,
                content: {
@@ -82,8 +83,6 @@ struct LocalPeersView: View {
                 
                 }
                })
-
-        .environmentObject(mpcDataSource)
     }
 }
 

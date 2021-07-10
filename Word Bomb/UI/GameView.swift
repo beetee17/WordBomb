@@ -35,9 +35,10 @@ struct GameView: View {
                     
                     // for debugging
                   
-                    Button("Disconnect") {
-                        Multipeer.disconnect(mpcDataSource, viewModel)
-                        }
+//                    Button("Disconnect") {
+//                        
+//                        Multipeer.disconnect(viewModel)
+//                        }
                         
                 }
                 .ignoresSafeArea(.all)
