@@ -58,16 +58,6 @@ struct LocalPeersView: View {
                 
             }
         }
-//        .onChange(of: viewModel.selectedPeers,
-//                  perform: {
-//                         peer in
-//                         DispatchQueue.main.async {
-//
-//
-//
-//                             }
-//                         }
-//                  })
         // TODO: - Change to show only once when selecting multiple peers
         .alert(isPresented: $showAlert,
                content: {

@@ -7,9 +7,11 @@
 
 import SwiftUI
 import CoreData
+import MultipeerKit
 
 struct GameView: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
+    @EnvironmentObject var mpcDataSource: MultipeerDataSource
 
     var body: some View {
         
@@ -30,11 +32,13 @@ struct GameView: View {
                     InputView()
                     PlayerView()
                     OutputText()
+                    
                     // for debugging
+                  
                     Button("Disconnect") {
-                        Multipeer.transceiver.stop()
-                    }
-
+                        Multipeer.disconnect(mpcDataSource, viewModel)
+                        }
+                        
                 }
                 .ignoresSafeArea(.all)
             }

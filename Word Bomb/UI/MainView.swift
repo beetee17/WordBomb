@@ -26,7 +26,9 @@ struct MainView: View {
                         
                     Button("Local Multiplayer") {
                         print("Local Multiplayer")
-                        withAnimation { viewModel.changeViewToShow(.multipeer) }
+                        withAnimation {
+                            viewModel.changeViewToShow(.multipeer)
+                        }
                     }
                     
                     Button("CREATE MODE") {

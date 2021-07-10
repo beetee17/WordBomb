@@ -9,8 +9,10 @@ import SwiftUI
 import MultipeerKit
 struct LocalMultiplayerView: View {
     
+    @EnvironmentObject var mpcDataSource: MultipeerDataSource
     @EnvironmentObject var viewModel: WordBombGameViewModel
     @State private var presentPeersSheet = false
+    
     var body: some View {
         // Start it up!
         
@@ -29,15 +31,15 @@ struct LocalMultiplayerView: View {
                 Button("Disconnect") {
                     print("Disconnect")
                     withAnimation {
-                        Multipeer.transceiver.stop()
-                        for peer in viewModel.selectedPeers {
-                            viewModel.toggle(peer)
-                        }
+                        Multipeer.disconnect(mpcDataSource, viewModel)
                     }
                 }
                 Button("Reconnect") {
                     print("Reconnect")
-                    withAnimation { Multipeer.transceiver.resume() }
+                    withAnimation {
+                        Multipeer.reconnect(mpcDataSource)
+                        
+                    }
                 }
                 
                 Button("Back") {
@@ -54,6 +56,7 @@ struct LocalMultiplayerView: View {
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
         .zIndex(/*@START_MENU_TOKEN@*/1.0/*@END_MENU_TOKEN@*/) // transition does not work with zIndex set to 0
         .sheet(isPresented: $presentPeersSheet) { LocalPeersView() }
+        
     }
 }
 struct LocalMultiplayerView_Previews: PreviewProvider {

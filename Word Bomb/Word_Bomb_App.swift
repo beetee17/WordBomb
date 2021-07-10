@@ -21,7 +21,6 @@ struct Word_BombApp: App {
     let persistenceController = PersistenceController.shared
     let game = WordBombGameViewModel(Defaults.gameModes)
     
-    
     let mpcDataSource = MultipeerDataSource(transceiver: Multipeer.transceiver)
     
     var body: some Scene {

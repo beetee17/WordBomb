@@ -15,16 +15,13 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     @Published private var gameModel: WordGameModel?
     
     @Published var input = ""
-    
+    @Published var gameType: GameType?
     var wordGames: [GameMode]
 
-    @Published var showHostingAlert = false
     @Published var selectedPeers: [Peer] = []
     @Published var hostingPeer: Peer?
     @Published var mpcStatus = ""
-    @Published var gameType: GameType?
-
-   
+    
 
     init(_ wordGames: [GameMode]) {
         self.wordGames = wordGames
@@ -173,7 +170,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                     self.model.timeLeft! = max(0, self.model.timeLeft! - 0.1)
                     if self.selectedPeers.count > 0 {
                         // device is hosting a multiplayer game
-                        print("sending model")
+//                        print("sending model")
                         Multipeer.transceiver.send(self.model, to: self.selectedPeers)
                     }
                 }
@@ -192,56 +189,112 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     // MARK: - Multipeer Functionality
     
     func disconnectedFrom(_ peer: Peer) {
-        print("Disconnected from \(peer)")
+        print("available \(Multipeer.transceiver.availablePeers)")
         // if non-host device, check if disconnected from hostPeer
-        if let hostPeer = hostingPeer, peer == hostPeer {
+        
+        // for host device, check if disconnected peer is in selectedPeers
+        if let index = selectedPeers.find(peer) {
+            // remove from selected and update status
+            print("found peer")
+            selectedPeers.remove(at: index)
+        }
+        else { print("did not find peer") }
+        
+        if hostingPeer == nil {
+            switch selectedPeers.count == 0 {
+            case true:
+                mpcStatus = ""
+                resetPlayers()
+            case false:
+                mpcStatus = "Hosting: \(selectedPeers.count) Player(s)"
+                setPlayers()
+            }
+            print("selected peers \(selectedPeers)")
+        }
+        
+        else if peer == hostingPeer{
+        
             // reset hostPeer to nil and update status
             hostingPeer = nil
             mpcStatus = "Lost Connection to Host: \(peer.name)"
+            resetPlayers()
+        
         }
         
-        // for host device, check if disconnected peer is in selectedPeers
-        if selectedPeers.count > 0 && selectedPeers.contains(peer) {
-            // remove from selected and update status
-            toggle(peer)
-            switch selectedPeers.count == 0 {
-            case true:
-                mpcStatus = "Lost Connection to all players"
-                resetPlayers()
-            case false:
-                mpcStatus = "Lost Connection to \(peer.name)"
-                setPlayers()
-                
-            }
-        }
+        
     }
     
     func toggle(_ peer: Peer) {
-        if selectedPeers.contains(peer) {
-            selectedPeers.remove(at: selectedPeers.firstIndex(of: peer)!)
+        
+        // first remove any unavailable peers from selected peers
+        for p in selectedPeers {
+            if Multipeer.transceiver.availablePeers.find(p) == nil {
+                // peer is unavailable
+                selectedPeers.remove(at: selectedPeers.firstIndex(of: p)!)
+            }
+        }
+        
+        // then do the toggling -> if given peer already selected then remove it and vice versa
+        if let index = selectedPeers.find(peer) {
+            print("removed \(peer)")
+            // notify peer of de-selection
+            Multipeer.transceiver.send(false, to: [peer])
+            selectedPeers.remove(at: index)
         } else {
             selectedPeers.append(peer)
-            mpcStatus = "You are Host"
             // for non-host device to set host peer as sender
             Multipeer.transceiver.send(true, to: [peer])
         }
-        setPlayers()
+        
+        // after removing -> check if host selected >0 peers
+        switch selectedPeers.count > 0 {
+        case true:
+            mpcStatus = "Hosting: \(selectedPeers.count) Player(s)"
+            setPlayers()
+        case false:
+            mpcStatus = "" // not hosting a game
+            resetPlayers()
+        }
+        
+        print("toggled, selected peers \(selectedPeers)")
     }
-    
+
     func setUpTransceiver() {
         print("Setting up transceiver")
-        Multipeer.transceiver.peerDisconnected = { peer in self.disconnectedFrom(peer) }
+        Multipeer.transceiver.peerDisconnected = { peer in
+            
+            DispatchQueue.main.async {
+                print("Disconnected from \(peer)")
+                self.disconnectedFrom(peer) }
+            }
+            
+        
+        Multipeer.transceiver.peerRemoved = { peer in
+            DispatchQueue.main.async {
+                print("\(peer) Removed")
+                self.disconnectedFrom(peer) }
+            }
+            
+        Multipeer.transceiver.peerConnected = { peer in print("Connected to \(peer.name)") }
+        
         //participants receiving model from host
         Multipeer.transceiver.receive(WordBombGame.self) { payload, sender in
-            print("Got model from host \(sender.name)! \(payload)")
-            self.hostingPeer = sender
+//            print("Got model from host \(sender.name)! \(payload)")
             self.model = payload
         }
         // participant successfully connected to peer and received data from host
         Multipeer.transceiver.receive(Bool.self) { payload, sender in
-            print("Got invitation from host \(sender.name)! \(payload)")
-            self.hostingPeer = sender
-            self.mpcStatus = "Connected to Host: \(sender.name)"
+            print("Got boolean from host \(sender.name)! \(payload)")
+            switch payload {
+            case true: // host selected this peer to join game
+                self.hostingPeer = sender
+                self.mpcStatus = "Connected to Host: \(sender.name)"
+                
+            case false: // host deselected this peer
+                self.hostingPeer = nil
+                self.mpcStatus = ""
+            }
+            
         }
         
         // host receiving inputs from participants
@@ -252,7 +305,16 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         }
         
     }
-    
+//    func testHostConnection() {
+//        let timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { timer in
+//              print("Time is Over")
+//           }
+//           Login.getUSerAuthenticaiton(email: "abc@zyf.com", password: "123456789", completion: {_,_ in
+//                   print("Reponse")
+//               timer.invalidate()
+//           })
+//    }
+//
     func processPeerInput() {
         input = input.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         print("processing \(input)")
