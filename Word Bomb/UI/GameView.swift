@@ -31,7 +31,7 @@ struct GameView: View {
                     PlayerView()
                     OutputText()
                     // for debugging
-                    Button("disconnect") {
+                    Button("Disconnect") {
                         Multipeer.transceiver.stop()
                     }
 

@@ -35,21 +35,21 @@ struct MPCText: View {
         .padding(.top, 40)
         .ignoresSafeArea(.all)
         .environmentObject(mpcDataSource)
-        .onChange(of: mpcDataSource.availablePeers,
-                  perform: {
-                    _ in
-                    DispatchQueue.main.async {
-                        handlePeersChanged(viewModel, mpcDataSource)
-                    }
-                  })
-        .onChange(of: viewModel.selectedPeers, perform: { _ in
-            if viewModel.selectedPeers.count > 0 {
-                
-                viewModel.mpcStatus = "You are host"
-            }
-            
-            
-        })
+//        .onChange(of: mpcDataSource.availablePeers,
+//                  perform: {
+//                    _ in
+//                    DispatchQueue.main.async {
+//                        handlePeersChanged(viewModel, mpcDataSource)
+//                    }
+//                  })
+//        .onChange(of: viewModel.selectedPeers, perform: { _ in
+//            if viewModel.selectedPeers.count > 0 {
+//                
+//                viewModel.mpcStatus = "You are host"
+//            }
+//            
+//            
+//        })
     
     }
 }

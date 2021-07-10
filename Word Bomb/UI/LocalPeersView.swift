@@ -42,6 +42,10 @@ struct LocalPeersView: View {
                             // selects peer
                             if peer.isConnected {
                                 viewModel.toggle(peer)
+                                if viewModel.selectedPeers.count > 0 {
+                                    activeAlert = .host
+                                    showAlert = true
+                                }
                             }
                             else {
                                 activeAlert = .notConnected
@@ -54,19 +58,16 @@ struct LocalPeersView: View {
                 
             }
         }
-        .onChange(of: viewModel.selectedPeers,
-                  perform: {
-                         peer in
-                         DispatchQueue.main.async {
-                             
-                            if viewModel.selectedPeers.count > 0 {
-                                viewModel.setPlayers()
-                                activeAlert = .host
-                                showAlert = true
-                                
-                             }
-                         }
-                  })
+//        .onChange(of: viewModel.selectedPeers,
+//                  perform: {
+//                         peer in
+//                         DispatchQueue.main.async {
+//
+//
+//
+//                             }
+//                         }
+//                  })
         // TODO: - Change to show only once when selecting multiple peers
         .alert(isPresented: $showAlert,
                content: {

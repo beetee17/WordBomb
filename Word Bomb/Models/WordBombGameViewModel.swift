@@ -190,8 +190,47 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     
     // MARK: - Multipeer Functionality
+    
+    func disconnectedFrom(_ peer: Peer) {
+        print("Disconnected from \(peer)")
+        // if non-host device, check if disconnected from hostPeer
+        if let hostPeer = hostingPeer, peer == hostPeer {
+            // reset hostPeer to nil and update status
+            hostingPeer = nil
+            mpcStatus = "Lost Connection to Host: \(peer.name)"
+        }
+        
+        // for host device, check if disconnected peer is in selectedPeers
+        if selectedPeers.count > 0 && selectedPeers.contains(peer) {
+            // remove from selected and update status
+            toggle(peer)
+            switch selectedPeers.count == 0 {
+            case true:
+                mpcStatus = "Lost Connection to all players"
+                resetPlayers()
+            case false:
+                mpcStatus = "Lost Connection to \(peer.name)"
+                setPlayers()
+                
+            }
+        }
+    }
+    
+    func toggle(_ peer: Peer) {
+        if selectedPeers.contains(peer) {
+            selectedPeers.remove(at: selectedPeers.firstIndex(of: peer)!)
+        } else {
+            selectedPeers.append(peer)
+            mpcStatus = "You are Host"
+            // for non-host device to set host peer as sender
+            Multipeer.transceiver.send(true, to: [peer])
+        }
+        setPlayers()
+    }
+    
     func setUpTransceiver() {
         print("Setting up transceiver")
+        Multipeer.transceiver.peerDisconnected = { peer in self.disconnectedFrom(peer) }
         //participants receiving model from host
         Multipeer.transceiver.receive(WordBombGame.self) { payload, sender in
             print("Got model from host \(sender.name)! \(payload)")
@@ -202,7 +241,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         Multipeer.transceiver.receive(Bool.self) { payload, sender in
             print("Got invitation from host \(sender.name)! \(payload)")
             self.hostingPeer = sender
-            self.mpcStatus = "Connected to \(sender.name)"
+            self.mpcStatus = "Connected to Host: \(sender.name)"
         }
         
         // host receiving inputs from participants
@@ -225,16 +264,6 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         resetInput()
     }
     
-    func toggle(_ peer: Peer) {
-        if selectedPeers.contains(peer) {
-            selectedPeers.remove(at: selectedPeers.firstIndex(of: peer)!)
-        } else {
-            selectedPeers.append(peer)
-            Multipeer.transceiver.send(true, to: [peer])
-        }
-    }
-    
-
     func setPlayers() {
         
         var players: [Player] = [Player(name: UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName, ID: 0)]
