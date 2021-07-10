@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "MultipeerKit",
+        "repositoryURL": "https://github.com/insidegui/MultipeerKit",
+        "state": {
+          "branch": null,
+          "revision": "0fabe19e595e4f52dffb349b7ef8648d501ec8a9",
+          "version": "0.3.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
