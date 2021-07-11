@@ -36,12 +36,17 @@ struct Multipeer {
         
         // RISKY????
 
-        // re-init new transceiver and dataSource
-        transceiver = MultipeerTransceiver(configuration: MultipeerConfiguration(serviceType: "word-bomb", peerName: UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName, defaults: .standard, security: .default, invitation: .automatic))
-        dataSource = MultipeerDataSource(transceiver: transceiver)
+        print("reconnect")
+        DispatchQueue.main.async {
+            // re-init new transceiver and dataSource
+            let newTransceiver = MultipeerTransceiver(configuration: MultipeerConfiguration(serviceType: "word-bomb", peerName: UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName, defaults: .standard, security: .default, invitation: .automatic))
+            dataSource = MultipeerDataSource(transceiver: newTransceiver)
+            transceiver = newTransceiver
+            // start new transceiver
+            transceiver.resume()
+            
+        }
         
-        // start new transceiver
-        transceiver.resume()
         
     }
 }
