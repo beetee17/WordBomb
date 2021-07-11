@@ -38,6 +38,7 @@ struct LocalPeersView: View {
                             if self.viewModel.selectedPeers.contains(peer) { Image(systemName: "checkmark") }
 
                         }
+                        .contentShape(Rectangle())
                         .onTapGesture {
                             // selects peer
                             if peer.isConnected {
