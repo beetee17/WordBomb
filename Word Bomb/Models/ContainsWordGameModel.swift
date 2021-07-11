@@ -12,35 +12,34 @@ struct ContainsWordGameModel: WordGameModel, Codable {
     var queries: [String]
     var usedWords = Set<Int>()
     
-    mutating func process(_ input: String, _ query: String? = "") -> Answer {
+    mutating func process(_ input: String, _ query: String? = nil) -> (status: String, query: String?) {
         let searchResult = data.search(element: input)
-        var answer = Answer.isCorrect
         
         if usedWords.contains(searchResult) {
             print("\(input.uppercased()) ALREADY USED")
-            answer = .isAlreadyUsed
-           
+            return ("used", nil)
+            
         }
+        
         else if (searchResult != -1) && input.contains(query!) {
             print("\(input.uppercased()) IS CORRECT")
             usedWords.insert(searchResult)
- 
+            return ("used", getRandQuery(input))
         }
                 
         else {
             print("\(input.uppercased()) IS WRONG")
-            answer = .isWrong
+            return ("wrong", nil)
+
         }
-        
-        
-        return answer
+
     }
     
     mutating func resetUsedWords() {
         usedWords = Set<Int>()
     }
     
-    mutating func getRandQuery(_ input: String) -> String{
+    mutating func getRandQuery(_ input: String? = nil) -> String {
         var query = queries.randomElement()!.trimmingCharacters(in: .whitespacesAndNewlines)
         
         while query.count == 0 {

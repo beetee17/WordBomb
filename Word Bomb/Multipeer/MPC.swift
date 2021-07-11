@@ -17,31 +17,19 @@ struct Multipeer {
     
     static var dataSource = MultipeerDataSource(transceiver: transceiver)
     
-    static func disconnect(_ viewModel: WordBombGameViewModel) {
-        print("manual disconnect")
-        
-        transceiver.stop()
-        
-        if viewModel.selectedPeers.count > 0 {
-            viewModel.selectedPeers = []
-            print("selected peers: \(viewModel.selectedPeers)")
-            viewModel.resetPlayers()
-        }
-        
-        viewModel.mpcStatus = ""
-        viewModel.hostingPeer = nil
-    }
-    
     static func reconnect() {
         
         // RISKY????
 
         print("reconnect")
         DispatchQueue.main.async {
+            
             // re-init new transceiver and dataSource
-            let newTransceiver = MultipeerTransceiver(configuration: MultipeerConfiguration(serviceType: "word-bomb", peerName: UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName, defaults: .standard, security: .default, invitation: .automatic))
+            let newTransceiver = MultipeerTransceiver(configuration: MultipeerConfiguration(serviceType: "word-bomb", peerName: UserDefaults.standard.string(forKey: "Display Name")!, defaults: .standard, security: .default, invitation: .automatic))
+            
             dataSource = MultipeerDataSource(transceiver: newTransceiver)
             transceiver = newTransceiver
+            
             // start new transceiver
             transceiver.resume()
             
@@ -60,3 +48,26 @@ extension Array where Element == Peer {
     }
 }
 
+extension Array where Element == Player {
+    func find(_ player: Player) -> Int? {
+        for i in self.indices {
+            if self[i].id == player.id { return i }
+        }
+        return nil
+    }
+    
+    func numPlaying() -> Int {
+        var num = 0
+        for player in self {
+            if !player.ranOutOfTime { num = num+1 }
+        }
+        
+        return num
+    }
+    
+    func reset() {
+        for player in self {
+            player.reset()
+        }
+    }
+}

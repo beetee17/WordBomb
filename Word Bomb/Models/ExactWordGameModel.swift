@@ -12,13 +12,13 @@ struct ExactWordGameModel: WordGameModel, Codable {
     var dataDict: [String : [String]]
     var usedWords = Set<Int>()
     
-    mutating func process(_ input: String, _ query: String? = "") -> Answer {
+    mutating func process(_ input: String, _ query: String? = nil) -> (status: String, query: String?) {
         
         let searchResult = data.search(element: input)
         
         if usedWords.contains(searchResult) {
             print("\(input.uppercased()) ALREADY USED")
-            return Answer.isAlreadyUsed
+            return ("used", nil)
         }
         else if (searchResult != -1) {
             print("\(input.uppercased()) IS CORRECT")
@@ -27,17 +27,19 @@ struct ExactWordGameModel: WordGameModel, Codable {
                 usedWords.insert(data.search(element: variation))
             }
             usedWords.insert(searchResult)
-            return Answer.isCorrect
+            return ("correct", nil)
+            
         }
                 
         else {
             print("\(input.uppercased()) IS WRONG")
-            return Answer.isWrong
+            return ("wrong", nil)
         }
     }
+    
     mutating func resetUsedWords() {
         usedWords = Set<Int>()
     }
-    mutating func getRandQuery(_ input: String) -> String { return "" }
+    mutating func getRandQuery(_ input: String? = nil) -> String { return "" }
 
 }

@@ -18,10 +18,10 @@ struct PlayerView: View {
         VStack {
             Spacer()
             
-            switch .gameOver == viewModel.viewToShow {
+            switch .gameOver == viewModel.gameState {
             case true:
              
-                Text("\(viewModel.currentPlayer) Loses!")
+                Text("\(viewModel.currentPlayer) WINS!")
                     .font(/*@START_MENU_TOKEN@*/.largeTitle/*@END_MENU_TOKEN@*/)
             case false:
           

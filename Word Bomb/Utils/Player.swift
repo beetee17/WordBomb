@@ -13,18 +13,28 @@ class Player: Codable {
     
     var score:Int = 0
     var name:String
-    var ID:Int
+    var id:Int
+    var ranOutOfTime:Bool
     
     
-    init(name:String, ID:Int) {
+    init(name:String, id:Int) {
         if name == "Player" {
-            self.name = "\(name) \(ID+1)"
+            self.name = "\(name) \(id+1)"
         }
         else {
             self.name = name
         }
-        self.ID = ID
-        
+        self.id = id
+        ranOutOfTime = false
+    }
+    
+    func didRunOutOfTime() {
+        ranOutOfTime = true
+    }
+    
+    func reset() {
+        score = 0
+        ranOutOfTime = false
     }
     
 }

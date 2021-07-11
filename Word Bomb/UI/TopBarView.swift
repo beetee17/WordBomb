@@ -37,7 +37,7 @@ struct TopBarView: View {
                 
                 Spacer()
   
-                if .gameOver == viewModel.viewToShow { gameOverButton.opacity(1) }
+                if .gameOver == viewModel.gameState { gameOverButton.opacity(1) }
                 else { gameOverButton.opacity(0) }
             }
             Spacer()

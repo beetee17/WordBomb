@@ -15,7 +15,7 @@ struct MultiplayerDisplayName: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
     @EnvironmentObject var mpcDataSource: MultipeerDataSource
     
-    @State var newDisplayName = UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName
+    @State var newDisplayName = UserDefaults.standard.string(forKey: "Display Name")!
     
     @State var changeNameWarning = false
   
@@ -24,9 +24,9 @@ struct MultiplayerDisplayName: View {
         VStack {
            
                 
-            TextField(UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName, text: $newDisplayName) { isEditing in }
+            TextField(UserDefaults.standard.string(forKey: "Display Name")!, text: $newDisplayName) { isEditing in }
                 onCommit: {
-                    if newDisplayName != UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName {
+                    if newDisplayName != UserDefaults.standard.string(forKey: "Display Name")! {
    
                         changeNameWarning = true
                         
@@ -47,7 +47,7 @@ struct MultiplayerDisplayName: View {
                                     print("dismissed")
                                     UserDefaults.standard.set(newDisplayName, forKey: "Display Name")
                                     
-                                    Multipeer.disconnect(viewModel)
+                                    viewModel.disconnect()
                                     Multipeer.reconnect()
                                     changeNameWarning = false
                    
@@ -56,7 +56,7 @@ struct MultiplayerDisplayName: View {
                                 secondaryButton: .default(Text("Cancel")) {
                                     print("Cancelled")
                                     // reset edited display name to current name
-                                    newDisplayName = UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName
+                                    newDisplayName = UserDefaults.standard.string(forKey: "Display Name")!
                                     changeNameWarning = false
                                 })
                             })

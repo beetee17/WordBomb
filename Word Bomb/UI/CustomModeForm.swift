@@ -67,7 +67,7 @@ struct CustomModeForm: View {
                 newItem.words = encodeStrings(wordsData.map {
                     $0.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
                })
-                print(newItem.words)
+                print(newItem.words!)
                 newItem.gameType = gameType
                 
                 let queryData = queries.components(separatedBy: "\n")

@@ -39,7 +39,7 @@ struct LocalMultiplayerView: View {
                 Button("Reconnect") {
                     print("Reconnect")
                     withAnimation {
-                        Multipeer.disconnect(viewModel)
+                        viewModel.disconnect()
                         Multipeer.reconnect()
                         
                     }

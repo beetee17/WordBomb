@@ -28,9 +28,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         self.wordGames = wordGames
     }
     
-    func resetPlayers() {
-        model.setPlayers(Defaults.players)
-    }
+    
     func changeViewToShow(_ view: ViewToShow) {
         viewToShow = view
     }
@@ -78,7 +76,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                 gameModel = ContainsWordGameModel(data: mode.words!, queries: mode.queries!)
             case .Reverse: break
             }
-            print("CUSTOM GAME! \(gameModel)")
+            print("CUSTOM GAME! \(String(describing: gameModel))")
         }
 
         startGame()
@@ -87,25 +85,18 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     }
     
     func startGame() {
-        model.clearUI()
-        print("host is \(hostingPeer)")
+        
+        print("host is \(String(describing: hostingPeer))")
         print("selected peers \(selectedPeers)")
         
-//        if gameModel is ContainsWordGameModel || gameModel is ReverseWordGameModel{
-//            print("type checked")
-            if selectedPeers.count > 0 {
-                // only the host should query
-                model.query = gameModel!.getRandQuery(input)
-                
-            } else if hostingPeer == nil {
-                // or if device is not in multiplayer game
-                print("getting query")
-                model.query = gameModel!.getRandQuery(input)
-            }
-//        }
-        
+        if selectedPeers.count != 0 || (selectedPeers.count == 0 && hostingPeer == nil) {
+            print("getting query")
+                // should query only if device is not in multiplayer game or is hosting a game
+            model.handleGameState(.initial, data: ["query" : gameModel!.getRandQuery(input)])
+        }
+        else { model.handleGameState(.initial) }
+
         changeViewToShow(.game)
-        model.restartGame()
         startTimer()
     }
 
@@ -115,17 +106,15 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         
         if !(input == "" || model.timeLeft! <= 0) {
 
-            if UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName == model.currentPlayer.name && selectedPeers.count > 0 {
+            if UserDefaults.standard.string(forKey: "Display Name")! == model.currentPlayer.name && selectedPeers.count > 0 {
                 // turn for device hosting multiplayer game
 
-                let answer = gameModel!.process(input, model.query)
-                model.process(input, answer)
-                if .isCorrect == answer {
-                    model.query = gameModel!.getRandQuery(input)
-                }
+                let response = gameModel!.process(input, model.query)
+                
+                model.handleGameState(.playerInput, data: ["input" : input, "response" : response])
             }
 
-            else if let hostPeer = hostingPeer, UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName == model.currentPlayer.name  {
+            else if let hostPeer = hostingPeer, UserDefaults.standard.string(forKey: "Display Name")! == model.currentPlayer.name  {
                 // turn for device not hosting but in multiplayer game
                 Multipeer.transceiver.send(input, to: [hostPeer])
                 print("SENT \(input)")
@@ -134,11 +123,9 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             
             else if hostingPeer == nil && selectedPeers.count == 0 {
                 // device not hosting or participating in multiplayer game i.e offline
-                let answer = gameModel!.process(input, model.query)
-                if .isCorrect == answer {
-                    model.query = gameModel!.getRandQuery(input)
-                }
-                model.process(input, answer)
+                let response = gameModel!.process(input, model.query)
+                    
+                model.handleGameState(.playerInput, data: ["input" : input, "response" : response])
             }
         }
     }
@@ -160,9 +147,20 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             }
             
             else if self.model.timeLeft! <= 0 {
-                timer.invalidate()
-                self.changeViewToShow(.gameOver)
-                print("Timer stopped")
+                self.model.handleGameState(.playerTimedOut)
+                
+                switch .gameOver == self.model.gameState {
+                case true:
+                    // game over -> only one player left
+                    
+                    timer.invalidate()
+                    print("Timer stopped")
+                    
+                case false:
+                    // continue game -> at least 2 players left in game
+                    break
+                }
+                
             }
         
             else {
@@ -207,10 +205,10 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             switch selectedPeers.count == 0 {
             case true:
                 mpcStatus = ""
-                resetPlayers()
+                model.resetPlayers()
             case false:
                 mpcStatus = "Hosting: \(selectedPeers.count) Player(s)"
-                setPlayers()
+                setOnlinePlayers()
             }
             print("selected peers \(selectedPeers)")
         }
@@ -220,7 +218,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             // reset hostPeer to nil and update status
             hostingPeer = nil
             mpcStatus = "Lost Connection to Host: \(peer.name)"
-            resetPlayers()
+            model.resetPlayers()
         
         }
         
@@ -253,10 +251,10 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         switch selectedPeers.count > 0 {
         case true:
             mpcStatus = "Hosting: \(selectedPeers.count) Player(s)"
-            setPlayers()
+            setOnlinePlayers()
         case false:
             mpcStatus = "" // not hosting a game
-            resetPlayers()
+            model.resetPlayers()
         }
         
         print("toggled, selected peers \(selectedPeers)")
@@ -314,38 +312,42 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         }
         
     }
-//    func testHostConnection() {
-//        let timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { timer in
-//              print("Time is Over")
-//           }
-//           Login.getUSerAuthenticaiton(email: "abc@zyf.com", password: "123456789", completion: {_,_ in
-//                   print("Reponse")
-//               timer.invalidate()
-//           })
-//    }
-//
+
     func processPeerInput() {
         input = input.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         print("processing \(input)")
-        let answer = gameModel!.process(input, model.query)
-        if case .isCorrect = answer {
-            model.query = gameModel!.getRandQuery(input)
-        }
-        model.process(input, answer)
+        let response = gameModel!.process(input, model.query)
+        
+        model.handleGameState(.playerInput, data: ["input" : input, "response" : response])
         resetInput()
     }
     
-    func setPlayers() {
+    func setOnlinePlayers() {
         
-        var players: [Player] = [Player(name: UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName, ID: 0)]
+        var players: [Player] = [Player(name: UserDefaults.standard.string(forKey: "Display Name")!, id: 0)]
         
         for i in selectedPeers.indices {
-            let player = Player(name: selectedPeers[i].name, ID: i+1)
+            let player = Player(name: selectedPeers[i].name, id: i+1)
             players.append(player)
         }
         print("players set \(players)")
-        model.setPlayers(players)
+        model.resetPlayers(players)
 
+    }
+    
+    func disconnect() {
+        print("manual disconnect")
+        
+        Multipeer.transceiver.stop()
+        
+        if selectedPeers.count > 0 {
+            selectedPeers = []
+            print("selected peers: \(selectedPeers)")
+            model.resetPlayers()
+        }
+        
+        mpcStatus = ""
+        hostingPeer = nil
     }
 
     
@@ -360,6 +362,8 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     var timeLeft: Float { model.timeLeft! }
     
     var output: String { model.output }
+    
+    var gameState: GameState { model.gameState }
 
     
         

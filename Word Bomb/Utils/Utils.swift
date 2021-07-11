@@ -18,8 +18,6 @@ struct Defaults {
     
     static let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables", instruction: "A WORD STARTING WITH...", words: nil, queries: nil, gameType: GameType.Reverse, id: 4)
     
-    static let players = [Player(name: "BT", ID: 0), Player(name: "VAL", ID: 1)]
-    
     static let gameModes = [CountryGame, CountryGameReverse, WordGame, WordGameReverse]
     
     static let gameTypes = [("EXACT", GameType.Exact), ("CONTAINS", GameType.Contains), ("REVERSE", GameType.Reverse)]
@@ -47,9 +45,10 @@ enum GameType: Int, Codable {
     case Reverse
 }
 
-enum Answer  {
-    case isCorrect, isWrong, isAlreadyUsed
+enum GameState: Int, Codable {
+    case initial, playerInput, playerTimedOut, gameOver
 }
+
 
 enum ViewToShow: Int, Codable {
     case main, gameTypeSelect, modeSelect, game, gameOver, pauseMenu, multipeer, peersView
