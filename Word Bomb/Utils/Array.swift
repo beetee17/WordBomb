@@ -59,7 +59,7 @@ extension Array where Element == Player {
     func numPlaying() -> Int {
         var num = 0
         for player in self {
-            if !player.ranOutOfTime { num = num+1 }
+            if player.livesLeft != 0 { num += 1 }
         }
         
         return num

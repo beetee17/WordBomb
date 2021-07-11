@@ -11,13 +11,15 @@ import SwiftUI
 struct SettingsMenu: View {
     
     @EnvironmentObject var viewModel: WordBombGameViewModel
+    
     @State private var numPlayers = UserDefaults.standard.integer(forKey: "Num Players")
+    @State private var playerLives = UserDefaults.standard.integer(forKey: "Player Lives")
     @State private var timeLimit = UserDefaults.standard.float(forKey: "Time Limit")
     @State private var timeDifficulty = UserDefaults.standard.float(forKey: "Time Difficulty")
     @State private var timeConstraint = UserDefaults.standard.float(forKey: "Time Constraint")
     
     @Binding var isPresented: Bool
-
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -28,39 +30,67 @@ struct SettingsMenu: View {
                         NavigationLink("Edit Player Names", destination: PlayerEditorView())
                     }
                     
+                    Section(footer: Text("Changes the number of lives each player begins with.")) {
+                        
+                        Stepper("Player Lives: \(playerLives)", value: $playerLives, in: 1...10)
+                        
+                        HStack {
+                            
+                            ForEach(0..<playerLives, id: \.self) { i in
+                                
+                                Image(systemName: "heart.fill")
+                                    .foregroundColor(.red)
+                            }
+                            
+                        }
+                    }
+                    
+                    
                     Section(footer: Text("Changes the initial time for each player.")) {
-                        Stepper("Time Limit: \(timeLimit, specifier: "%.1f")", value: $timeLimit, in: 3...100, step: 0.5)
+                        Stepper("Time Limit: \(timeLimit, specifier: "%.1f") s", value: $timeLimit, in: 3...100, step: 0.5)
                     }
                     
                     Section(footer: Text("Changes the factor applied to the time limit after each turn.")) {
-                        Stepper("Time Multiplier: \(timeDifficulty, specifier: "%.1f")", value: $timeDifficulty, in: 0.5...1, step:0.1)
+                        Stepper("Time Multiplier: \(timeDifficulty, specifier: "%.2f")", value: $timeDifficulty, in: 0.5...1, step:0.05)
                     }
                     
                     Section(footer: Text("Changes the lowest amount of time allowed for each turn.")) {
-                        Stepper("Time Constraint: \(timeConstraint, specifier: "%.1f")", value: $timeConstraint, in: 1...timeLimit, step:0.5)
+                        Stepper("Time Constraint: \(timeConstraint, specifier: "%.1f") s", value: $timeConstraint, in: 1...timeLimit, step:0.5)
+                        
                     }
+                    
                     
                 }
                 .navigationBarTitle(Text("Settings"))
                 
-              
+                
                 Button(action: { saveSettings() }) {
-                  HStack {
-                    Spacer()
-                      Text("Save Changes")
-                          .font(Font.system(size: 24))
-                    Spacer()
-                  }
+                    HStack {
+                        Spacer()
+                        Text("Save Changes")
+                            .font(Font.system(size: 24))
+                        Spacer()
+                    }
                 }
                 .frame(width: UIScreen.main.bounds.width, height: 50, alignment: .center)
                 .contentShape(Rectangle())
+                
             }
+            
+            
         }
+        .onChange(of: timeLimit, perform: {_ in timeConstraint = min(timeLimit, timeConstraint) })
+        
+        
     }
+
+    
+    
     
     private func saveSettings() {
         
         UserDefaults.standard.set(numPlayers, forKey: "Num Players")
+        UserDefaults.standard.set(playerLives, forKey: "Player Lives")
         UserDefaults.standard.set(timeLimit, forKey: "Time Limit")
         UserDefaults.standard.set(timeConstraint, forKey: "Time Constraint")
         UserDefaults.standard.set(timeDifficulty, forKey: "Time Difficulty")

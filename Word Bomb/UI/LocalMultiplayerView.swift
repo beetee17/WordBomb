@@ -29,13 +29,6 @@ struct LocalMultiplayerView: View {
                     withAnimation { presentPeersSheet = true }
                 }
                 
-                // For debugging, can remove this
-//                Button("Disconnect") {
-//                    print("Disconnect")
-//                    withAnimation {
-//                        Multipeer.disconnect(viewModel)
-//                    }
-//                }
                 Button("Reconnect") {
                     print("Reconnect")
                     withAnimation {

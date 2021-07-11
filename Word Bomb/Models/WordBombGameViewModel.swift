@@ -86,10 +86,12 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         if selectedPeers.count != 0 || (selectedPeers.count == 0 && hostingPeer == nil) {
             print("getting query")
             // should query only if device is not in multiplayer game or is hosting a game
-            model.handleGameState(.initial, data: ["query" : gameModel!.getRandQuery(nil),
-                                                   "instruction" : mode.instruction as Any])
+            model.handleGameState(.initial,
+                                  data: ["query" : gameModel!.getRandQuery(nil),
+                                         "instruction" : mode.instruction as Any])
         }
-        else { model.handleGameState(.initial, data: ["instruction" : mode.instruction as Any]) }
+        else { model.handleGameState(.initial,
+                                     data: ["instruction" : mode.instruction as Any]) }
 
         changeViewToShow(.game)
         startTimer()
@@ -99,8 +101,9 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     func restartGame() {
         if gameModel != nil {
             gameModel!.resetUsedWords()
-            model.handleGameState(.initial, data: ["query" : gameModel!.getRandQuery(input),
-                                                   "instruction" : model.instruction as Any])
+            model.handleGameState(.initial,
+                                  data: ["query" : gameModel!.getRandQuery(input),
+                                         "instruction" : model.instruction as Any])
             changeViewToShow(.game)
             startTimer()
         }
@@ -341,7 +344,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     
     // to allow contentView to read model's value and update
-    var currentPlayer: String { model.currentPlayer.name }
+    var currentPlayer: Player { model.currentPlayer }
     
     var instruction: String? { model.instruction }
     
@@ -352,9 +355,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     var output: String { model.output }
     
     var gameState: GameState { model.gameState }
-
-    
-        
+   
 }
 
 

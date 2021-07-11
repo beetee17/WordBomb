@@ -82,7 +82,7 @@ struct WordBombGame: Codable {
         print("Num players: \(players.count)")
         
         var nextPlayerID = (currentPlayer.id + 1) % players.count
-        while players[nextPlayerID].ranOutOfTime {
+        while players[nextPlayerID].livesLeft == 0 {
             // get next player that has not run out of time
             nextPlayerID = (nextPlayerID + 1) % players.count
         }
@@ -107,8 +107,9 @@ struct WordBombGame: Codable {
             output = "\(currentPlayer.name) Lost!"
             timeLeft = timeLimit
         }
-        
+        print("lives left: \(currentPlayer.livesLeft)")
         nextPlayer()
+        
 
     }
     

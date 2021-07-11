@@ -14,7 +14,7 @@ class Player: Codable {
     var score:Int = 0
     var name:String
     var id:Int
-    var ranOutOfTime:Bool
+    var livesLeft = UserDefaults.standard.integer(forKey: "Player Lives")
     
     
     init(name:String, id:Int) {
@@ -25,16 +25,16 @@ class Player: Codable {
             self.name = name
         }
         self.id = id
-        ranOutOfTime = false
+        
     }
     
     func didRunOutOfTime() {
-        ranOutOfTime = true
+        livesLeft -= 1
     }
     
     func reset() {
         score = 0
-        ranOutOfTime = false
+        livesLeft = UserDefaults.standard.integer(forKey: "Player Lives")
     }
     
 }

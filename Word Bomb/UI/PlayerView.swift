@@ -21,12 +21,28 @@ struct PlayerView: View {
             switch .gameOver == viewModel.gameState {
             case true:
              
-                Text("\(viewModel.currentPlayer) WINS!")
+                Text("\(viewModel.currentPlayer.name) WINS!")
                     .font(/*@START_MENU_TOKEN@*/.largeTitle/*@END_MENU_TOKEN@*/)
             case false:
           
-                Text("\(viewModel.currentPlayer)'s Turn!")
+                Text("\(viewModel.currentPlayer.name)'s Turn!")
                     .font(.largeTitle)
+            }
+            
+            HStack {
+                // redraws the hearts when player livesLeft changes
+                ForEach(0..<viewModel.currentPlayer.livesLeft, id: \.self) { i in
+                
+                    Image(systemName: "heart.fill")
+                        .foregroundColor(.red)
+                }
+                    
+                ForEach(0..<UserDefaults.standard.integer(forKey: "Player Lives") - viewModel.currentPlayer.livesLeft, id: \.self) { i in
+                
+                    Image(systemName: "heart")
+                        .foregroundColor(.red)
+                        
+                }
             }
             
             Spacer()
