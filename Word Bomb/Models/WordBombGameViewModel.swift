@@ -86,7 +86,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         if selectedPeers.count != 0 || (selectedPeers.count == 0 && hostingPeer == nil) {
             print("getting query")
             // should query only if device is not in multiplayer game or is hosting a game
-            model.handleGameState(.initial, data: ["query" : gameModel!.getRandQuery(input),
+            model.handleGameState(.initial, data: ["query" : gameModel!.getRandQuery(nil),
                                                    "instruction" : mode.instruction as Any])
         }
         else { model.handleGameState(.initial, data: ["instruction" : mode.instruction as Any]) }
