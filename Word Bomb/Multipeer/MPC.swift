@@ -13,7 +13,7 @@ import MultipeerConnectivity
 struct Multipeer {
     
     
-    static var transceiver = MultipeerTransceiver(configuration: MultipeerConfiguration(serviceType: "word-bomb", peerName: UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName, defaults: .standard, security: .default, invitation: .automatic))
+    static var transceiver = MultipeerTransceiver(configuration: MultipeerConfiguration(serviceType: "word-bomb", peerName: UserDefaults.standard.string(forKey: "Display Name")!, defaults: .standard, security: .default, invitation: .automatic))
     
     static var dataSource = MultipeerDataSource(transceiver: transceiver)
     

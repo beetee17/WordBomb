@@ -10,19 +10,31 @@ import MultipeerKit
 import MultipeerConnectivity
 
 
-
 @main
 struct Word_BombApp: App {
-    // viewModel should start with no associated gameModel
-    // no data to be loaded from file yet (until mode select)
-    // however an array of [WordGame] should be loaded (for display of modes)
-    // implement GameData struct, it includes String vars for words txt filename, query txt filename, user instruction (if any)
+
+    let game: WordBombGameViewModel
+    let persistenceController: PersistenceController
     
-    let persistenceController = PersistenceController.shared
-    let game = WordBombGameViewModel(Defaults.gameModes)
-    
-//    let mpcDataSource = MultipeerDataSource(transceiver: Multipeer.transceiver)
-    
+    init() {
+        // register "default defaults"
+        UserDefaults.standard.register(defaults: [
+            "test" : 2,
+            "Display Name": MCPeerID.defaultDisplayName,
+            "Time Limit" : 10.0,
+            "Time Difficulty" : 0.95,
+            "Time Constraint" : 5.0,
+            "Num Players" : 2,
+            "Player Names" : ["Player"]
+            // ... other settings
+        ])
+        
+        game = WordBombGameViewModel(Defaults.gameModes)
+        persistenceController = PersistenceController.shared
+        
+    }
+
+
     var body: some Scene {
         
         WindowGroup {

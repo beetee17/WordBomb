@@ -11,8 +11,9 @@ import MultipeerKit
 
 class WordBombGameViewModel: NSObject, ObservableObject {
     
-    @Published private var model: WordBombGame = WordBombGame(playerNames: ["BT", "VAL"])
+    @Published private var model: WordBombGame = WordBombGame()
     @Published private var gameModel: WordGameModel?
+    @Published var viewToShow: ViewToShow = .main
     
     @Published var input = ""
     @Published var gameType: GameType?
@@ -31,7 +32,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         model.setPlayers(Defaults.players)
     }
     func changeViewToShow(_ view: ViewToShow) {
-        model.viewToShow = view
+        viewToShow = view
     }
     
     func selectCustomMode(_ item: Item) {
@@ -104,7 +105,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
 //        }
         
         changeViewToShow(.game)
-        model.resetTimer()
+        model.restartGame()
         startTimer()
     }
 
@@ -357,8 +358,6 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     var query: String? { model.query }
     
     var timeLeft: Float { model.timeLeft! }
-    
-    var viewToShow: ViewToShow { model.viewToShow }
     
     var output: String { model.output }
 

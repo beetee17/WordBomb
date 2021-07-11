@@ -11,23 +11,28 @@ struct WordBombGame: Codable {
     
     // This model is the mainModel, it implements everything that is independent of the game mode. e.g. it should not implement the processInput function as that differs depending on game mode
     
-    var players: [Player] = []
+    var players: [Player]
     var currentPlayer: Player
     
-    var timeLimit:Float = 10.0
+    var timeLimit = UserDefaults.standard.float(forKey: "Time Limit")
     var timeLeft: Float?
     
-    var viewToShow = ViewToShow.main
     var mode: GameMode?
+    
     var output = ""
     var query: String?
     var instruction: String?
     
-    init(playerNames: [String]) {
+    init() {
+        players = []
 
-        for index in playerNames.indices {
-            players.append(Player(name: playerNames[index], ID: index))
+        let playerNames: [String] = UserDefaults.standard.stringArray(forKey: "Player Names")!
+
+        for i in 0..<UserDefaults.standard.integer(forKey: "Num Players") {
+            players.append(Player(name: playerNames[i % playerNames.count], ID: i))
         }
+        print(players)
+
         currentPlayer = players[0]
     }
     
@@ -52,7 +57,12 @@ struct WordBombGame: Codable {
     }
     
     
-    mutating func resetTimer() { timeLeft = timeLimit }
+    mutating func resetTimer() {
+        timeLimit = max(UserDefaults.standard.float(forKey:"Time Constraint"), timeLimit * UserDefaults.standard.float(forKey: "Time Difficulty"))
+        timeLeft = timeLimit
+
+    }
+    
     mutating func clearOutput() { output =  "" }
     
     mutating func nextPlayer() {
@@ -64,7 +74,10 @@ struct WordBombGame: Codable {
         
     
     mutating func restartGame() {
-        timeLeft = 10
+        print(UserDefaults.standard.float(forKey: "Time Limit"))
+        timeLimit = UserDefaults.standard.float(forKey: "Time Limit")
+        timeLeft = timeLimit
+        
         currentPlayer = players[0]
     }
     

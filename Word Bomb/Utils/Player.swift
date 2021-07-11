@@ -15,15 +15,14 @@ class Player: Codable {
     var name:String
     var ID:Int
     
-    init(ID:Int) {
-        
-        name = "Player \(ID)"
-        self.ID = ID
-        
-    }
     
     init(name:String, ID:Int) {
-        self.name = name
+        if name == "Player" {
+            self.name = "\(name) \(ID+1)"
+        }
+        else {
+            self.name = name
+        }
         self.ID = ID
         
     }
