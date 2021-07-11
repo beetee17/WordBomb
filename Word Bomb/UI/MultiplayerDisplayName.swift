@@ -27,8 +27,7 @@ struct MultiplayerDisplayName: View {
             TextField(UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName, text: $newDisplayName) { isEditing in }
                 onCommit: {
                     if newDisplayName != UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName {
-                        
-                        
+   
                         changeNameWarning = true
                         
                     }
@@ -56,6 +55,8 @@ struct MultiplayerDisplayName: View {
                                 },
                                 secondaryButton: .default(Text("Cancel")) {
                                     print("Cancelled")
+                                    // reset edited display name to current name
+                                    newDisplayName = UserDefaults.standard.string(forKey: "Display Name") ?? MCPeerID.defaultDisplayName
                                     changeNameWarning = false
                                 })
                             })
