@@ -16,8 +16,7 @@ struct WordBombGame: Codable {
     
     var timeLimit = UserDefaults.standard.float(forKey: "Time Limit")
     var timeLeft: Float?
-    
-    var mode: GameMode?
+
     var gameState: GameState = .initial
     
     var output = ""
@@ -75,6 +74,8 @@ struct WordBombGame: Codable {
     }
     
     
+
+    
     mutating func clearOutput() { output =  "" }
     
     mutating func nextPlayer() {
@@ -91,7 +92,8 @@ struct WordBombGame: Codable {
     }
     
     mutating func currentPlayerRanOutOfTime() {
-        // returns if game is over
+
+        // mark player as no longer in the game
         currentPlayer.didRunOutOfTime()
         
         switch players.numPlaying() < 2 {
@@ -107,8 +109,7 @@ struct WordBombGame: Codable {
         }
         
         nextPlayer()
-        
-        
+
     }
     
     mutating func restartGame() {
@@ -145,7 +146,12 @@ struct WordBombGame: Codable {
             if let query = data?["query"] as? String {
                 self.query = query
             }
+            if let instruction = data?["instruction"] as? String {
+                self.instruction = instruction
+            }
+            
             break
+            
             
         case .playerInput:
             if let input = data?["input"] as? String, let response = data?["response"] as? (String, String?) {
@@ -157,6 +163,7 @@ struct WordBombGame: Codable {
             
         case .gameOver:
             break
+
         }
     }
 }

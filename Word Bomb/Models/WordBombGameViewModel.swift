@@ -17,17 +17,16 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     @Published var input = ""
     @Published var gameType: GameType?
-    var wordGames: [GameMode]
+    
+    var wordGames: [GameMode] = Defaults.gameModes
 
     @Published var selectedPeers: [Peer] = []
     @Published var hostingPeer: Peer?
     @Published var mpcStatus = ""
     
-
-    init(_ wordGames: [GameMode]) {
-        self.wordGames = wordGames
+    func updateGameSettings() {
+        model = WordBombGame()
     }
-    
     
     func changeViewToShow(_ view: ViewToShow) {
         viewToShow = view
@@ -39,22 +38,23 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         
         if item.gameType! == "EXACT" {
 
-            selectMode(GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: nil, gameType: GameType.Exact, id: -1))
+            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: nil, gameType: GameType.Exact, id: -1))
         }
         
         else if item.gameType! == "CONTAINS" {
             
             let queries = decodeJSONStringtoArray(item.queries!)
-            selectMode(GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: GameType.Contains, id: -1))
+            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: GameType.Contains, id: -1))
             
         }
         
     }
     
-    func selectMode(_ mode:GameMode) {
+    func startGame(mode: GameMode) {
         
         
-        model.mode = mode
+        // process the gameMode by initing the appropriate WordGameModel
+        
         if mode.dataFile != nil {
             let (data, wordSets) = loadData(mode)
             switch mode.gameType {
@@ -78,28 +78,38 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             }
             print("CUSTOM GAME! \(String(describing: gameModel))")
         }
-
-        startGame()
-        model.instruction = mode.instruction
-   
-    }
-    
-    func startGame() {
+        
         
         print("host is \(String(describing: hostingPeer))")
         print("selected peers \(selectedPeers)")
         
         if selectedPeers.count != 0 || (selectedPeers.count == 0 && hostingPeer == nil) {
             print("getting query")
-                // should query only if device is not in multiplayer game or is hosting a game
-            model.handleGameState(.initial, data: ["query" : gameModel!.getRandQuery(input)])
+            // should query only if device is not in multiplayer game or is hosting a game
+            model.handleGameState(.initial, data: ["query" : gameModel!.getRandQuery(input),
+                                                   "instruction" : mode.instruction as Any])
         }
-        else { model.handleGameState(.initial) }
+        else { model.handleGameState(.initial, data: ["instruction" : mode.instruction as Any]) }
 
         changeViewToShow(.game)
         startTimer()
+        
     }
-
+    
+    func restartGame() {
+        if gameModel != nil {
+            gameModel!.resetUsedWords()
+            model.handleGameState(.initial, data: ["query" : gameModel!.getRandQuery(input),
+                                                   "instruction" : model.instruction as Any])
+            changeViewToShow(.game)
+            startTimer()
+        }
+        else {
+            print("mode not found")
+            // present some alert to user
+        }
+    }
+    
     func processInput() {
         
         input = input.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
@@ -131,49 +141,30 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     }
     
     
-    func restartGame() {
-        selectMode(model.mode!)
-        // may cause issue if mode does not exist (participated in host custom mode and user tries to restart)
-    }
-    
+ 
     func startTimer() {
         print("Timer started")
    
-        let timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { (timer) in
+        _ = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [self] gameLoop in
 
-            if .game != self.viewToShow {
-                timer.invalidate()
+            DispatchQueue.main.async { [self]
+                model.timeLeft! = max(0, model.timeLeft! - 0.1)
+                if selectedPeers.count > 0 {
+                    // device is hosting a multiplayer game
+                    //                        print("sending model")
+                    Multipeer.transceiver.send(model, to: selectedPeers)
+                }                
+            }
+
+            if .game != viewToShow || .gameOver == model.gameState {
+                gameLoop.invalidate()
                 print("Timer stopped")
             }
             
-            else if self.model.timeLeft! <= 0 {
-                self.model.handleGameState(.playerTimedOut)
-                
-                switch .gameOver == self.model.gameState {
-                case true:
-                    // game over -> only one player left
-                    
-                    timer.invalidate()
-                    print("Timer stopped")
-                    
-                case false:
-                    // continue game -> at least 2 players left in game
-                    break
-                }
-                
+            else if model.timeLeft! <= 0 {
+                model.handleGameState(.playerTimedOut)
             }
-        
-            else {
-                
-                DispatchQueue.main.async {
-                    self.model.timeLeft! = max(0, self.model.timeLeft! - 0.1)
-                    if self.selectedPeers.count > 0 {
-                        // device is hosting a multiplayer game
-//                        print("sending model")
-                        Multipeer.transceiver.send(self.model, to: self.selectedPeers)
-                    }
-                }
-            }
+            
         }
     }
 
@@ -286,8 +277,9 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         
         //participants receiving model from host
         Multipeer.transceiver.receive(WordBombGame.self) { payload, sender in
-//            print("Got model from host \(sender.name)! \(payload)")
+            print("Got model from host \(sender.name)! \(payload)")
             self.model = payload
+            self.changeViewToShow(.game)
         }
         // participant successfully connected to peer and received data from host
         Multipeer.transceiver.receive(Bool.self) { payload, sender in
