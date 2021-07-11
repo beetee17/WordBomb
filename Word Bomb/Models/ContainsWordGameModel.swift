@@ -24,7 +24,7 @@ struct ContainsWordGameModel: WordGameModel, Codable {
         else if (searchResult != -1) && input.contains(query!) {
             print("\(input.uppercased()) IS CORRECT")
             usedWords.insert(searchResult)
-            return ("used", getRandQuery(input))
+            return ("correct", getRandQuery(input))
         }
                 
         else {

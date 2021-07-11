@@ -45,7 +45,7 @@ struct MainView: View {
                         withAnimation { changingSettings = true }
                     }
                     .buttonStyle(MainButtonStyle())
-                    .sheet(isPresented: $changingSettings) { SettingsMenu(isPresented: $changingSettings) }
+                    .sheet(isPresented: $changingSettings) { SettingsMenu(isPresented: $changingSettings).environmentObject(viewModel) }
                         
                 }
                 .padding(.top, 125)

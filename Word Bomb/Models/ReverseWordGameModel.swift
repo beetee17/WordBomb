@@ -28,7 +28,7 @@ struct ReverseWordGameModel: WordGameModel, Codable {
                 usedWords.insert(data.search(element: variation))
             }
             usedWords.insert(searchResult)
-            return ("used", getRandQuery(input))
+            return ("correct", getRandQuery(input))
  
         }
                 
