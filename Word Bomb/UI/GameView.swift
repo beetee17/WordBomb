@@ -17,36 +17,29 @@ struct GameView: View {
         
         switch viewModel.viewToShow {
         
-            case .main: MainView()
-            case .gameTypeSelect: GameTypeSelectView()
-            case .modeSelect: ModeSelectView()
-            case .pauseMenu: PauseMenuView()
-            case .multipeer: LocalMultiplayerView()
-            case .peersView: LocalPeersView()
+        case .main: MainView()
+        case .gameTypeSelect: GameTypeSelectView()
+        case .modeSelect: ModeSelectView()
+        case .pauseMenu: PauseMenuView()
+        case .multipeer: LocalMultiplayerView()
+        case .peersView: LocalPeersView()
                 
-            default: // game or gameOver
-                ZStack{
-                    Color.clear
-                    TopBarView()
+        case .game: // game or gameOver
+            ZStack{
+                Color.clear
+                TopBarView()
 
-                    InputView()
-                    PlayerView()
-                    OutputText()
-                    
-                    // for debugging
-                  
-//                    Button("Disconnect") {
-//                        
-//                        Multipeer.disconnect(viewModel)
-//                        }
-                        
-                }
-                .ignoresSafeArea(.all)
+                InputView()
+                PlayerView()
+                OutputText()
+                
             }
-        
+            .ignoresSafeArea(.all)
         }
     
     }
+
+}
 
 
 struct GameView_Previews: PreviewProvider {

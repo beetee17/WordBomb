@@ -74,7 +74,7 @@ struct ModeSelectButton: View {
         
         Button("\(gameMode.modeName)") {
             // set game mode and proceed to start game
-            withAnimation { viewModel.selectMode(gameMode) }
+            withAnimation { viewModel.startGame(mode: gameMode) }
             print("\(gameMode.modeName) mode!")
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))

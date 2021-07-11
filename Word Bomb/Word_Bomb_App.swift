@@ -19,17 +19,16 @@ struct Word_BombApp: App {
     init() {
         // register "default defaults"
         UserDefaults.standard.register(defaults: [
-            "test" : 2,
             "Display Name": MCPeerID.defaultDisplayName,
-            "Time Limit" : 10.0,
-            "Time Difficulty" : 0.95,
-            "Time Constraint" : 5.0,
+            "Time Limit" : 5.0,
+            "Time Difficulty" : 0.5,
+            "Time Constraint" : 0,
             "Num Players" : 4,
             "Player Names" : ["Player"]
             // ... other settings
         ])
         
-        game = WordBombGameViewModel(Defaults.gameModes)
+        game = WordBombGameViewModel()
         persistenceController = PersistenceController.shared
         
     }

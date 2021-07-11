@@ -52,8 +52,15 @@ struct CustomModeForm: View {
             }
             
 
-            Button("Save changes") {
+            Button(action: {
                 addItem(modeName: modeName, words: words, queries: queries, instruction: instruction, gameType: gameType)
+            })
+            {
+                HStack {
+                    Text("Save Changes")
+                    Spacer()
+                    Image(systemName: "checkmark.circle")
+                }
             }
         }
     }

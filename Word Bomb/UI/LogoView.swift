@@ -20,6 +20,8 @@ struct LogoView: View {
             
             Spacer()
         }
+        .ignoresSafeArea(.all)
+        .padding(.bottom, 300)
     }
 }
 

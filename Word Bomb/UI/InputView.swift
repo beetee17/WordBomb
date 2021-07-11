@@ -28,13 +28,18 @@ struct InputView: View {
             
             instructionText
             queryText
-            PermanentKeyboard(text: $viewModel.input)
-            Text(viewModel.input).onChange(of: viewModel.input, perform: { _ in if viewModel.input.last == "\n" {
-                viewModel.processInput()
-                viewModel.resetInput()
-            }})
-            .font(Font.system(size: 20))
-            .frame(width: .infinity, height: .infinity, alignment: .center)
+            
+            ZStack {
+                
+                PermanentKeyboard(text: $viewModel.input)
+                    
+                Text(viewModel.input).onChange(of: viewModel.input, perform: { _ in if viewModel.input.last == "\n" {
+                    viewModel.processInput()
+                    viewModel.resetInput()
+                }})
+                .font(Font.system(size: 20))
+                .frame(width: .infinity, height: .infinity, alignment: .center)
+            }
 
         }
         .padding(.bottom, 150)

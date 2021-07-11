@@ -11,6 +11,8 @@ struct MainView: View {
     
     @EnvironmentObject var viewModel: WordBombGameViewModel
     @State var creatingMode = false
+    @State var changingSettings = false
+    
     var body: some View {
         
             ZStack {
@@ -37,9 +39,16 @@ struct MainView: View {
                     }
                     .buttonStyle(MainButtonStyle())
                     .sheet(isPresented: $creatingMode, onDismiss: {}) { CustomModeForm() }
+                    
+                    Button("SETTINGS") {
+                        print("Settings")
+                        withAnimation { changingSettings = true }
+                    }
+                    .buttonStyle(MainButtonStyle())
+                    .sheet(isPresented: $changingSettings) { SettingsMenu(isPresented: $changingSettings) }
                         
                 }
-                .padding(.top, 75)
+                .padding(.top, 125)
                 .buttonStyle(MainButtonStyle())
                 
             }

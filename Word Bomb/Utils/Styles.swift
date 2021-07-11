@@ -74,9 +74,14 @@ struct PermanentKeyboard: UIViewRepresentable {
         let textfield = UITextField()
         textfield.delegate = context.coordinator
         
+        // settings
+        textfield.autocorrectionType = .no
+        textfield.autocapitalizationType = .words
+        textfield.font = UIFont.systemFont(ofSize: 20)
+        
         //Makes textfield invisible
-        textfield.tintColor = .clear
         textfield.textColor = .clear
+        
         
         return textfield
     }

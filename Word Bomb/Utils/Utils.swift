@@ -51,7 +51,7 @@ enum GameState: Int, Codable {
 
 
 enum ViewToShow: Int, Codable {
-    case main, gameTypeSelect, modeSelect, game, gameOver, pauseMenu, multipeer, peersView
+    case main, gameTypeSelect, modeSelect, game, pauseMenu, multipeer, peersView
 }
 
 
