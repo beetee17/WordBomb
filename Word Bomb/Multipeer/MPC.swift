@@ -38,36 +38,3 @@ struct Multipeer {
         
     }
 }
-
-extension Array where Element == Peer {
-    func find(_ peer: Peer) -> Int? {
-        for i in self.indices {
-            if self[i].id == peer.id { return i }
-        }
-        return nil
-    }
-}
-
-extension Array where Element == Player {
-    func find(_ player: Player) -> Int? {
-        for i in self.indices {
-            if self[i].id == player.id { return i }
-        }
-        return nil
-    }
-    
-    func numPlaying() -> Int {
-        var num = 0
-        for player in self {
-            if !player.ranOutOfTime { num = num+1 }
-        }
-        
-        return num
-    }
-    
-    func reset() {
-        for player in self {
-            player.reset()
-        }
-    }
-}

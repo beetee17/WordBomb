@@ -30,23 +30,22 @@ struct InputView: View {
             queryText
             
             ZStack {
-                
                 PermanentKeyboard(text: $viewModel.input)
-                    
-                Text(viewModel.input).onChange(of: viewModel.input, perform: { _ in if viewModel.input.last == "\n" {
-                    viewModel.processInput()
-                    viewModel.resetInput()
-                }})
+                Text(viewModel.input).onChange(of: viewModel.input,
+                                               perform: { _ in if viewModel.input.last == "\n" {
+                                                   viewModel.processInput()
+                                                   viewModel.input = ""
+                                               }
+                })
                 .font(Font.system(size: 20))
-                .frame(width: .infinity, height: .infinity, alignment: .center)
             }
-
+            
         }
         .padding(.bottom, 150)
         .ignoresSafeArea(.all)
+        
     }
 }
-
 
 struct InputView_Previews: PreviewProvider {
     static var previews: some View {

@@ -38,6 +38,7 @@ extension Text {
 
 struct PermanentKeyboard: UIViewRepresentable {
     @Binding var text: String
+    var forceResignFirstResponder = false
     
     class Coordinator: NSObject, UITextFieldDelegate {
         var parent: PermanentKeyboard
@@ -81,17 +82,29 @@ struct PermanentKeyboard: UIViewRepresentable {
         
         //Makes textfield invisible
         textfield.textColor = .clear
-        
-        
+
         return textfield
     }
     
+    mutating func forceHideKeyboard() {
+        forceResignFirstResponder = true
+        print(forceResignFirstResponder)
+ 
+    }
+    
+    
+    
     func updateUIView(_ uiView: UITextField, context: Context) {
         uiView.text = text
-        
+
         //Makes keyboard permanent
-        if !uiView.isFirstResponder {
+        if !uiView.isFirstResponder && !forceResignFirstResponder {
+
             uiView.becomeFirstResponder()
+        }
+        else if forceResignFirstResponder {
+
+            uiView.resignFirstResponder()
         }
         
         //Reduces space textfield takes up as much as possible
@@ -99,3 +112,15 @@ struct PermanentKeyboard: UIViewRepresentable {
         uiView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
     }
 }
+
+#if canImport(UIKit)
+// To force SwiftUI to hide keyboard
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+    func showKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.becomeFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+#endif

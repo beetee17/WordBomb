@@ -167,10 +167,6 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             
         }
     }
-
-    func resetInput() {
-        input = ""
-    }
     
     // check if output is still the same as current to avoid clearing of new outputs
     func clearOutput(_ output: String) { if output == model.output { model.clearOutput() } }
@@ -311,7 +307,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         let response = gameModel!.process(input, model.query)
         
         model.handleGameState(.playerInput, data: ["input" : input, "response" : response])
-        resetInput()
+        input = ""
     }
     
     func setOnlinePlayers() {
