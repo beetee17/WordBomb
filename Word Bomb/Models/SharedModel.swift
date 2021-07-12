@@ -30,7 +30,13 @@ struct WordBombGame: Codable {
         let playerNames: [String] = UserDefaults.standard.stringArray(forKey: "Player Names")!
 
         for i in 0..<UserDefaults.standard.integer(forKey: "Num Players") {
-            players.append(Player(name: playerNames[i % playerNames.count], id: i))
+            
+            if i >= playerNames.count {
+                players.append(Player(name: "Player", id: i))
+            }
+            else {
+            players.append(Player(name: playerNames[i], id: i))
+            }
         }
 
         currentPlayer = players[0]

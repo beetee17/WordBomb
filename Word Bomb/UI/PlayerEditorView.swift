@@ -8,15 +8,39 @@
 import SwiftUI
 
 struct PlayerEditorView: View {
+    @Binding var playerNames: [String]
+    var numPlayers: Int
     var body: some View {
-        
-        Image(systemName: "heart.fill")
-            .foregroundColor(.red)
+
+        Form {
+            ForEach(1...numPlayers, id:\.self ) { index in
+                
+                Section(header: Text("Player \(index)")) {
+                    TextField("Player \(index)", text: Binding(
+                        get: {
+                        if index-1 >= playerNames.count { return "Player" }
+                        else { return playerNames[index-1] }
+                        },
+                        
+                        set: { (newValue) in return self.playerNames[index-1] = newValue }))
+                        .autocapitalization(.words)
+                        
+                }
+            }
+        }
+        .navigationTitle(Text("Edit Player Names"))
+        .onAppear() {
+            for index in 0..<numPlayers-1 {
+                if index >= playerNames.count {
+                    playerNames.append("Player")
+                }
+            }
+        }
     }
 }
 
-struct PlayerEditorView_Previews: PreviewProvider {
-    static var previews: some View {
-        PlayerEditorView()
-    }
-}
+//struct PlayerEditorView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        PlayerEditorView(playerNames: ["Player"], numPlayers: 5)
+//    }
+//}

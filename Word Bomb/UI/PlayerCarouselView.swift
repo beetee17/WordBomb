@@ -16,34 +16,43 @@ struct PlayerCarouselView: View {
         let currentPlayer = viewModel.currentPlayer
         let prevPlayer = viewModel.players.prev(currentPlayer)
         let nextPlayer = viewModel.players.next(currentPlayer)
-        
-        ZStack {
+        let playerSize = 125.0
+        let spacing = 8.0
+        let screenWidth = UIScreen.main.bounds.width
+//        ZStack {
+//            VStack {
+//                Spacer()
+//
+//            Button("ANIMATE") {
+//                animatePlayers.toggle()
+//            }
+//
+//            }
+//
+        HStack(spacing: spacing) {
+            Spacer()
+            LeftPlayer(player: currentPlayer, animatePlayer: $animatePlayers)
+                .scaleEffect(animatePlayers ? 1 : 0.9)
+                .blur(radius: animatePlayers ? 0 : 2)
+                .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 11 : 0, y: 0)
             
-            HStack {
-                
-                LeftPlayer(player: nextPlayer, animatePlayer: $animatePlayers)
-                    .scaleEffect(animatePlayers ? 1 : 0.9)
-                    .blur(radius: animatePlayers ? 0 : 2)
-                    .offset(x: animatePlayers ? 133 : 0, y: animatePlayers ? 37 : 0)
-                
-                MainPlayer(player: currentPlayer, animatePlayer: $animatePlayers)
-                    .scaleEffect(animatePlayers ? 0.9 : 1)
-                    .blur(radius: animatePlayers ? 2 : 0)
-                    .offset(x: animatePlayers ? 133 : 0, y: animatePlayers ? -34 : 0)
-                
-                RightPlayer(player: prevPlayer)
-                    .scaleEffect(0.9)
-                    .blur(radius: 2)
-                    .offset(x: animatePlayers ?  -266 : 0, y: 0)
-                
-            }
+            MainPlayer(player: currentPlayer, animatePlayer: $animatePlayers)
+                .scaleEffect(animatePlayers ? 0.9 : 1)
+                .blur(radius: animatePlayers ? 2 : 0)
+                .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 11: 0, y:  0)
+            RightPlayer(player: prevPlayer)
+                .scaleEffect(0.9)
+                .blur(radius: 2)
+                .offset(x: animatePlayers ? -screenWidth + playerSize + 23: 0, y: 0)
+            Spacer()
+//        }
         }
-        .animation(animatePlayers ? .easeInOut : nil)
+        .animation(animatePlayers ? .easeInOut(duration: 0.3) : nil)
         
         .onChange(of: viewModel.currentPlayer, perform: { _ in
             
-            animatePlayers = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { animatePlayers = false })
+            withAnimation { animatePlayers.toggle() }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.32, execute: { animatePlayers = false })
             
         })
         
@@ -57,15 +66,13 @@ struct LeftPlayer: View {
     var body: some View {
         
         VStack(spacing: 5) {
-            Spacer()
             
             PlayerAvatar(player: player)
             if animatePlayer {
-                PlayerName()
+                PlayerName(player: player)
             }
             PlayerLives(player: player)
-            
-            Spacer()
+
         }
     }
 }
@@ -77,12 +84,10 @@ struct RightPlayer: View {
     var body: some View {
         
         VStack(spacing: 5) {
-            Spacer()
-            
+
             PlayerAvatar(player: player)
             PlayerLives(player: player)
-            
-            Spacer()
+
         }
     }
 }
@@ -93,17 +98,15 @@ struct MainPlayer:  View {
     var body: some View {
         
         VStack(spacing: 5) {
-            Spacer()
-            
+
             PlayerAvatar(player: player)
             if !animatePlayer {
-                PlayerName()
+                PlayerName(player: player)
+                    
             }
             PlayerLives(player: player)
-            
-            Spacer()
+
         }
-        .padding(.top, 75)
     }
 }
 struct PlayerCarouselView_Previews: PreviewProvider {

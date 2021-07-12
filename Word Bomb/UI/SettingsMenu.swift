@@ -13,6 +13,7 @@ struct SettingsMenu: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
     
     @State private var numPlayers = UserDefaults.standard.integer(forKey: "Num Players")
+    @State var playerNames = UserDefaults.standard.stringArray(forKey: "Player Names")!
     @State private var playerLives = UserDefaults.standard.integer(forKey: "Player Lives")
     @State private var timeLimit = UserDefaults.standard.float(forKey: "Time Limit")
     @State private var timeDifficulty = UserDefaults.standard.float(forKey: "Time Difficulty")
@@ -27,7 +28,7 @@ struct SettingsMenu: View {
                     
                     Section(footer: Text("Changes the number of players in offline gameplay.")) {
                         Stepper("Number of Players: \(numPlayers)", value: $numPlayers, in: 1...20)
-                        NavigationLink("Edit Player Names", destination: PlayerEditorView())
+                        NavigationLink("Edit Player Names", destination: PlayerEditorView(playerNames: $playerNames, numPlayers: numPlayers))
                     }
                     
                     Section(footer: Text("Changes the number of lives each player begins with.")) {
@@ -90,6 +91,7 @@ struct SettingsMenu: View {
     private func saveSettings() {
         
         UserDefaults.standard.set(numPlayers, forKey: "Num Players")
+        UserDefaults.standard.set(playerNames, forKey: "Player Names")
         UserDefaults.standard.set(playerLives, forKey: "Player Lives")
         UserDefaults.standard.set(timeLimit, forKey: "Time Limit")
         UserDefaults.standard.set(timeConstraint, forKey: "Time Constraint")
