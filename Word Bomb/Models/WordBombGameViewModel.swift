@@ -24,6 +24,9 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     @Published var hostingPeer: Peer?
     @Published var mpcStatus = ""
     
+    init(_ viewToShow: ViewToShow = .main) {
+        self.viewToShow = viewToShow
+    }
     func updateGameSettings() {
         model = WordBombGame()
     }
@@ -117,7 +120,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         
         input = input.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         
-        if !(input == "" || model.timeLeft! <= 0) {
+        if !(input == "" || model.timeLeft <= 0) {
 
             if UserDefaults.standard.string(forKey: "Display Name")! == model.currentPlayer.name && selectedPeers.count > 0 {
                 // turn for device hosting multiplayer game
@@ -151,7 +154,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         _ = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [self] gameLoop in
 
             DispatchQueue.main.async { [self]
-                model.timeLeft! = max(0, model.timeLeft! - 0.1)
+                model.timeLeft = max(0, model.timeLeft - 0.1)
                 if selectedPeers.count > 0 {
                     // device is hosting a multiplayer game
                     //                        print("sending model")
@@ -164,7 +167,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                 print("Timer stopped")
             }
             
-            else if model.timeLeft! <= 0 {
+            else if model.timeLeft <= 0 {
                 model.handleGameState(.playerTimedOut)
             }
             
@@ -344,13 +347,15 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     
     // to allow contentView to read model's value and update
+    var players: [Player] { model.players }
+    
     var currentPlayer: Player { model.currentPlayer }
     
     var instruction: String? { model.instruction }
     
     var query: String? { model.query }
     
-    var timeLeft: Float { model.timeLeft! }
+    var timeLeft: Float { model.timeLeft }
     
     var output: String { model.output }
     

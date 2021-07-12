@@ -33,7 +33,7 @@ struct TopBarView: View {
                 
                 Spacer()
                 
-                TimerView(viewModel: viewModel)
+                TimerView()
                 
                 Spacer()
   
@@ -42,8 +42,8 @@ struct TopBarView: View {
             }
             Spacer()
         }
-        .padding(.top, 50)
         .padding(.horizontal, 20)
+        
     }
 }
 
@@ -53,7 +53,7 @@ struct TopBarView: View {
 
 struct TimerView: View {
     
-    @ObservedObject var viewModel: WordBombGameViewModel
+    @EnvironmentObject var viewModel: WordBombGameViewModel
     
     var body: some View {
         
@@ -67,6 +67,6 @@ struct TimerView: View {
 
 struct TopBarView_Previews: PreviewProvider {
     static var previews: some View {
-        TopBarView()
+        TopBarView().environmentObject(WordBombGameViewModel())
     }
 }

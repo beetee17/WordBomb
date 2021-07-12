@@ -14,36 +14,20 @@ struct InputView: View {
     
     @EnvironmentObject var viewModel: WordBombGameViewModel
     @State var commitInput = false
-    
-    var instructionText: some View {
-        viewModel.instruction.map { Text($0).boldText() }
-    }
-    var queryText: some View {
-        viewModel.query.map { Text($0).boldText() }
-    }
 
     var body: some View {
 
-        VStack {
-            
-            instructionText
-            queryText
-            
-            ZStack {
-                PermanentKeyboard(text: $viewModel.input)
-                Text(viewModel.input).onChange(of: viewModel.input,
-                                               perform: { _ in if viewModel.input.last == "\n" {
-                                                   viewModel.processInput()
-                                                   viewModel.input = ""
-                                               }
-                })
-                .font(Font.system(size: 20))
-            }
-            
+        ZStack {
+            PermanentKeyboard(text: $viewModel.input)
+            Text(viewModel.input).onChange(of: viewModel.input,
+                                           perform: { _ in if viewModel.input.last == "\n" {
+                                                viewModel.processInput()
+                                               viewModel.input = ""
+                                           }
+            })
+                
+            .font(Font.system(size: 20))
         }
-        .padding(.bottom, 150)
-        .ignoresSafeArea(.all)
-        
     }
 }
 

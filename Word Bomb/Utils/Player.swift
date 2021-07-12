@@ -9,8 +9,12 @@
 import Foundation
 
 
-class Player: Codable {
+class Player: Codable, Equatable {
     
+    static func == (lhs: Player, rhs: Player) -> Bool {
+        return lhs.id == rhs.id
+    }
+
     var score:Int = 0
     var name:String
     var id:Int

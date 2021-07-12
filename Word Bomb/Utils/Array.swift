@@ -64,6 +64,27 @@ extension Array where Element == Player {
         
         return num
     }
+
+    func next(_ currentPlayer: Player) -> Player {
+        print("Num players: \(self.count)")
+        
+        var nextPlayerID = (currentPlayer.id + 1) % self.count
+        while self[nextPlayerID].livesLeft == 0 {
+            // get next player that has not run out of time
+            nextPlayerID = (nextPlayerID + 1) % self.count
+        }
+        return self[nextPlayerID]
+    }
+    
+    func prev(_ currentPlayer: Player) -> Player {
+        let prevIndex = currentPlayer.id - 1
+        switch prevIndex < 0 {
+        case true:
+            return self[self.count-1]
+        case false:
+            return self[prevIndex]
+        }
+    }
     
     func reset() {
         for player in self {

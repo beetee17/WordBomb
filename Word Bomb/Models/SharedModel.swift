@@ -15,7 +15,7 @@ struct WordBombGame: Codable {
     var currentPlayer: Player
     
     var timeLimit = UserDefaults.standard.float(forKey: "Time Limit")
-    var timeLeft: Float?
+    var timeLeft = UserDefaults.standard.float(forKey: "Time Limit")
 
     var gameState: GameState = .initial
     
@@ -61,7 +61,7 @@ struct WordBombGame: Codable {
         case "correct":
             output = "\(input) IS CORRECT"
             query = response.newQuery
-            nextPlayer()
+            currentPlayer = players.next(currentPlayer)
             timeLimit = max(UserDefaults.standard.float(forKey:"Time Constraint"), timeLimit * UserDefaults.standard.float(forKey: "Time Difficulty"))
             timeLeft = timeLimit
             
@@ -78,18 +78,7 @@ struct WordBombGame: Codable {
     
     mutating func clearOutput() { output =  "" }
     
-    mutating func nextPlayer() {
-        print("Num players: \(players.count)")
-        
-        var nextPlayerID = (currentPlayer.id + 1) % players.count
-        while players[nextPlayerID].livesLeft == 0 {
-            // get next player that has not run out of time
-            nextPlayerID = (nextPlayerID + 1) % players.count
-        }
-        
-        currentPlayer = players[nextPlayerID]
 
-    }
     
     mutating func currentPlayerRanOutOfTime() {
 
@@ -108,7 +97,7 @@ struct WordBombGame: Codable {
             timeLeft = timeLimit
         }
         print("lives left: \(currentPlayer.livesLeft)")
-        nextPlayer()
+        currentPlayer = players.next(currentPlayer)
         
 
     }

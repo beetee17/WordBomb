@@ -12,6 +12,16 @@ import MultipeerKit
 struct GameView: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
     @EnvironmentObject var mpcDataSource: MultipeerDataSource
+    
+    var instructionText: some View {
+        viewModel.instruction.map { Text($0)
+            .boldText()
+            
+        }
+    }
+    var queryText: some View {
+        viewModel.query.map { Text($0).boldText() }
+    }
 
     var body: some View {
         
@@ -25,16 +35,33 @@ struct GameView: View {
         case .peersView: LocalPeersView()
                 
         case .game: // game or gameOver
-            ZStack{
-                Color.clear
-                TopBarView()
-
-                InputView()
-                PlayerView()
-                OutputText()
+            ZStack {
                 
+                Color.clear
+
+                InputView().padding(.top, 225)
+                
+                PlayerView()
+                    .ignoresSafeArea(.keyboard)
+                    .padding(.bottom, 250)
+                
+                TopBarView()
+                    .padding(.top, 40)
+                    .ignoresSafeArea(.all)
+
+                VStack {
+                    
+                    instructionText
+                    queryText
+
+                }
+                .ignoresSafeArea(.keyboard)
+                .padding(.top, 150)
+                
+                OutputText()
+                    .padding(.top, 200)
+
             }
-            .ignoresSafeArea(.all)
         }
     
     }
@@ -45,6 +72,6 @@ struct GameView: View {
 struct GameView_Previews: PreviewProvider {
     
     static var previews: some View {
-        GameView()
+        GameView().environmentObject(WordBombGameViewModel(.game))
     }
 }

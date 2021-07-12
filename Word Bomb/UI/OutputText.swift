@@ -16,7 +16,7 @@ struct OutputText: View {
 
         let output = viewModel.output
         let outputText = Text(output)
-            .padding(.bottom, 20)
+            .padding(.top, 150)
             .font(.system(size: 20, weight: .bold, design: .default))
             .textCase(.uppercase)
             .transition(AnyTransition.scale.animation(.easeInOut(duration:0.3)))
