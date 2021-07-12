@@ -16,16 +16,18 @@ struct PlayerView: View {
     
     var body: some View {
         
-        switch viewModel.players.numPlaying() > 2 {
+        switch viewModel.players.numPlaying() {
             
-        case true: PlayerCarouselView()
-        case false: TwoPlayerView()
-            
+        case 3...Int.max:
+            PlayerCarouselView()
+        case 2:
+            TwoPlayerView()
+        default:
+            MainPlayer(player: viewModel.currentPlayer, animatePlayer: .constant(false))
+                .animation(.easeInOut)
+                .transition(.opacity)
         }
-        
-        
     }
-    
 }
 
 struct PlayerName: View {

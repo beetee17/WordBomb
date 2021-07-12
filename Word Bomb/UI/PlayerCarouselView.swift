@@ -31,12 +31,12 @@ struct PlayerCarouselView: View {
 //
         HStack(spacing: spacing) {
             Spacer()
-            LeftPlayer(player: currentPlayer, animatePlayer: $animatePlayers)
+            LeftPlayer(player: animatePlayers ? currentPlayer : nextPlayer, animatePlayer: $animatePlayers)
                 .scaleEffect(animatePlayers ? 1 : 0.9)
                 .blur(radius: animatePlayers ? 0 : 2)
                 .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 11 : 0, y: 0)
             
-            MainPlayer(player: currentPlayer, animatePlayer: $animatePlayers)
+            MainPlayer(player: animatePlayers ? prevPlayer : currentPlayer, animatePlayer: $animatePlayers)
                 .scaleEffect(animatePlayers ? 0.9 : 1)
                 .blur(radius: animatePlayers ? 2 : 0)
                 .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 11: 0, y:  0)
@@ -46,6 +46,7 @@ struct PlayerCarouselView: View {
                 .offset(x: animatePlayers ? -screenWidth + playerSize + 23: 0, y: 0)
             Spacer()
 //        }
+            
         }
         .animation(animatePlayers ? .easeInOut(duration: 0.3) : nil)
         

@@ -18,31 +18,20 @@ struct TwoPlayerView: View {
         HStack {
             
         
-            VStack(spacing: 5) {
-                
-                PlayerAvatar(player: player1)
-                PlayerName(player: player1)
-                PlayerLives(player: player1)
-                
-            }
+            MainPlayer(player: player1, animatePlayer: .constant(false))
             .scaleEffect(viewModel.currentPlayer == player1 ? 1 : 0.9)
             .blur(radius: viewModel.currentPlayer == player1  ? 0 : 2)
             
             Spacer()
             
-            VStack(spacing: 5) {
-                
-                PlayerAvatar(player: player2)
-                PlayerName(player: player2)
-                PlayerLives(player: player2)
-                
-            }
+            MainPlayer(player: player2, animatePlayer: .constant(false))
             .scaleEffect(viewModel.currentPlayer == player2 ? 1 : 0.9)
             .blur(radius: viewModel.currentPlayer == player2 ? 0 : 2)
             
         }
         .padding(.horizontal, 40)
         .animation(.easeInOut)
+        .transition(.opacity)
         
         
         
