@@ -13,6 +13,7 @@ struct WordBombGame: Codable {
     
     var players: [Player]
     var currentPlayer: Player
+    var livesLeft = UserDefaults.standard.integer(forKey: "Player Lives")
     
     var timeLimit = UserDefaults.standard.float(forKey: "Time Limit")
     var timeLeft = UserDefaults.standard.float(forKey: "Time Limit")

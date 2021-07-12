@@ -40,6 +40,7 @@ struct PlayerName: View {
 }
 
 struct PlayerLives: View {
+    @EnvironmentObject var viewModel: WordBombGameViewModel
     var player: Player
     let playerLives = Float(UserDefaults.standard.integer(forKey: "Player Lives"))
     
@@ -81,7 +82,7 @@ struct PlayerLives: View {
                         
                 }
                     
-                ForEach(0..<UserDefaults.standard.integer(forKey: "Player Lives") - player.livesLeft, id: \.self) { i in
+                ForEach(0..<viewModel.livesLeft - player.livesLeft, id: \.self) { i in
                 
                     Image(systemName: "heart")
                         .resizable()

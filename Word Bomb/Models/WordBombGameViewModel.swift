@@ -351,6 +351,8 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     var currentPlayer: Player { model.currentPlayer }
     
+    var livesLeft: Int { model.livesLeft }
+    
     var instruction: String? { model.instruction }
     
     var query: String? { model.query }

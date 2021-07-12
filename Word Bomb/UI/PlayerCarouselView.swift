@@ -18,35 +18,25 @@ struct PlayerCarouselView: View {
         let nextPlayer = viewModel.players.next(currentPlayer)
         
         ZStack {
-//            TopBarView()
-//            VStack {
-//                Button("ANIMATE") {
-//                    animatePlayers.toggle()
-//                }
-//                if animatePlayers {
-//                    Text("ANIMATE")
-//                }
-//            }
-//            .padding(.top, 50)
-        
-        HStack {
             
-            LeftPlayer(player: prevPlayer, animatePlayer: $animatePlayers)
-                .scaleEffect(animatePlayers ? 1 : 0.9)
-                .blur(radius: animatePlayers ? 0 : 2)
-                .offset(x: animatePlayers ? 133 : 0, y: animatePlayers ? 37 : 0)
-            
-            MainPlayer(player: currentPlayer, animatePlayer: $animatePlayers)
-                .scaleEffect(animatePlayers ? 0.9 : 1)
-                .blur(radius: animatePlayers ? 2 : 0)
-                .offset(x: animatePlayers ? 133 : 0, y: animatePlayers ? -34 : 0)
-            
-            RightPlayer(player: nextPlayer)
-                .scaleEffect(0.9)
-                .blur(radius: 2)
-                .offset(x: animatePlayers ?  -266 : 0, y: 0)
-            
-        }
+            HStack {
+                
+                LeftPlayer(player: nextPlayer, animatePlayer: $animatePlayers)
+                    .scaleEffect(animatePlayers ? 1 : 0.9)
+                    .blur(radius: animatePlayers ? 0 : 2)
+                    .offset(x: animatePlayers ? 133 : 0, y: animatePlayers ? 37 : 0)
+                
+                MainPlayer(player: currentPlayer, animatePlayer: $animatePlayers)
+                    .scaleEffect(animatePlayers ? 0.9 : 1)
+                    .blur(radius: animatePlayers ? 2 : 0)
+                    .offset(x: animatePlayers ? 133 : 0, y: animatePlayers ? -34 : 0)
+                
+                RightPlayer(player: prevPlayer)
+                    .scaleEffect(0.9)
+                    .blur(radius: 2)
+                    .offset(x: animatePlayers ?  -266 : 0, y: 0)
+                
+            }
         }
         .animation(animatePlayers ? .easeInOut : nil)
         
@@ -77,7 +67,6 @@ struct LeftPlayer: View {
             
             Spacer()
         }
-//        .padding(.bottom, 525)
     }
 }
 
@@ -95,7 +84,6 @@ struct RightPlayer: View {
             
             Spacer()
         }
-//        .padding(.bottom, 525)
     }
 }
 
