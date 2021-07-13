@@ -37,7 +37,7 @@ struct PlayerCarouselView: View {
                     
                     LeftPlayer(player: animatePlayers ? currentPlayer : nextPlayer, animatePlayer: $animatePlayers)
                         .scaleEffect(animatePlayers ? 1 : 0.9)
-                        .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 18.5 : 0, y: 0)
+                        .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 11 : 0, y: 0)
                         .zIndex(2)
                     LeftPlayer(player: nextPlayer, animatePlayer: .constant(false))
                         .scaleEffect(animatePlayers ? 0.9 : 0)
@@ -48,7 +48,7 @@ struct PlayerCarouselView: View {
                 
                 MainPlayer(player: animatePlayers ? prevPlayer : currentPlayer, animatePlayer: $animatePlayers)
                     .scaleEffect(animatePlayers ? 0.9 : 1)
-                    .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 18.5 : 0, y:  0)
+                    .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 11 : 0, y:  0)
                     .zIndex(animatePlayers ? 1 : 2)
                 
                 ZStack {
