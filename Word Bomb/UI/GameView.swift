@@ -41,7 +41,7 @@ struct GameView: View {
 
                 InputView().padding(.top, 225)
                 
-                PlayerView()
+                PlayerView(numPlaying: viewModel.players.numPlaying())
                     .ignoresSafeArea(.keyboard)
                     .padding(.bottom, 250)
                 

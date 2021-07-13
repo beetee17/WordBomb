@@ -12,20 +12,28 @@ struct PlayerView: View {
     // Appears in game scene to display current player's name
     
     @EnvironmentObject var viewModel: WordBombGameViewModel
-    
+    @State var numPlaying: Int
     
     var body: some View {
         
-        switch viewModel.players.numPlaying() {
-            
-        case 3...Int.max:
-            PlayerCarouselView()
-        case 2:
-            TwoPlayerView()
-        default:
-            MainPlayer(player: viewModel.currentPlayer, animatePlayer: .constant(false))
-                .animation(.easeInOut)
-                .transition(.opacity)
+        ZStack {
+            switch numPlaying {
+                
+            case 3...Int.max:
+                PlayerCarouselView()
+                    .transition(.scale)
+            case 2:
+                TwoPlayerView()
+                    .transition(.scale)
+            default:
+                MainPlayer(player: viewModel.currentPlayer, animatePlayer: .constant(false))
+                    .transition(.scale)
+                    
+            }
+        }
+
+        .onChange(of: viewModel.currentPlayer) { _ in
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0)) { numPlaying = viewModel.players.numPlaying() }
         }
     }
 }
@@ -108,15 +116,22 @@ struct PlayerAvatar: View {
     var player: Player
     
     var body: some View {
-        
-        Image(systemName: "person.crop.circle")
+        let text = String(player.name.first!)
+        Image(systemName: "circle.fill")
             .resizable()
             .frame(width: 125, height: 125, alignment: .center)
+            .foregroundColor(.gray)
+            .overlay(Text(text)
+                        .font(.system(size: 60,
+                                      weight: .regular,
+                                      design: .rounded))
+                        .foregroundColor(.white))
+            
     }
 }
 struct PlayerView_Previews: PreviewProvider {
     
     static var previews: some View {
-        PlayerView().environmentObject(WordBombGameViewModel())
+        PlayerView(numPlaying: 3).environmentObject(WordBombGameViewModel())
     }
 }

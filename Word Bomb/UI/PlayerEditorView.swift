@@ -30,8 +30,8 @@ struct PlayerEditorView: View {
         }
         .navigationTitle(Text("Edit Player Names"))
         .onAppear() {
-            for index in 0..<numPlayers-1 {
-                if index >= playerNames.count {
+            for index in 1...numPlayers {
+                if index-1 >= playerNames.count {
                     playerNames.append("Player")
                 }
             }
