@@ -103,15 +103,12 @@ struct WordBombGame: Codable {
         
         switch currentPlayer.livesLeft == 0 {
         case true:
-            output = "\(currentPlayer.name) Ran Out of Time!"
-        case false:
             output = "\(currentPlayer.name) Lost!"
+        case false:
+            output = "\(currentPlayer.name) Ran Out of Time!"
         }
-        
         print("lives left: \(currentPlayer.livesLeft)")
         currentPlayer = players.next(currentPlayer)
-        
-
     }
     
     mutating func restartGame() {
