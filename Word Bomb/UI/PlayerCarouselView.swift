@@ -19,37 +19,59 @@ struct PlayerCarouselView: View {
         let playerSize = 125.0
         let spacing = 8.0
         let screenWidth = UIScreen.main.bounds.width
+        
 //        ZStack {
 //            VStack {
 //                Spacer()
 //
-//            Button("ANIMATE") {
-//                animatePlayers.toggle()
-//            }
+//                Button("ANIMATE") {
+//                    animatePlayers.toggle()
+//                }
 //
 //            }
-//
-        HStack(spacing: spacing) {
-            Spacer()
-            LeftPlayer(player: animatePlayers ? currentPlayer : nextPlayer, animatePlayer: $animatePlayers)
-                .scaleEffect(animatePlayers ? 1 : 0.9)
-                .blur(radius: animatePlayers ? 0 : 0.2)
-                .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 11 : 0, y: 0)
-                .zIndex(animatePlayers ? 2 : 0)
             
-            MainPlayer(player: animatePlayers ? prevPlayer : currentPlayer, animatePlayer: $animatePlayers)
-                .scaleEffect(animatePlayers ? 0.9 : 1)
-                .blur(radius: animatePlayers ? 0.2 : 0)
-                .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 11: 0, y:  0)
-                .zIndex(animatePlayers ? 1 : 2)
-            RightPlayer(player: prevPlayer)
-                .scaleEffect(0.9)
-                .blur(radius: 0.2)
-                .offset(x: animatePlayers ? -screenWidth + playerSize + 23: 0, y: 0)
-                .zIndex(0)
-            Spacer()
-//        }
             
+            HStack(spacing: spacing) {
+                Spacer()
+                ZStack {
+                    
+                    LeftPlayer(player: animatePlayers ? currentPlayer : nextPlayer, animatePlayer: $animatePlayers)
+                        .scaleEffect(animatePlayers ? 1 : 0.9)
+                        .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 18.5 : 0, y: 0)
+                        .zIndex(2)
+                    LeftPlayer(player: nextPlayer, animatePlayer: .constant(false))
+                        .scaleEffect(animatePlayers ? 0.9 : 0)
+                        .zIndex(0)
+                    
+                }
+                
+                
+                MainPlayer(player: animatePlayers ? prevPlayer : currentPlayer, animatePlayer: $animatePlayers)
+                    .scaleEffect(animatePlayers ? 0.9 : 1)
+                    .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 18.5 : 0, y:  0)
+                    .zIndex(animatePlayers ? 1 : 2)
+                
+                ZStack {
+                    
+                    switch animatePlayers {
+                    case true:
+                        RightPlayer(player: currentPlayer)
+                            .scaleEffect(0.9)
+                            .zIndex(0)
+                            .opacity(0)
+
+                    case false:
+                        
+                        RightPlayer(player: prevPlayer)
+                            .transition(.scale)
+                            .scaleEffect(0.9)
+                            .zIndex(0)
+
+                    }
+                }
+                Spacer()
+                //            }
+
         }
         .animation(animatePlayers ? .easeInOut(duration: 0.3) : nil)
         
@@ -76,7 +98,7 @@ struct LeftPlayer: View {
                 PlayerName(player: player)
             }
             PlayerLives(player: player)
-
+            
         }
     }
 }
@@ -88,10 +110,10 @@ struct RightPlayer: View {
     var body: some View {
         
         VStack(spacing: 5) {
-
+            
             PlayerAvatar(player: player)
             PlayerLives(player: player)
-
+            
         }
     }
 }
@@ -102,14 +124,14 @@ struct MainPlayer:  View {
     var body: some View {
         
         VStack(spacing: 5) {
-
+            
             PlayerAvatar(player: player)
             if !animatePlayer {
                 PlayerName(player: player)
-                    
+                
             }
             PlayerLives(player: player)
-
+            
         }
     }
 }
