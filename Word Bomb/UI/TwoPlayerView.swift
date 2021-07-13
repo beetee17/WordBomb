@@ -20,13 +20,11 @@ struct TwoPlayerView: View {
         
             MainPlayer(player: player1, animatePlayer: .constant(false))
             .scaleEffect(viewModel.currentPlayer == player1 ? 1 : 0.9)
-            .blur(radius: viewModel.currentPlayer == player1  ? 0 : 2)
-            
+    
             Spacer()
             
             MainPlayer(player: player2, animatePlayer: .constant(false))
             .scaleEffect(viewModel.currentPlayer == player2 ? 1 : 0.9)
-            .blur(radius: viewModel.currentPlayer == player2 ? 0 : 2)
             
         }
         .padding(.horizontal, 40)
