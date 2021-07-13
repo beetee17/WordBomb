@@ -33,17 +33,20 @@ struct PlayerCarouselView: View {
             Spacer()
             LeftPlayer(player: animatePlayers ? currentPlayer : nextPlayer, animatePlayer: $animatePlayers)
                 .scaleEffect(animatePlayers ? 1 : 0.9)
-                .blur(radius: animatePlayers ? 0 : 1)
+                .blur(radius: animatePlayers ? 0 : 0.2)
                 .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 11 : 0, y: 0)
+                .zIndex(animatePlayers ? 2 : 0)
             
             MainPlayer(player: animatePlayers ? prevPlayer : currentPlayer, animatePlayer: $animatePlayers)
                 .scaleEffect(animatePlayers ? 0.9 : 1)
-                .blur(radius: animatePlayers ? 1 : 0)
+                .blur(radius: animatePlayers ? 0.2 : 0)
                 .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 11: 0, y:  0)
+                .zIndex(animatePlayers ? 1 : 2)
             RightPlayer(player: prevPlayer)
                 .scaleEffect(0.9)
-                .blur(radius: 1)
+                .blur(radius: 0.2)
                 .offset(x: animatePlayers ? -screenWidth + playerSize + 23: 0, y: 0)
+                .zIndex(0)
             Spacer()
 //        }
             
