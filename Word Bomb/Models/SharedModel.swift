@@ -95,14 +95,19 @@ struct WordBombGame: Codable {
         switch players.numPlaying() < 2 {
         case true:
             // game over
-            output = "\(currentPlayer.name) Lost!"
             gameState = .gameOver
-            
         case false:
             // continue game
-            output = "\(currentPlayer.name) Lost!"
             timeLeft = timeLimit
         }
+        
+        switch currentPlayer.livesLeft == 0 {
+        case true:
+            output = "\(currentPlayer.name) Ran Out of Time!"
+        case false:
+            output = "\(currentPlayer.name) Lost!"
+        }
+        
         print("lives left: \(currentPlayer.livesLeft)")
         currentPlayer = players.next(currentPlayer)
         
