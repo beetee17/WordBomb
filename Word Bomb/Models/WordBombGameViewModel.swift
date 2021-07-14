@@ -23,7 +23,6 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     @Published var selectedPeers: [Peer] = []
     @Published var hostingPeer: Peer?
     @Published var mpcStatus = ""
-    @Published var animate = false
     
     init(_ viewToShow: ViewToShow = .main) {
         self.viewToShow = viewToShow
