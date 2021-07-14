@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct MainButtonStyle: ButtonStyle {
-    let width = UIScreen.main.bounds.width/2 + 25
+    let width = UIScreen.main.bounds.width/2
     let height = UIScreen.main.bounds.height*0.07
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .textCase(.uppercase)
             .font(Font.title2.bold())
-            .frame(width: width-15, height: height)
+            .frame(width: width, height: height)
+            .padding(.horizontal)
             .lineLimit(1).minimumScaleFactor(0.5)
             .foregroundColor(Color.black)
             .contentShape(RoundedRectangle(cornerRadius: 20, style: .circular))
