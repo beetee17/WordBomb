@@ -14,7 +14,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            RadialGradient(colors: [.white, .gray], center: .center, startRadius: 100, endRadius: 800).ignoresSafeArea(.all)
+            RadialGradient(colors: [.white, .gray], center: .center, startRadius: UIScreen.main.bounds.height/3, endRadius: UIScreen.main.bounds.height/1.3).ignoresSafeArea(.all)
             
             GameView()
             MPCText()
@@ -38,7 +38,9 @@ struct ContentView_Previews: PreviewProvider {
     
     static var previews: some View {
 
-       ContentView().environmentObject(WordBombGameViewModel(.game))
+       ContentView()
+            .environmentObject(WordBombGameViewModel(.main))
+            .environmentObject(MultipeerDataSource(transceiver: Multipeer.transceiver))
        
     }
 }
