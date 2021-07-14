@@ -24,13 +24,13 @@ struct GamePlayView: View {
         ZStack {
             let screen = UIScreen.main.bounds
             
-            // for debugging preview
-            //                ZStack {
-            //                    Button("ANIMATE") {
-            //                        viewModel.nextPlayer()
-            //                    }
-            //                }
-            //                .padding(.top,200)
+//             for debugging preview
+                            ZStack {
+                                Button("ANIMATE") {
+                                    viewModel.animate.toggle()
+                                }
+                            }
+                            .padding(.top,200)
             VStack {
                 
                 TopBarView()
