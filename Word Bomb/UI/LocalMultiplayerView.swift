@@ -17,8 +17,7 @@ struct LocalMultiplayerView: View {
         // Start it up!
         
         ZStack {
-            Color.clear
-            
+
             MultiplayerDisplayName()
             
             VStack(spacing: 50) {

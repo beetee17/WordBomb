@@ -31,7 +31,6 @@ struct GameView: View {
                 
                 GamePlayView()
                 
-                
                 PauseMenuView()
                     .scaleEffect(.pauseMenu == viewModel.viewToShow ? 1 : 0)
             }
