@@ -149,9 +149,6 @@ struct WordBombGame: Codable {
                 self.instruction = instruction
             }
             
-            break
-            
-            
         case .playerInput:
             if let input = data?["input"] as? String, let response = data?["response"] as? (String, String?) {
                 process(input, response)

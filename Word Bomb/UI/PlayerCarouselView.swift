@@ -17,7 +17,7 @@ struct PlayerCarouselView: View {
         let prevPlayer = viewModel.players.prev(currentPlayer)
         let nextPlayer = viewModel.players.next(currentPlayer)
         let playerSize = Defaults.playerAvatarSize
-        let spacing = 2.0
+        let spacing = 5.0
         
         HStack(spacing: spacing) {
 
@@ -30,7 +30,6 @@ struct PlayerCarouselView: View {
                 
                 LeftPlayer(player: nextPlayer, animatePlayer: .constant(false))
                     .scaleEffect(animatePlayers ? 0.9 : 0)
-                    .offset(x:-0.05*playerSize, y:0)
                     .zIndex(0)
                 
             }
