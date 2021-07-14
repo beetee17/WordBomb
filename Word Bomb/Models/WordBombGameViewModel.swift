@@ -77,7 +77,8 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                 
             case .Contains:
                 gameModel = ContainsWordGameModel(data: mode.words!, queries: mode.queries!)
-            case .Reverse: break
+            case .Reverse:
+                gameModel = ReverseWordGameModel(data: mode.words!, dataDict: [:])
             }
             print("CUSTOM GAME! \(String(describing: gameModel))")
         }
@@ -343,8 +344,9 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         mpcStatus = ""
         hostingPeer = nil
     }
-
-    
+    func nextPlayer() {
+        model.currentPlayer = players.next(currentPlayer)
+    }
     
     // to allow contentView to read model's value and update
     var players: [Player] { model.players }

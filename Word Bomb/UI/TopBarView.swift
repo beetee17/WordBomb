@@ -23,7 +23,7 @@ struct TopBarView: View {
     
     var body: some View {
 
-        VStack{
+        
             HStack {
                 Button("Pause") {
                     print("Pause Game")
@@ -40,8 +40,7 @@ struct TopBarView: View {
                 if .gameOver == viewModel.gameState { gameOverButton.opacity(1) }
                 else { gameOverButton.opacity(0) }
             }
-            Spacer()
-        }
+        
         .padding(.horizontal, 20)
         
     }

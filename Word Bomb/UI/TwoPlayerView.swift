@@ -15,7 +15,7 @@ struct TwoPlayerView: View {
         let player1 = viewModel.players.next(viewModel.players[0])
         let player2 = viewModel.players.next(player1)
         
-        HStack {
+        HStack(spacing: 25) {
             
         
             MainPlayer(player: player1, animatePlayer: .constant(false))

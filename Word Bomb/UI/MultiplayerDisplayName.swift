@@ -23,7 +23,8 @@ struct MultiplayerDisplayName: View {
         
         VStack {
            
-                
+            PlayerAvatar(playerName: newDisplayName)
+            
             TextField(UserDefaults.standard.string(forKey: "Display Name")!, text: $newDisplayName) { isEditing in }
                 onCommit: {
                     if newDisplayName != UserDefaults.standard.string(forKey: "Display Name")! {
@@ -39,7 +40,7 @@ struct MultiplayerDisplayName: View {
             //top align text field
             Spacer()
         }
-        .padding(.top, 100)
+        .padding(.top, UIScreen.main.bounds.height*0.1)
         .alert(isPresented: $changeNameWarning,
                content: { Alert(title: Text("Warning"),
                                 message: Text("Changing your display name while connected to other devices may cause connection issues."),

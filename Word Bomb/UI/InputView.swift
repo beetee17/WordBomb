@@ -24,7 +24,7 @@ struct InputView: View {
                                                 viewModel.processInput()
                                                viewModel.input = ""
                                            }
-            })
+            }).ignoresSafeArea(.keyboard)
                 
             .font(Font.system(size: 20))
         }

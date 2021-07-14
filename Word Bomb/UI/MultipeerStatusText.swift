@@ -26,14 +26,11 @@ struct MPCText: View {
                 mpcStatusText.foregroundColor(.red)
                 
             }
-            
-        
+
             Spacer()
 
         }
         .font(.caption)
-        .padding(.top, 40)
-        .ignoresSafeArea(.all)
         .environmentObject(mpcDataSource)
     }
 }

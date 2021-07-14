@@ -16,7 +16,7 @@ struct OutputText: View {
 
         let output = viewModel.output
         let outputText = Text(output)
-            .padding(.top, 150)
+//            .padding(.top, 150)
             .font(.system(size: 20, weight: .bold, design: .default))
             .textCase(.uppercase)
             .transition(AnyTransition.scale.animation(.easeInOut(duration:0.3)))
@@ -32,7 +32,8 @@ struct OutputText: View {
                 .foregroundColor(.green)
                 .onAppear(perform: { playSound(sound: "Correct", type: "wav") })
             
-        case false: outputText.foregroundColor(.red)
+        case false:
+            outputText.foregroundColor(.red)
         }
     }
     

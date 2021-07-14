@@ -24,9 +24,11 @@ struct PlayerView: View {
                     .transition(.scale)
             case 2:
                 TwoPlayerView()
+                    .offset(x: 0, y: 50)
                     .transition(.scale)
             default:
                 MainPlayer(player: viewModel.currentPlayer, animatePlayer: .constant(false))
+                    .offset(x: 0, y: 50)
                     .transition(.scale)
                     
             }
@@ -40,18 +42,20 @@ struct PlayerView: View {
 
 struct PlayerName: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
-    var player: Player
+    var playerName: String
     
     var body: some View {
-        switch .gameOver == viewModel.gameState && viewModel.currentPlayer == player {
+        switch .gameOver == viewModel.gameState && viewModel.currentPlayer.name == playerName {
         case true:
             
-            Text("\(player.name) WINS!")
+            Text("\(playerName) WINS!")
                 .font(/*@START_MENU_TOKEN@*/.largeTitle/*@END_MENU_TOKEN@*/)
+                .lineLimit(1).minimumScaleFactor(0.5)
         case false:
             
-            Text("\(player.name)")
+            Text("\(playerName)")
                 .font(.largeTitle)
+                .lineLimit(1).minimumScaleFactor(0.5)
         }
     }
 }
@@ -113,10 +117,11 @@ struct PlayerLives: View {
     }
 }
 struct PlayerAvatar: View {
-    var player: Player
+    
+    var playerName: String?
     
     var body: some View {
-        let text = String(player.name.first!)
+        let text = String(playerName?.first?.uppercased() ?? "")
         Image(systemName: "circle.fill")
             .resizable()
             .frame(width: 125, height: 125, alignment: .center)

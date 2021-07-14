@@ -14,10 +14,10 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            MPCText()
-            
+
             GameView()
-            
+            MPCText()
+
         }
         .onAppear() {
             Multipeer.transceiver.resume()
@@ -37,11 +37,8 @@ struct ContentView_Previews: PreviewProvider {
     
     static var previews: some View {
 
-    
-    Group {
-           ContentView().colorScheme(.light)
-//               ContentView(viewModel: game).colorScheme(.dark)
-       }
+       ContentView().environmentObject(WordBombGameViewModel(.game))
+       
     }
 }
 

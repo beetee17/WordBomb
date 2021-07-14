@@ -35,33 +35,43 @@ struct GameView: View {
         case .peersView: LocalPeersView()
                 
         case .game: // game or gameOver
+
             ZStack {
-                
-                Color.clear
-
-                InputView().padding(.top, 225)
-                
-                PlayerView(numPlaying: viewModel.players.numPlaying())
-                    .ignoresSafeArea(.keyboard)
-                    .padding(.bottom, 250)
-                
-                TopBarView()
-                    .padding(.top, 40)
-                    .ignoresSafeArea(.all)
-
+                let screen = UIScreen.main.bounds
+ 
                 VStack {
                     
-                    instructionText
-                    queryText
+                    TopBarView()
+                        .offset(x: 0, y: 60)
+                        .padding(.horizontal, 5)
+                        .ignoresSafeArea(.all)
 
+                    PlayerView(numPlaying: viewModel.players.numPlaying())
+                    
+                    Spacer()
                 }
-                .ignoresSafeArea(.keyboard)
-                .padding(.top, 150)
-                
-                OutputText()
-                    .padding(.top, 200)
+            
+                VStack {
+                    Spacer()
+                    
+                    instructionText.ignoresSafeArea(.keyboard)
+                    InputView()
+                    queryText.ignoresSafeArea(.keyboard)
+                    
+                    ZStack {
+                        Text("INVISIBLE PLACEHOLDER TEXT")
+                            .font(.system(size: 20, weight: .bold, design: .default))
+                            .textCase(.uppercase)
+                            .opacity(0)
+                        OutputText()
+                    }
 
+                    Spacer()
+                }
+                .padding(.top, screen.height*0.3)
+            
             }
+            
         }
     
     }
