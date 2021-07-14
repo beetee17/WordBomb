@@ -17,10 +17,12 @@ struct MainButtonStyle: ButtonStyle {
             .frame(width: width, height: height)
             .padding(.horizontal)
             .lineLimit(1).minimumScaleFactor(0.5)
-            .foregroundColor(Color.black)
-            .contentShape(RoundedRectangle(cornerRadius: 20, style: .circular))
-            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 5))
+            .foregroundColor(Color.white)
+            .background(RadialGradient(colors: [.orange, .gray], center: .center, startRadius: 0 , endRadius: 400))
             .scaleEffect(configuration.isPressed ? 1.2 : 1.0)
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
+//            .shadow(color: .black, radius: 2, x: 0, y: 3)
+            .contentShape(RoundedRectangle(cornerRadius: 10, style: .circular))
             
     }
 }

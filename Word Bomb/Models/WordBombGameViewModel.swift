@@ -155,7 +155,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         _ = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [self] gameLoop in
 
             DispatchQueue.main.async { [self]
-                model.timeLeft = max(0, model.timeLeft - 0.1)
+//                model.timeLeft = max(0, model.timeLeft - 0.1)
                 if selectedPeers.count > 0 {
                     // device is hosting a multiplayer game
                     //                        print("sending model")

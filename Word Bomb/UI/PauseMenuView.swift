@@ -36,12 +36,12 @@ struct PauseMenuView: View {
  
             Button("QUIT") {
                 print("QUIT!")
-                withAnimation { viewModel.changeViewToShow(.main) }
+                withAnimation {
+                    viewModel.changeViewToShow(.main) }
             }
             .buttonStyle(MainButtonStyle())
             
         }
-        .transition(.scale)
     }
 }
 

@@ -15,9 +15,7 @@ struct MainView: View {
     
     var body: some View {
         
-            ZStack {
-                Color.clear
-                
+            ZStack {                
                 LogoView()
 
                 VStack(spacing: 50) {
@@ -52,6 +50,7 @@ struct MainView: View {
                 .buttonStyle(MainButtonStyle())
                 
             }
+            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height, alignment: .center)
             .transition(.asymmetric(insertion: AnyTransition.move(edge: .leading), removal: AnyTransition.move(edge: .trailing)))
             .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
             .zIndex(/*@START_MENU_TOKEN@*/1.0/*@END_MENU_TOKEN@*/) // transition does not work with zIndex set to 0
@@ -61,6 +60,6 @@ struct MainView: View {
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView()
+        MainView().environmentObject(WordBombGameViewModel())
     }
 }

@@ -27,7 +27,7 @@ struct TopBarView: View {
             HStack {
                 Button("Pause") {
                     print("Pause Game")
-                    hideKeyboard()
+                
                     withAnimation(.spring(response:0.1, dampingFraction:0.6)) { viewModel.changeViewToShow(.pauseMenu) }
                 }
                 
@@ -40,8 +40,7 @@ struct TopBarView: View {
                 if .gameOver == viewModel.gameState { gameOverButton.opacity(1) }
                 else { gameOverButton.opacity(0) }
             }
-        
-        .padding(.horizontal, 20)
+            .padding(.horizontal, 20)
         
     }
 }

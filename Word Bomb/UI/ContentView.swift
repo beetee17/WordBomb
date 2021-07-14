@@ -14,7 +14,8 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-
+            RadialGradient(colors: [.white, .gray], center: .center, startRadius: 100, endRadius: 800).ignoresSafeArea(.all)
+            
             GameView()
             MPCText()
 
