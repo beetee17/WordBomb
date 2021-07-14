@@ -61,10 +61,9 @@ struct GameView: View {
                 VStack {
                     Spacer()
                     
-                    instructionText.ignoresSafeArea(.keyboard)
+                    instructionText
                     InputView()
-                    queryText.ignoresSafeArea(.keyboard)
-                    
+                    queryText
                     ZStack {
                         Text("INVISIBLE PLACEHOLDER TEXT")
                             .font(.system(size: 20, weight: .bold, design: .default))
@@ -75,7 +74,7 @@ struct GameView: View {
 
                     Spacer()
                 }
-                .padding(.top, screen.height*0.3)
+                .ignoresSafeArea(.all)
             
             }
             
