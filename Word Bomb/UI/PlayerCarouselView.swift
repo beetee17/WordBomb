@@ -16,57 +16,44 @@ struct PlayerCarouselView: View {
         let currentPlayer = viewModel.currentPlayer
         let prevPlayer = viewModel.players.prev(currentPlayer)
         let nextPlayer = viewModel.players.next(currentPlayer)
-        let playerSize = 125.0
-        let spacing = 8.0
-        let screenWidth = UIScreen.main.bounds.width
+        let playerSize = Defaults.playerAvatarSize
+        let spacing = 2.0
+        
+        HStack(spacing: spacing) {
 
-        HStack(spacing: 8.0) {
-            Spacer()
             ZStack {
                 
                 LeftPlayer(player: animatePlayers ? currentPlayer : nextPlayer, animatePlayer: $animatePlayers)
+                    .offset(x: animatePlayers ? playerSize + spacing : 0, y: animatePlayers ? 50 : 0)
                     .scaleEffect(animatePlayers ? 1 : 0.9)
-                    .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 12 : 0, y: animatePlayers ? 50 : 0)
                     .zIndex(2)
+                
                 LeftPlayer(player: nextPlayer, animatePlayer: .constant(false))
                     .scaleEffect(animatePlayers ? 0.9 : 0)
+                    .offset(x:-0.05*playerSize, y:0)
                     .zIndex(0)
                 
             }
             
             
             MainPlayer(player: animatePlayers ? prevPlayer : currentPlayer, animatePlayer: $animatePlayers)
+                .offset(x: animatePlayers ? (1/0.9)*playerSize + spacing : 0, y: animatePlayers ? 0 : 50)
                 .scaleEffect(animatePlayers ? 0.9 : 1)
-                .offset(x: animatePlayers ? screenWidth/2 - playerSize/2 - 12 : 0, y: animatePlayers ? 0 : 50)
                 .zIndex(animatePlayers ? 1 : 2)
             
             ZStack {
                 
-                switch animatePlayers {
-                case true:
-                    RightPlayer(player: currentPlayer)
-                        .scaleEffect(0.9)
-                        .zIndex(0)
-                        .opacity(0)
-                    
-                case false:
-                    
-                    RightPlayer(player: prevPlayer)
-                        .transition(.scale)
-                        .scaleEffect(0.9)
-                        .zIndex(0)
-                    
-                }
+                RightPlayer(player: animatePlayers ? viewModel.players.prev(prevPlayer) : prevPlayer)
+                    .scaleEffect(animatePlayers ? 0 : 0.9)
+
             }
-            Spacer()
-            
         }
         .animation(animatePlayers ? .easeInOut(duration: 0.3) : nil)
         
         .onChange(of: viewModel.currentPlayer, perform: { _ in
             
             withAnimation { animatePlayers.toggle() }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.32, execute: { animatePlayers = false })
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: { animatePlayers = false })
             
         })
         
@@ -84,6 +71,8 @@ struct LeftPlayer: View {
             PlayerAvatar(playerName: player.name)
             if animatePlayer {
                 PlayerName(playerName: player.name)
+                    .transition(.identity)
+
             }
             PlayerLives(player: player)
             
@@ -116,7 +105,7 @@ struct MainPlayer:  View {
             PlayerAvatar(playerName: player.name)
             if !animatePlayer {
                 PlayerName(playerName: player.name)
-                
+                    .transition(.identity)
             }
             PlayerLives(player: player)
             

@@ -77,13 +77,21 @@ extension Array where Element == Player {
     }
     
     func prev(_ currentPlayer: Player) -> Player {
-        let prevIndex = currentPlayer.id - 1
-        switch prevIndex < 0 {
-        case true:
-            return self[self.count-1]
-        case false:
-            return self[prevIndex]
-        }
+        var prevIndex = currentPlayer.id
+        repeat {
+            
+            prevIndex -= 1
+            
+            switch prevIndex < 0 {
+            case true:
+                prevIndex = self.count-1
+            case false:
+                break
+            }
+
+        }  while self[prevIndex].livesLeft == 0
+        
+        return self[prevIndex]
     }
     
     func reset() {

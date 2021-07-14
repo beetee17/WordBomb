@@ -38,7 +38,14 @@ struct GameView: View {
 
             ZStack {
                 let screen = UIScreen.main.bounds
- 
+                
+                // for debugging preview
+                ZStack {
+                    Button("ANIMATE") {
+                        viewModel.nextPlayer()
+                    }
+                }
+                .padding(.top,200)
                 VStack {
                     
                     TopBarView()
@@ -80,8 +87,10 @@ struct GameView: View {
 
 
 struct GameView_Previews: PreviewProvider {
-    
+
     static var previews: some View {
+    
         GameView().environmentObject(WordBombGameViewModel(.game))
+        
     }
 }

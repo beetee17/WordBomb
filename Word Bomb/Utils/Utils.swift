@@ -21,6 +21,8 @@ struct Defaults {
     static let gameModes = [CountryGame, CountryGameReverse, WordGame, WordGameReverse]
     
     static let gameTypes = [("EXACT", GameType.Exact), ("CONTAINS", GameType.Contains), ("REVERSE", GameType.Reverse)]
+    
+    static let playerAvatarSize = UIScreen.main.bounds.width/3.5
 }
 
 
