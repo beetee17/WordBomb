@@ -34,7 +34,7 @@ struct PlayerView: View {
             }
         }
 
-        .onChange(of: viewModel.currentPlayer) { _ in
+        .onChange(of: viewModel.gameState) { _ in
             withAnimation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0)) { numPlaying = viewModel.players.numPlaying() }
         }
     }
