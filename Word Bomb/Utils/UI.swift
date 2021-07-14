@@ -14,7 +14,8 @@ struct MainButtonStyle: ButtonStyle {
         configuration.label
             .textCase(.uppercase)
             .font(Font.title2.bold())
-            .frame(width: width, height: height)
+            .frame(width: width-15, height: height)
+            .lineLimit(1).minimumScaleFactor(0.5)
             .foregroundColor(Color.black)
             .contentShape(RoundedRectangle(cornerRadius: 20, style: .circular))
             .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.black, lineWidth: 5))
