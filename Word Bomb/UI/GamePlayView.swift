@@ -31,16 +31,21 @@ struct GamePlayView: View {
 //                    }
 //                }
 //                .padding(.top,200)
-            VStack {
+            ZStack {
                 
-                TopBarView()
-                    .offset(x: 0, y: 60)
-                    .padding(.horizontal, 5)
-                    .ignoresSafeArea(.all)
+                VStack {
+                    TopBarView()
+                        .offset(x: 0, y: 0)
+                        .padding(.horizontal, 5)
+                        .ignoresSafeArea(.all)
+                    Spacer()
+                    
+                }
                 
                 PlayerView(numPlaying: viewModel.players.numPlaying())
+                    .offset(x: 0, y: -UIScreen.main.bounds.height*0.15)
                 
-                Spacer()
+                
             }
             
             VStack {

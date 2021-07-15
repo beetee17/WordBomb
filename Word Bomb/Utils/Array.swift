@@ -59,7 +59,6 @@ extension Array where Element == Player {
     func numPlaying() -> Int {
         var num = 0
         for player in self {
-            print("\(player.name): \(player.livesLeft)")
             if player.livesLeft > 0 { num += 1 }
         }
         

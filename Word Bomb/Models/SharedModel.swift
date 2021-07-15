@@ -24,6 +24,9 @@ struct WordBombGame: Codable {
     var query: String?
     var instruction: String?
     
+    
+    
+    
     init() {
         players = []
 
@@ -109,6 +112,8 @@ struct WordBombGame: Codable {
         }
         print("lives left: \(currentPlayer.livesLeft)")
         currentPlayer = players.next(currentPlayer)
+        
+
     }
     
     mutating func restartGame() {

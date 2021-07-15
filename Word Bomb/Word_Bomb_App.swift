@@ -9,12 +9,13 @@ import SwiftUI
 import MultipeerKit
 import MultipeerConnectivity
 
-
 @main
 struct Word_BombApp: App {
 
     let game: WordBombGameViewModel
     let persistenceController: PersistenceController
+    
+    
     
     init() {
         // register "default defaults"
@@ -31,6 +32,7 @@ struct Word_BombApp: App {
         
         game = WordBombGameViewModel()
         persistenceController = PersistenceController.shared
+        
         
     }
 

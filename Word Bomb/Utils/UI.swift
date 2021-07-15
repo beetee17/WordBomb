@@ -29,6 +29,8 @@ struct MainButtonStyle: ButtonStyle {
     }
 }
 
+
+
 extension Text {
     func boldText() -> some View {
         self

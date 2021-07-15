@@ -14,6 +14,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     @Published private var model: WordBombGame = WordBombGame()
     @Published private var gameModel: WordGameModel?
     @Published var viewToShow: ViewToShow = .main
+    @Published var animating = true // bool for animating bomb gif
     
     @Published var input = ""
     @Published var gameType: GameType?
@@ -103,6 +104,21 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         changeViewToShow(.game)
         startTimer()
         
+       
+        
+        
+    }
+    func restartAnimation() {
+        // force restart animation if time runs out
+        
+        animating = false
+        print("animating \(animating)")
+ 
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.00001) { [self] in
+            // restart animation
+            animating = true
+            print("animating \(animating)")
+        }
     }
     
     func restartGame() {
@@ -113,6 +129,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                                          "instruction" : model.instruction as Any])
             changeViewToShow(.game)
             startTimer()
+            
         }
         else {
             print("mode not found")
@@ -122,6 +139,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     func processInput() {
         
+        restartAnimation()
         input = input.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         
         if !(input == "" || model.timeLeft <= 0) {
@@ -148,17 +166,26 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                 model.handleGameState(.playerInput, data: ["input" : input, "response" : response])
             }
         }
+        
     }
     
     
  
     func startTimer() {
         print("Timer started")
+        
+        DispatchQueue.main.async { [self] in
+            // start back animation
+            animating = true
+            print("animating \(animating)")
+        }
    
         _ = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [self] gameLoop in
-
+            
+            
             DispatchQueue.main.async { [self]
                 model.timeLeft = max(0, model.timeLeft - 0.1)
+                
                 if selectedPeers.count > 0 {
                     // device is hosting a multiplayer game
                     //                        print("sending model")
@@ -167,12 +194,24 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             }
 
             if .game != viewToShow || .gameOver == model.gameState {
+                
+                DispatchQueue.main.async {
+                    // stop animation
+                    animating = false
+                    print("animating \(animating)")
+                }
+                
                 gameLoop.invalidate()
                 print("Timer stopped")
             }
             
             else if model.timeLeft <= 0 {
+                
+                // force restart animation if time runs out
+                restartAnimation()
                 model.handleGameState(.playerTimedOut)
+                
+                
             }
             
         }
@@ -361,6 +400,8 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     var instruction: String? { model.instruction }
     
     var query: String? { model.query }
+    
+    var timeLimit: Float { model.timeLimit }
     
     var timeLeft: Float { model.timeLeft }
     
