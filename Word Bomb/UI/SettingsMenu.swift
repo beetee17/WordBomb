@@ -97,10 +97,8 @@ struct SettingsMenu: View {
         UserDefaults.standard.set(timeConstraint, forKey: "Time Constraint")
         UserDefaults.standard.set(timeDifficulty, forKey: "Time Difficulty")
         isPresented = false
+        viewModel.updateGameSettings()
         
-        if viewModel.selectedPeers.count == 0 {
-            viewModel.updateGameSettings()
-        }
     }
 }
 
