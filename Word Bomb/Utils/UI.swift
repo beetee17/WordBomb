@@ -21,7 +21,7 @@ struct MainButtonStyle: ButtonStyle {
 //            .background(Color(red: 229/255, green: 142/255, blue:38/255, opacity: 1))
             .background(RadialGradient(colors: [.orange, .gray], center: .center, startRadius: 0 , endRadius: 400))
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-            .shadow(color: .black, radius: 2, x: 0, y: 3)
+//            .shadow(color: .black, radius: 2, x: 0, y: 3)
             .scaleEffect(configuration.isPressed ? 1.2 : 1.0)
             .contentShape(RoundedRectangle(cornerRadius: 10, style: .circular))
             

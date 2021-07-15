@@ -71,7 +71,7 @@ struct LeftPlayer: View {
                     .transition(.identity)
 
             }
-            PlayerLives(player: player)
+            PlayerLives(playerLives: player.livesLeft)
 
         }
     }
@@ -86,7 +86,7 @@ struct RightPlayer: View {
         VStack(spacing: 5) {
 
             PlayerAvatar(playerName: player.name)
-            PlayerLives(player: player)
+            PlayerLives(playerLives: player.livesLeft)
 
         }
     }
@@ -104,7 +104,7 @@ struct MainPlayer:  View {
                 PlayerName(playerName: player.name)
                     .transition(.identity)
             }
-            PlayerLives(player: player)
+            PlayerLives(playerLives: player.livesLeft)
 
         }
     }

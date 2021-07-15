@@ -69,57 +69,36 @@ struct PlayerName: View {
 
 struct PlayerLives: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
-    var player: Player
-    let playerLives = Float(UserDefaults.standard.integer(forKey: "Player Lives"))
+    var playerLives: Int
     
     var body: some View {
         
         HStack {
             
-            switch playerLives > 4 {
-            case true:
-                let heartSize = CGFloat(68.0 / playerLives)
-                // redraws the hearts when player livesLeft changes
-                ForEach(0..<player.livesLeft, id: \.self) { i in
-                    
-                    Image(systemName: "heart.fill")
-                        .resizable()
-                        .frame(width: heartSize, height: heartSize, alignment: .center)
-                        .foregroundColor(.red)
-                    
-                }
+            // redraws the hearts when player livesLeft changes
+            // smaller size depending on total number of lives to fit under avatar
+            
+            ForEach(0..<playerLives, id: \.self) { i in
+                // draws remaining lives filled with red
+                Image(systemName: "heart.fill")
+                    .resizable()
+                    .frame(width: viewModel.livesLeft > 4 ? CGFloat(68 / viewModel.livesLeft) : 20.0,
+                           height: viewModel.livesLeft > 4 ? CGFloat(68 / viewModel.livesLeft) : 20.0,
+                           alignment: .center)
+                    .foregroundColor(.red)
                 
-                ForEach(0..<UserDefaults.standard.integer(forKey: "Player Lives") - player.livesLeft, id: \.self) { i in
-                    
-                    Image(systemName: "heart")
-                        .resizable()
-                        .frame(width: heartSize, height: heartSize, alignment: .center)
-                        .foregroundColor(.red)
-                    
-                }
-                
-            case false:
-                let heartSize = 20.0
-                // redraws the hearts when player livesLeft changes
-                ForEach(0..<player.livesLeft, id: \.self) { i in
-                    
-                    Image(systemName: "heart.fill")
-                        .resizable()
-                        .frame(width: heartSize, height: heartSize, alignment: .center)
-                        .foregroundColor(.red)
-                    
-                }
-                
-                ForEach(0..<viewModel.livesLeft - player.livesLeft, id: \.self) { i in
-                    
-                    Image(systemName: "heart")
-                        .resizable()
-                        .frame(width: heartSize, height: heartSize, alignment: .center)
-                        .foregroundColor(.red)
-                    
-                }
             }
             
+            ForEach(0..<viewModel.livesLeft - playerLives, id: \.self) { i in
+                // draws lives lost (if any) unfilled
+                Image(systemName: "heart")
+                    .resizable()
+                    .frame(width: viewModel.livesLeft > 4 ? CGFloat(68 / viewModel.livesLeft) : 20.0,
+                           height: viewModel.livesLeft > 4 ? CGFloat(68 / viewModel.livesLeft) : 20.0,
+                           alignment: .center)
+                    .foregroundColor(.red)
+                
+            }
         }
     }
 }

@@ -94,9 +94,11 @@ extension Array where Element == Player {
         return self[prevIndex]
     }
     
-    func reset() {
-        for player in self {
-            player.reset()
+    mutating func reset() {
+        for i in self.indices {
+            let oldPlayer = self[i]
+            let newPlayer = Player(name: oldPlayer.name, id: oldPlayer.id)
+            self[i] = newPlayer
         }
     }
 }

@@ -20,7 +20,7 @@ struct LogoView: View {
             
             Spacer()
         }
-//        .shadow(color: .black, radius: 2, x: 0, y: 4)
+        .shadow(color: .black, radius: 2, x: 0, y: 4)
         .ignoresSafeArea(.all)
         .padding(.bottom, 300)
     }

@@ -35,10 +35,4 @@ class Player: Codable, Equatable {
     func didRunOutOfTime() {
         livesLeft -= 1
     }
-    
-    func reset() {
-        score = 0
-        livesLeft = UserDefaults.standard.integer(forKey: "Player Lives")
-    }
-    
 }
