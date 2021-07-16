@@ -13,6 +13,7 @@ struct TwoPlayerView: View {
     @Namespace private var nameSpace
     
     private let bombSize = UIScreen.main.bounds.width*0.2
+    private let bombOffset = 5
     
     var body: some View {
         
@@ -46,13 +47,13 @@ struct TwoPlayerView: View {
                        height: bombSize)
                 .offset(x: viewModel.currentPlayer == player1 ? -UIScreen.main.bounds.width*0.425 + Defaults.playerAvatarSize*0.75 : UIScreen.main.bounds.width*0.425 - Defaults.playerAvatarSize*0.75,
                         y: 0)
-                .animation(.easeInOut)
+                .animation(.easeInOut(duration: 0.3).delay(.playerTimedOut == viewModel.gameState ? 0.8 : 0))
                 .overlay (
                     BombExplosion()
                         .frame(width: bombSize*1.5,
                                height: bombSize*1.5)
-                        .offset(x: viewModel.currentPlayer == player2 ? -UIScreen.main.bounds.width*0.425 + Defaults.playerAvatarSize*0.75: UIScreen.main.bounds.width*0.425 - Defaults.playerAvatarSize*0.75,
-                                y: 0)
+                        .offset(x: viewModel.currentPlayer == player2 ? -UIScreen.main.bounds.width*0.425 + Defaults.playerAvatarSize*0.75 + bombOffset : UIScreen.main.bounds.width*0.425 - Defaults.playerAvatarSize*0.75 + bombOffset,
+                                y: bombOffset)
                 )
             
             
