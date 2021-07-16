@@ -32,50 +32,39 @@ struct TopBarView: View {
                 }
                 
                 Spacer()
-
-                TimerView().offset(x: 0, y: 20)
+ 
+                if viewModel.players.numPlaying() > 2 {
+                    ZStack {
+                        BombView()
+                            .frame(width: 100, height: 100)
+                            .overlay(
+                                Text(String(format: "%.1f", viewModel.timeLeft))
+                                    .foregroundColor(.white)
+                                    .offset(x: 5, y: 10))
+                            
+               
+                        BombExplosion().environmentObject(viewModel)
+                    }
+                }
                 
+                else {
+                    Text(String(format: "%.1f", viewModel.timeLeft))
+                        .font(.largeTitle)
+                }
+  
                 Spacer()
   
                 if .gameOver == viewModel.gameState { gameOverButton.opacity(1) }
                 else { gameOverButton.opacity(0) }
             }
             .padding(.horizontal, 20)
+            .padding(.top, viewModel.players.numPlaying() > 2 ? 0 : 50)
         
     }
+    
+ 
 }
 
-
-
-// MARK: - Buttons/Single Objects
-
-struct TimerView: View {
-    
-    @EnvironmentObject var viewModel: WordBombGameViewModel
-    
-    var body: some View {
-
-        Image(updateFrame(numTotalFrames: 27, timeLeft: viewModel.timeLeft, timeLimit: viewModel.timeLimit))
-            .resizable()
-            .scaledToFit()
-            .frame(width: 150, height: 150)
-            .overlay(Text(String(format: "%.1f", viewModel.timeLeft)).foregroundColor(.white).offset(x: 0, y: 20))
-    
-        
-    }
-    
-    private func updateFrame(numTotalFrames: Int, timeLeft: Float, timeLimit: Float) -> String {
-        let frameNumber = numTotalFrames - Int(timeLeft / (timeLimit / Float(numTotalFrames)))
-        if frameNumber >= 10 {
-            print("frame_\(frameNumber)_delay-0.08s")
-            return "frame_\(frameNumber)_delay-0.08s"
-        }
-        else {
-            return "frame_0\(frameNumber)_delay-0.08s"
-        }
-    }
-        
-}
 
 
 

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct MainButtonStyle: ButtonStyle {
     let width = UIScreen.main.bounds.width/2
     let height = UIScreen.main.bounds.height*0.07

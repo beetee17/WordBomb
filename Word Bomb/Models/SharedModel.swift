@@ -24,6 +24,8 @@ struct WordBombGame: Codable {
     var query: String?
     var instruction: String?
     
+    var animateExplosion: Bool = false
+    
     
     
     
@@ -44,8 +46,7 @@ struct WordBombGame: Codable {
 
         currentPlayer = players[0]
     }
-    
-    
+
     mutating func resetPlayers(_ players: [Player]? = nil) {
         if let players = players {
             self.players = players
@@ -113,6 +114,8 @@ struct WordBombGame: Codable {
         print("lives left: \(currentPlayer.livesLeft)")
         currentPlayer = players.next(currentPlayer)
         
+        animateExplosion = true
+        
 
     }
     
@@ -163,6 +166,7 @@ struct WordBombGame: Codable {
             currentPlayerRanOutOfTime()
             
         case .gameOver:
+            animateExplosion = true
             break
 
         }
