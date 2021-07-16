@@ -23,6 +23,14 @@ struct Defaults {
     static let gameTypes = [("EXACT", GameType.Exact), ("CONTAINS", GameType.Contains), ("REVERSE", GameType.Reverse)]
     
     static let playerAvatarSize = UIScreen.main.bounds.width/3.5
+    
+    static let bombSize = UIScreen.main.bounds.width*0.4
+    
+    static let miniBombSize = UIScreen.main.bounds.width*0.2
+    
+    static let miniBombExplosionOffset = 10.0
+    
+    static let explosionDuration = 0.8
 }
 
 
