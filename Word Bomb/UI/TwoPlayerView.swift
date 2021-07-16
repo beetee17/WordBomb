@@ -13,7 +13,7 @@ struct TwoPlayerView: View {
     @Namespace private var nameSpace
     
     private let bombSize = UIScreen.main.bounds.width*0.2
-    private let bombOffset = 5
+    private let bombOffset: Float = 5.0
     
     var body: some View {
         
