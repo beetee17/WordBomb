@@ -11,15 +11,13 @@ import SDWebImageSwiftUI
 struct BombView: View {
     
     @EnvironmentObject var viewModel: WordBombGameViewModel
-    
+
     var body: some View {
         
         Image(updateFrame(numTotalFrames: 24, timeLeft: viewModel.timeLeft, timeLimit: viewModel.timeLimit))
             .resizable()
             .scaledToFit()
-            
-        
-           
+  
     }
     
     private func updateFrame(numTotalFrames: Int, timeLeft: Float, timeLimit: Float) -> String {
@@ -43,12 +41,13 @@ struct BombExplosion: View {
     
     var body: some View {
 
-        AnimatedImage(name: "explosion.gif", isAnimating: $viewModel.animateExplosion)
+        AnimatedImage(name: "explosion-2-merge.gif", isAnimating: $viewModel.animateExplosion)
             .resizable()
+            .pausable(false)
             .frame(width: 150, height: 150)
             .opacity(viewModel.animateExplosion ? 1 : 0)
             .onChange(of: viewModel.animateExplosion) { _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                     viewModel.animateExplosion = false
                 }
             }

@@ -166,7 +166,6 @@ struct WordBombGame: Codable {
             currentPlayerRanOutOfTime()
             
         case .gameOver:
-            animateExplosion = true
             break
 
         }

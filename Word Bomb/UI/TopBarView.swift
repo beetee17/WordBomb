@@ -43,7 +43,9 @@ struct TopBarView: View {
                                     .offset(x: 5, y: 10))
                             
                
-                        BombExplosion().environmentObject(viewModel)
+                        BombExplosion()
+                            .offset(x: 10, y: 10)
+                        // to center explosion on bomb
                     }
                 }
                 

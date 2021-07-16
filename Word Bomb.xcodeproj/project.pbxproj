@@ -35,6 +35,7 @@
 		6C65A31D26A1458D004209F4 /* BombAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C65A31C26A1458D004209F4 /* BombAnimation.swift */; };
 		6C65A32026A180D7004209F4 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6C65A31F26A180D7004209F4 /* SDWebImageSwiftUI */; };
 		6C65A32826A199AD004209F4 /* explosion.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6C65A32726A199AD004209F4 /* explosion.gif */; };
+		6C65A32A26A1BA8C004209F4 /* explosion-2-merge.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6C65A32926A1BA8B004209F4 /* explosion-2-merge.gif */; };
 		6C7E458C269B16A500E24504 /* SettingsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7E458B269B16A500E24504 /* SettingsMenu.swift */; };
 		6C7E458E269B249400E24504 /* PlayerEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7E458D269B249400E24504 /* PlayerEditorView.swift */; };
 		6CB6F93F268F627300FA9654 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB6F93E268F627300FA9654 /* GameView.swift */; };
@@ -82,6 +83,7 @@
 		6C5DBE0D269CA6E0004A7F71 /* TwoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoPlayerView.swift; sourceTree = "<group>"; };
 		6C65A31C26A1458D004209F4 /* BombAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BombAnimation.swift; sourceTree = "<group>"; };
 		6C65A32726A199AD004209F4 /* explosion.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = explosion.gif; path = ../../../Downloads/explosion.gif; sourceTree = "<group>"; };
+		6C65A32926A1BA8B004209F4 /* explosion-2-merge.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "explosion-2-merge.gif"; sourceTree = "<group>"; };
 		6C7E458B269B16A500E24504 /* SettingsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMenu.swift; sourceTree = "<group>"; };
 		6C7E458D269B249400E24504 /* PlayerEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerEditorView.swift; sourceTree = "<group>"; };
 		6CB6F93E268F627300FA9654 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 				6CF9539A2692F67F00D16E60 /* Utils */,
 				6C2E20C5268DD82900CECD3F /* Assets.xcassets */,
 				6C65A32726A199AD004209F4 /* explosion.gif */,
+				6C65A32926A1BA8B004209F4 /* explosion-2-merge.gif */,
 				6C0CEEBE2695975B007717E1 /* Correct.wav */,
 				6C0CEEE52695BEAF007717E1 /* wordbomb.xcdatamodeld */,
 				6C2E20CA268DD82900CECD3F /* Info.plist */,
@@ -286,6 +289,7 @@
 			files = (
 				6C2E20C9268DD82900CECD3F /* Preview Assets.xcassets in Resources */,
 				6C0CEEBF2695975B007717E1 /* Correct.wav in Resources */,
+				6C65A32A26A1BA8C004209F4 /* explosion-2-merge.gif in Resources */,
 				6C2E20C6268DD82900CECD3F /* Assets.xcassets in Resources */,
 				6C65A32826A199AD004209F4 /* explosion.gif in Resources */,
 				6CF953B62692F9F900D16E60 /* Data in Resources */,
