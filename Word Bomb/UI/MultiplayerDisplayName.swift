@@ -27,6 +27,7 @@ struct MultiplayerDisplayName: View {
             
             TextField(UserDefaults.standard.string(forKey: "Display Name")!, text: $newDisplayName) { isEditing in }
                 onCommit: {
+                    newDisplayName = newDisplayName.trim()
                     if newDisplayName != UserDefaults.standard.string(forKey: "Display Name")! {
    
                         changeNameWarning = true

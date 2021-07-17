@@ -14,8 +14,7 @@ struct LocalMultiplayerView: View {
     @State private var presentPeersSheet = false
     
     var body: some View {
-        // Start it up!
-        
+
         ZStack {
             
             MultiplayerDisplayName()

@@ -1,5 +1,5 @@
 //
-//  BinarySearch.swift
+//  Extensions.swift
 //  Word Bomb
 //
 //  Created by Brandon Thio on 5/7/21.
@@ -7,6 +7,13 @@
 
 import Foundation
 import MultipeerKit
+
+
+extension String {
+    func trim() -> String {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
 
 // Binary Search Extension for Array
 extension Array where Element: Comparable {

@@ -49,7 +49,7 @@ struct ReverseWordGameModel: WordGameModel, Codable {
             
         }
         else {
-            return String(data.randomElement()!.trimmingCharacters(in: .whitespacesAndNewlines).last!)
+            return String(data.randomElement()!.trim().last!)
         }
     }
 

@@ -130,7 +130,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     func processInput() {
         
         
-        input = input.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        input = input.lowercased().trim()
         
         if !(input == "" || model.timeLeft <= 0) {
 
@@ -330,7 +330,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     }
 
     func processPeerInput() {
-        input = input.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        input = input.lowercased().trim()
         print("processing \(input)")
         let response = gameModel!.process(input, model.query)
         

@@ -103,19 +103,19 @@ struct CustomModeForm: View {
     
     private func addItem(modeName: String, words: String, queries: String, instruction: String, gameType: String) {
         
-        if modeName.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+        if modeName.trim() == "" {
             showEmptyFieldAlert = true
             emptyFieldAlertType = .modeName
             
         }
         
-        else if words.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+        else if words.trim() == "" {
             showEmptyFieldAlert = true
             emptyFieldAlertType = .words
             
         }
         
-        else if queries.trimmingCharacters(in: .whitespacesAndNewlines) == "" && gameType != "EXACT" {
+        else if queries.trim() == "" && gameType != "EXACT" {
             showEmptyFieldAlert = true
             emptyFieldAlertType = .queries
             
@@ -129,14 +129,14 @@ struct CustomModeForm: View {
                     newItem.name = modeName
                     let wordsData = words.components(separatedBy: "\n")
                     newItem.words = encodeStrings(wordsData.map {
-                        $0.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+                        $0.lowercased().trim()
                    })
                     print(newItem.words!)
                     newItem.gameType = gameType
                     
                     let queryData = queries.components(separatedBy: "\n")
                     newItem.queries = encodeStrings(queryData.map {
-                        $0.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+                        $0.lowercased().trim()
                    })
                     
                     newItem.instruction = instruction

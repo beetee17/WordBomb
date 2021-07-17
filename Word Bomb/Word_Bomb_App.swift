@@ -20,7 +20,7 @@ struct Word_BombApp: App {
     init() {
         // register "default defaults"
         UserDefaults.standard.register(defaults: [
-            "Display Name": MCPeerID.defaultDisplayName,
+            "Display Name": MCPeerID.defaultDisplayName.trim(),
             "Time Limit" : 5.0,
             "Time Difficulty" : 0.5,
             "Time Constraint" : 0,

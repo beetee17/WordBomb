@@ -40,7 +40,7 @@ struct ContainsWordGameModel: WordGameModel, Codable {
     }
     
     mutating func getRandQuery(_ input: String? = nil) -> String {
-        var query = queries.randomElement()!.trimmingCharacters(in: .whitespacesAndNewlines)
+        var query = queries.randomElement()!.trim()
         
         while query.count == 0 {
             // prevent blank query
