@@ -17,6 +17,7 @@ struct MainView: View {
         
             ZStack {                
                 LogoView()
+                Color.clear
 
                 VStack(spacing: 50) {
                     Button("START GAME") {
@@ -48,6 +49,7 @@ struct MainView: View {
                 }
                 .padding(.top, 125)
                 .buttonStyle(MainButtonStyle())
+                .ignoresSafeArea(.all)
                 
             }
             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height, alignment: .center)

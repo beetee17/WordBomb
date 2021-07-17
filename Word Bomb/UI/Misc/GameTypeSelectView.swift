@@ -20,6 +20,7 @@ struct GameTypeSelectView: View {
             VStack(spacing: 50) {
                 ForEach(Defaults.gameTypes, id: \.0) { typeName, gameType in
                     Button(typeName) {
+
                         viewModel.gameType = gameType
                         withAnimation { viewModel.changeViewToShow(.modeSelect) }
                         

@@ -11,40 +11,56 @@ import SwiftUI
 struct ModeSelectView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: WordBombGameViewModel
+    var gameType: GameType
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
         animation: .default)
+    
     private var items: FetchedResults<Item>
+    @State private var contentOverflow = false
     
     var body: some View {
-        ZStack {
-            Color.clear
+
+        VStack {
+            
             SelectModeText()
-                
-            VStack(spacing: 50) {
-                ForEach(Defaults.gameModes) { mode in
-                    if mode.gameType == viewModel.gameType { ModeSelectButton(gameMode: mode) }
-                }
-                
-                ForEach(items) {
-                    item in
+
+                VStack(spacing: 50) {
+                    ForEach(Defaults.gameModes) { mode in
+                        if mode.gameType == gameType { ModeSelectButton(gameMode: mode) }
+                    }
                     
-                    ForEach(Defaults.gameTypes, id: \.0) { typeName, gameType in
-                        if item.gameType! == typeName && gameType == viewModel.gameType {
-                            
-                            CustomModeButton(item: item)
+                    ForEach(items) {
+                        item in
+                        
+                        ForEach(Defaults.gameTypes, id: \.0) { typeName, gameType in
+                            if item.gameType! == typeName && gameType == self.gameType {
+                                
+                                CustomModeButton(item: item)
+                            }
                         }
                     }
-                }
                 
-                Button("BACK") {
-                    print("BACK")
-                    withAnimation { viewModel.changeViewToShow(.gameTypeSelect) }
-                }
-                .buttonStyle(MainButtonStyle())
+                .frame(width: UIScreen.main.bounds.width)
                 
             }
+            .background(
+                GeometryReader { contentGeometry in
+                Color.clear.onAppear {
+                    contentOverflow = contentGeometry.size.height > UIScreen.main.bounds.height/2
+                    print(contentGeometry.size.height)
+                }
+            })
+            .useScrollView(when: contentOverflow)
+            .frame(maxHeight: UIScreen.main.bounds.height/2, alignment: .center)
+            
+            
+            Button("BACK") {
+                print("BACK")
+                withAnimation { viewModel.changeViewToShow(.gameTypeSelect) }
+            }
+            .buttonStyle(MainButtonStyle())
         }
         .transition(.move(edge: .trailing))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
@@ -56,13 +72,9 @@ struct ModeSelectView: View {
 struct SelectModeText: View {
     
     var body: some View {
-        VStack {
-            Text("Select Mode")
-                .fontWeight(.bold)
-                .font(.largeTitle)
-            Spacer()
-        }
-        .padding(.top, 100)
+        Text("Select Mode")
+            .fontWeight(.bold)
+            .font(.largeTitle)
     }
 }
 struct ModeSelectButton: View {
@@ -86,6 +98,6 @@ struct ModeSelectButton: View {
 struct ModeSelectView_Previews: PreviewProvider {
     
     static var previews: some View {
-        ModeSelectView()
+        ModeSelectView(gameType: .Exact).environmentObject(WordBombGameViewModel())
     }
 }

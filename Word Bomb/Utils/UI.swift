@@ -122,6 +122,22 @@ struct PermanentKeyboard: UIViewRepresentable {
     }
 }
 
+extension View {
+  func useScrollView(when condition: Bool) -> AnyView {
+    if condition {
+        print("condition \(condition)")
+      return AnyView(
+        ScrollView() {
+          self
+        }
+      )
+    } else {
+      return AnyView(self)
+    }
+  }
+}
+
+
 #if canImport(UIKit)
 // To force SwiftUI to hide keyboard
 extension View {

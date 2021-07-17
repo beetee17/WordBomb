@@ -22,7 +22,7 @@ struct GameView: View {
             
         case .main: MainView()
         case .gameTypeSelect: GameTypeSelectView()
-        case .modeSelect: ModeSelectView()
+        case .modeSelect: ModeSelectView(gameType: viewModel.gameType!)
         case .multipeer: LocalMultiplayerView()
         case .peersView: LocalPeersView()
             

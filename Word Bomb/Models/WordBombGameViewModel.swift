@@ -14,7 +14,6 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     @Published private var model: WordBombGame = WordBombGame()
     @Published private var gameModel: WordGameModel?
     @Published var viewToShow: ViewToShow = .main
-//    @Published var animating = false // bool for animating bomb gif
     
     @Published var input = ""
     @Published var gameType: GameType?

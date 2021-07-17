@@ -20,6 +20,7 @@ struct CustomModeForm: View {
     @State private var queries = ""
     @State private var instruction = ""
     
+    @State private var showSaveSuccessAlert = false
     @State private var showEmptyFieldAlert = false
     @State private var emptyFieldAlertType: EmptyFieldAlertType = .modeName
     
@@ -61,6 +62,7 @@ struct CustomModeForm: View {
 
             Button(action: {
                 addItem(modeName: modeName, words: words, queries: queries, instruction: instruction, gameType: gameType)
+                
             })
             {
                 HStack {
@@ -69,36 +71,47 @@ struct CustomModeForm: View {
                     Image(systemName: "checkmark.circle")
                 }
             }
-        }
-        .alert(isPresented: $showEmptyFieldAlert) {
-            switch emptyFieldAlertType {
-                
-            case .modeName:
-                return Alert(title: Text("Empty Mode Name"),
-                      message: Text("Please enter a name for your custom mode."),
-                      dismissButton: .default(Text("OK")) {
-                                                            print("dismissed")
-                                                            showEmptyFieldAlert = false
+            
+            .alert(isPresented: $showEmptyFieldAlert) {
+                switch emptyFieldAlertType {
                     
-                })
-            case .words:
-                return Alert(title: Text("No Words Added"),
-                      message: Text("Please enter some words to have fun."),
-                      dismissButton: .default(Text("OK")) {
-                                                            print("dismissed")
-                                                            showEmptyFieldAlert = false
-                    
-                })
-            case .queries:
-                return Alert(title: Text("No Queries Added"),
-                      message: Text("Please enter at least one query."),
-                      dismissButton: .default(Text("OK")) {
-                                                            print("dismissed")
-                                                            showEmptyFieldAlert = false
-                    
-                })
+                case .modeName:
+                    return Alert(title: Text("Empty Mode Name"),
+                          message: Text("Please enter a name for your custom mode."),
+                          dismissButton: .default(Text("OK")) {
+                                                                print("dismissed")
+                                                                showEmptyFieldAlert = false
+                        
+                    })
+                case .words:
+                    return Alert(title: Text("No Words Added"),
+                          message: Text("Please enter some words to have fun."),
+                          dismissButton: .default(Text("OK")) {
+                                                                print("dismissed")
+                                                                showEmptyFieldAlert = false
+                        
+                    })
+                case .queries:
+                    return Alert(title: Text("No Queries Added"),
+                          message: Text("Please enter at least one query."),
+                          dismissButton: .default(Text("OK")) {
+                                                                print("dismissed")
+                                                                showEmptyFieldAlert = false
+                        
+                    })
+                }
             }
         }
+        .alert(isPresented: $showSaveSuccessAlert) {
+            return Alert(title: Text("Save Successful"),
+                  message: Text("You can now find your new custom mode in the mode select view!."),
+                  dismissButton: .default(Text("OK")) {
+                print("dismissed")
+                showSaveSuccessAlert = false
+
+                })
+        }
+        
     }
     
     private func addItem(modeName: String, words: String, queries: String, instruction: String, gameType: String) {
@@ -122,33 +135,35 @@ struct CustomModeForm: View {
         }
         
         else {
-        
-            withAnimation {
-                do {
-                    let newItem = Item(context: viewContext)
-                    newItem.name = modeName
-                    let wordsData = words.components(separatedBy: "\n")
-                    newItem.words = encodeStrings(wordsData.map {
-                        $0.lowercased().trim()
-                   })
-                    print(newItem.words!)
-                    newItem.gameType = gameType
-                    
-                    let queryData = queries.components(separatedBy: "\n")
-                    newItem.queries = encodeStrings(queryData.map {
-                        $0.lowercased().trim()
-                   })
-                    
-                    newItem.instruction = instruction
-                    
-                    try viewContext.save()
-                } catch {
-                    // Replace this implementation with code to handle the error appropriately.
-                    // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                    let nsError = error as NSError
-                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-                }
+            
+            do {
+                let newItem = Item(context: viewContext)
+                newItem.name = modeName
+                let wordsData = words.components(separatedBy: "\n")
+                newItem.words = encodeStrings(wordsData.map {
+                    $0.lowercased().trim()
+               })
+                print(newItem.words!)
+                newItem.gameType = gameType
+                
+                let queryData = queries.components(separatedBy: "\n")
+                newItem.queries = encodeStrings(queryData.map {
+                    $0.lowercased().trim()
+               })
+                
+                newItem.instruction = instruction
+                
+                
+                try viewContext.save()
+                showSaveSuccessAlert = true
+                
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
+            
         }
     }
 }
