@@ -48,15 +48,15 @@ struct SettingsMenu: View {
                     
                     
                     Section(footer: Text("Changes the initial time for each player.")) {
-                        Stepper("Time Limit: \(timeLimit, specifier: "%.1f") s", value: $timeLimit, in: 3...100, step: 0.5)
+                        Stepper("Time Limit: \(timeLimit, specifier: "%.1f") s", value: $timeLimit, in: 1...50, step: 0.5)
                     }
                     
                     Section(footer: Text("Changes the factor applied to the time limit after each turn.")) {
-                        Stepper("Time Multiplier: \(timeDifficulty, specifier: "%.2f")", value: $timeDifficulty, in: 0.5...1, step:0.05)
+                        Stepper("Time Multiplier: \(timeDifficulty, specifier: "%.2f")", value: $timeDifficulty, in: 0.5...1, step: 0.05)
                     }
                     
                     Section(footer: Text("Changes the lowest amount of time allowed for each turn.")) {
-                        Stepper("Time Constraint: \(timeConstraint, specifier: "%.1f") s", value: $timeConstraint, in: 1...timeLimit, step:0.5)
+                        Stepper("Time Constraint: \(timeConstraint, specifier: "%.1f") s", value: $timeConstraint, in: 1...timeLimit, step: 0.5)
                         
                     }
                     
