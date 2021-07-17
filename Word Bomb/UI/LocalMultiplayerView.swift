@@ -27,6 +27,7 @@ struct LocalMultiplayerView: View {
                     print("Host Game")
                     withAnimation { presentPeersSheet = true }
                 }
+                .sheet(isPresented: $presentPeersSheet) { LocalPeersView() }
                 
                 Button("Reconnect") {
                     print("Reconnect")
@@ -49,8 +50,7 @@ struct LocalMultiplayerView: View {
         .transition(.asymmetric(insertion: AnyTransition.move(edge: .trailing), removal: AnyTransition.move(edge: .leading)))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
         .ignoresSafeArea(.all)
-        .zIndex(/*@START_MENU_TOKEN@*/1.0/*@END_MENU_TOKEN@*/) // transition does not work with zIndex set to 0
-        .sheet(isPresented: $presentPeersSheet) { LocalPeersView() }
+//        .zIndex(/*@START_MENU_TOKEN@*/1.0/*@END_MENU_TOKEN@*/) // transition does not work with zIndex set to 0
         
     }
 }
