@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6C0CEEA0269323CE007717E1 /* MPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0CEE9F269323CE007717E1 /* MPC.swift */; };
+		6C0CEEA0269323CE007717E1 /* Multipeer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0CEE9F269323CE007717E1 /* Multipeer.swift */; };
 		6C0CEEA8269458D6007717E1 /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0CEEA7269458D6007717E1 /* TopBarView.swift */; };
 		6C0CEEAB26945926007717E1 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0CEEAA26945926007717E1 /* InputView.swift */; };
 		6C0CEEAE2694595C007717E1 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0CEEAD2694595C007717E1 /* PlayerView.swift */; };
@@ -57,7 +57,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6C0CEE9F269323CE007717E1 /* MPC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPC.swift; sourceTree = "<group>"; };
+		6C0CEE9F269323CE007717E1 /* Multipeer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Multipeer.swift; sourceTree = "<group>"; };
 		6C0CEEA7269458D6007717E1 /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
 		6C0CEEAA26945926007717E1 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
 		6C0CEEAD2694595C007717E1 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
@@ -119,12 +119,62 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6C0CEE9E269323A1007717E1 /* Multipeer */ = {
+		6C2D67CD26A2AABD006A0347 /* Gameplay */ = {
 			isa = PBXGroup;
 			children = (
-				6C0CEE9F269323CE007717E1 /* MPC.swift */,
+				6C0CEEAD2694595C007717E1 /* PlayerView.swift */,
+				6C5DBE0B269BA600004A7F71 /* PlayerCarouselView.swift */,
+				6C0CEEA7269458D6007717E1 /* TopBarView.swift */,
+				6C65A31C26A1458D004209F4 /* BombAnimation.swift */,
+				6C0CEEAA26945926007717E1 /* InputView.swift */,
+				6C37E91D269F287B0079279E /* GamePlayView.swift */,
+				6C5DBE0D269CA6E0004A7F71 /* TwoPlayerView.swift */,
+				6C0CEEB02694599C007717E1 /* OutputText.swift */,
+				6CB6F941268F62C000FA9654 /* PauseMenuView.swift */,
 			);
-			path = Multipeer;
+			path = Gameplay;
+			sourceTree = "<group>";
+		};
+		6C2D67CE26A2AAC8006A0347 /* Multiplayer */ = {
+			isa = PBXGroup;
+			children = (
+				6C0CEEB42694B6C9007717E1 /* LocalMultiplayerView.swift */,
+				6C0FB7EF26975ACB0038751A /* LocalPeersView.swift */,
+				6C249D452698B2D400B9C002 /* MultiplayerDisplayName.swift */,
+				6C0CEEB72694BB88007717E1 /* MultipeerStatusText.swift */,
+			);
+			path = Multiplayer;
+			sourceTree = "<group>";
+		};
+		6C2D67CF26A2AAD7006A0347 /* ModeSelect */ = {
+			isa = PBXGroup;
+			children = (
+				6CB6F944268F62D800FA9654 /* ModeSelectView.swift */,
+				6CD8DA052695D342006A27ED /* CustomModeForm.swift */,
+				6C249D4B2698C1C000B9C002 /* CustomModeButton.swift */,
+			);
+			path = ModeSelect;
+			sourceTree = "<group>";
+		};
+		6C2D67D026A2AB9A006A0347 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				6CB6F93E268F627300FA9654 /* GameView.swift */,
+				6C2E20C3268DD81600CECD3F /* ContentView.swift */,
+				6CB6F94A268F64A300FA9654 /* LogoView.swift */,
+				6CB6F94E268F7E7D00FA9654 /* MainView.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		6C2D67D126A2ABBF006A0347 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				6C7E458D269B249400E24504 /* PlayerEditorView.swift */,
+				6C7E458B269B16A500E24504 /* SettingsMenu.swift */,
+				6C249D492698B33800B9C002 /* GameTypeSelectView.swift */,
+			);
+			path = Misc;
 			sourceTree = "<group>";
 		};
 		6C2E20B5268DD81600CECD3F = {
@@ -146,7 +196,6 @@
 		6C2E20C0268DD81600CECD3F /* Word Bomb */ = {
 			isa = PBXGroup;
 			children = (
-				6C0CEE9E269323A1007717E1 /* Multipeer */,
 				6CF953B52692F9F900D16E60 /* Data */,
 				6C2E20C1268DD81600CECD3F /* Word_Bomb_App.swift */,
 				6CF953902692F61200D16E60 /* Models */,
@@ -175,29 +224,11 @@
 		6CF9538A2692E92200D16E60 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				6C2E20C3268DD81600CECD3F /* ContentView.swift */,
-				6CD8DA052695D342006A27ED /* CustomModeForm.swift */,
-				6C7E458D269B249400E24504 /* PlayerEditorView.swift */,
-				6C0CEEB72694BB88007717E1 /* MultipeerStatusText.swift */,
-				6C0CEEB02694599C007717E1 /* OutputText.swift */,
-				6C249D452698B2D400B9C002 /* MultiplayerDisplayName.swift */,
-				6CB6F93E268F627300FA9654 /* GameView.swift */,
-				6C0CEEAD2694595C007717E1 /* PlayerView.swift */,
-				6C5DBE0B269BA600004A7F71 /* PlayerCarouselView.swift */,
-				6C5DBE0D269CA6E0004A7F71 /* TwoPlayerView.swift */,
-				6C0CEEAA26945926007717E1 /* InputView.swift */,
-				6C7E458B269B16A500E24504 /* SettingsMenu.swift */,
-				6C0CEEA7269458D6007717E1 /* TopBarView.swift */,
-				6C65A31C26A1458D004209F4 /* BombAnimation.swift */,
-				6CB6F944268F62D800FA9654 /* ModeSelectView.swift */,
-				6C249D4B2698C1C000B9C002 /* CustomModeButton.swift */,
-				6C37E91D269F287B0079279E /* GamePlayView.swift */,
-				6C249D492698B33800B9C002 /* GameTypeSelectView.swift */,
-				6CB6F94A268F64A300FA9654 /* LogoView.swift */,
-				6CB6F94E268F7E7D00FA9654 /* MainView.swift */,
-				6C0CEEB42694B6C9007717E1 /* LocalMultiplayerView.swift */,
-				6C0FB7EF26975ACB0038751A /* LocalPeersView.swift */,
-				6CB6F941268F62C000FA9654 /* PauseMenuView.swift */,
+				6C2D67D026A2AB9A006A0347 /* Main */,
+				6C2D67CD26A2AABD006A0347 /* Gameplay */,
+				6C2D67CF26A2AAD7006A0347 /* ModeSelect */,
+				6C2D67CE26A2AAC8006A0347 /* Multiplayer */,
+				6C2D67D126A2ABBF006A0347 /* Misc */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -218,6 +249,7 @@
 		6CF9539A2692F67F00D16E60 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				6C0CEE9F269323CE007717E1 /* Multipeer.swift */,
 				6CB6F947268F633600FA9654 /* UI.swift */,
 				6CF9538D2692F55000D16E60 /* Extensions.swift */,
 				6CF9539B2692F68E00D16E60 /* Data.swift */,
@@ -343,7 +375,7 @@
 				6C0CEEE72695BEAF007717E1 /* wordbomb.xcdatamodeld in Sources */,
 				6C0CEEB82694BB88007717E1 /* MultipeerStatusText.swift in Sources */,
 				6CD8DA062695D342006A27ED /* CustomModeForm.swift in Sources */,
-				6C0CEEA0269323CE007717E1 /* MPC.swift in Sources */,
+				6C0CEEA0269323CE007717E1 /* Multipeer.swift in Sources */,
 				6CB6F942268F62C000FA9654 /* PauseMenuView.swift in Sources */,
 				6CF9539F2692F6D100D16E60 /* Player.swift in Sources */,
 				6C5DBE0E269CA6E3004A7F71 /* TwoPlayerView.swift in Sources */,

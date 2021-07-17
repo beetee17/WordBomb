@@ -1,5 +1,5 @@
 //
-//  MPC.swift
+//  Multipeer.swift
 //  Word Bomb
 //
 //  Created by Brandon Thio on 5/7/21.
@@ -34,7 +34,5 @@ struct Multipeer {
             transceiver.resume()
             
         }
-        
-        
     }
 }
