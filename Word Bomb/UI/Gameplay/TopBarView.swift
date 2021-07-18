@@ -28,7 +28,7 @@ struct TopBarView: View {
                 Button("Pause") {
                     print("Pause Game")
                 
-                    withAnimation(.spring(response:0.1, dampingFraction:0.6)) { viewModel.changeViewToShow(.pauseMenu) }
+                    withAnimation(.spring(response:0.1, dampingFraction:0.6).delay(0.15)) { viewModel.changeViewToShow(.pauseMenu) }
                 }
                 
                 Spacer()
