@@ -33,8 +33,7 @@ struct MainView: View {
                     Button(action: { withAnimation { viewModel.changeViewToShow(.multipeer) } }) {
                         HStack {
                             Image(systemName: "wifi")
-                            Spacer()
-                            Text("LOCAL MULTIPLAYER")
+                            Text("MULTIPLAYER")
                             
                         }
                         
