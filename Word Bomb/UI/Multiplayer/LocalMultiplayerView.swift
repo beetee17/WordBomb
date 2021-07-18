@@ -46,7 +46,10 @@ struct LocalMultiplayerView: View {
             .buttonStyle(MainButtonStyle())
             
         }
-        .helpSheet()
+        .helpSheet(title: "Local Multiplayer",
+                   headers: ["HOST GAME", "RECONNECT"],
+                   content: ["Invite nearby players to join your game!",
+                             "Reconnect your device to the network if you encounter multiplayer related issues."])
         .transition(.asymmetric(insertion: AnyTransition.move(edge: .trailing), removal: AnyTransition.move(edge: .leading)))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
         .ignoresSafeArea(.all)

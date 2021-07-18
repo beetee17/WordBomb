@@ -25,7 +25,8 @@ struct GameTypeSelectView: View {
                         viewModel.gameType = gameType
                         withAnimation { viewModel.changeViewToShow(.modeSelect) }
                         
-                    }.buttonStyle(MainButtonStyle())
+                    }
+                    .buttonStyle(MainButtonStyle())
                     
                 }
 
@@ -36,7 +37,12 @@ struct GameTypeSelectView: View {
                 .buttonStyle(MainButtonStyle())
             }
         }
-        .helpSheet()
+        .helpSheet(title: "Game Types",
+                   headers: ["EXACT", "CONTAINS", "REVERSE"],
+                   content: ["Input a word that can be exactly found in the database!",
+                             "Input a word that contains a certain syllable!",
+                             "Input a word that starts with the letter of the previous word given!"])
+        
         .transition(.asymmetric(insertion: AnyTransition.move(edge: .trailing), removal: AnyTransition.move(edge: .leading)))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
         .environmentObject(viewModel)

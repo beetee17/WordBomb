@@ -135,13 +135,18 @@ extension View {
       return AnyView(self)
     }
   }
-    func helpSheet() -> some View {
-        self.modifier(HelpSheet())
+    func helpSheet(title: String, headers: [String], content: [String]) -> some View {
+        self.modifier(HelpSheet(title: title, headers: headers, content: content))
     }
 }
+
+
 struct HelpSheet: ViewModifier {
     
     @State private var showHelpSheet = false
+    var title: String
+    var headers: [String]
+    var content: [String]
     
     func body(content: Content) -> some View {
         ZStack{
@@ -153,13 +158,22 @@ struct HelpSheet: ViewModifier {
                     .foregroundColor(.black)
                     .frame(width: 100, height: 100) // tappable area
                     .sheet(isPresented: $showHelpSheet) {
-                        Form {
-                            Section(header: Text("HELP")) {
-                                Text("This is some text")
+                        NavigationView {
+                            List {
+                                ForEach(Array(zip(self.headers, self.content)), id: \.0) { item in
+                                    Section(header: Text(item.0)) {
+                                        Text(item.1)
+                                            .foregroundColor(.black)
+                                    }
+                                }
                             }
+                            .navigationBarTitle(Text(title))
+                            .listStyle(GroupedListStyle())
+                            
+                        }
+                    
                     }
                 }
-            }
                 .offset(x: UIScreen.main.bounds.width*0.425, y: -UIScreen.main.bounds.height*0.45) //top-right
         }
     }

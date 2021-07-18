@@ -52,7 +52,12 @@ struct MainView: View {
                 .ignoresSafeArea(.all)
                 
             }
-            .helpSheet()
+            .helpSheet(title: "Welcome to Word Bomb",
+                       headers: ["START GAME", "LOCAL MULTIPLAYER", "CREATE MODE", "SETTINGS"],
+                       content: ["Press this to start a game!",
+                                 "This is where you are able to host a multiplayer game with nearby players!",
+                                 "This is where you can create your own custom modes to play with friends!",
+                                 "This is where you can customise various settings of the game mechanics"])
             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height, alignment: .center)
             .transition(.asymmetric(insertion: AnyTransition.move(edge: .leading), removal: AnyTransition.move(edge: .trailing)))
             .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
