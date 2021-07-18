@@ -14,29 +14,20 @@ struct TwoPlayerView: View {
     
     
     var body: some View {
-        
-        let leftPlayer = viewModel.players.next(viewModel.players[0])
-        let rightPlayer = viewModel.players.next(leftPlayer)
+
         let frameWidth = UIScreen.main.bounds.width*0.85
         
         ZStack {
             HStack(spacing: 90) {
-                
-                ZStack {
-                    MainPlayer(player: leftPlayer, animatePlayer: .constant(false))
-                        .scaleEffect(viewModel.currentPlayer == leftPlayer ? 1 : 0.9)
-                        .animation(.easeInOut)
-                    
-                    
+                ForEach(viewModel.playerQueue) { player in
+                    ZStack {
+                        MainPlayer(player: player, animatePlayer: .constant(false))
+                            .scaleEffect(viewModel.currentPlayer == player ? 1 : 0.9)
+                            .animation(.easeInOut)
+      
+                    }
                 }
-                
-                ZStack {
-                    MainPlayer(player: rightPlayer, animatePlayer: .constant(false))
-                        .scaleEffect(viewModel.currentPlayer == rightPlayer ? 1 : 0.9)
-                        .animation(.easeInOut)
-                    
-                }
-                
+ 
             }
             .frame(minWidth: frameWidth, maxWidth: frameWidth, minHeight: 0, alignment: .top)
             
@@ -47,27 +38,24 @@ struct TwoPlayerView: View {
             
                 .frame(width: Defaults.miniBombSize,
                        height: Defaults.miniBombSize)
-                .offset(x: viewModel.currentPlayer == leftPlayer ? leftPlayerOffset : rightPlayerOffset,
+                .offset(x: viewModel.currentPlayer == viewModel.playerQueue[0] ? leftPlayerOffset : rightPlayerOffset,
                         y: 0)
                 .animation(.easeInOut(duration: 0.3).delay(.playerTimedOut == viewModel.gameState ? 0.8 : 0))
                 .overlay (
                     BombExplosion()
                         .frame(width: Defaults.miniBombSize*1.5,
                                height: Defaults.miniBombSize*1.5)
-                        .offset(x: viewModel.currentPlayer == leftPlayer ? rightPlayerOffset + Defaults.miniBombExplosionOffset : leftPlayerOffset + Defaults.miniBombExplosionOffset,
+                        .offset(x: viewModel.currentPlayer == viewModel.playerQueue[0] ? rightPlayerOffset + Defaults.miniBombExplosionOffset : leftPlayerOffset + Defaults.miniBombExplosionOffset,
                                 y: Defaults.miniBombExplosionOffset)
                 )
-            
-            
-            
-            
+ 
         }
     }
 }
 
 struct TwoPlayerView_Previews: PreviewProvider {
     static var previews: some View {
-        //        Test()
+
         TwoPlayerView().environmentObject(WordBombGameViewModel())
     }
 }

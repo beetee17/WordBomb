@@ -184,8 +184,6 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             
             else if model.timeLeft <= 0 {
 
-                
-                
                 DispatchQueue.main.async {
                     self.model.handleGameState(.playerTimedOut)
                 }
@@ -219,7 +217,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             switch selectedPeers.count == 0 {
             case true:
                 mpcStatus = ""
-                model.resetPlayers()
+                model = .init()
             case false:
                 mpcStatus = "Hosting: \(selectedPeers.count) Player(s)"
                 setOnlinePlayers()
@@ -232,7 +230,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             // reset hostPeer to nil and update status
             hostingPeer = nil
             mpcStatus = "Lost Connection to Host: \(peer.name)"
-            model.resetPlayers()
+            model = .init()
         
         }
         
@@ -268,7 +266,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             setOnlinePlayers()
         case false:
             mpcStatus = "" // not hosting a game
-            model.resetPlayers()
+            model = .init()
         }
         
         print("toggled, selected peers \(selectedPeers)")
@@ -339,14 +337,14 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     func setOnlinePlayers() {
         
-        var players: [Player] = [Player(name: UserDefaults.standard.string(forKey: "Display Name")!, id: 0)]
+        var players: [Player] = [Player(name: UserDefaults.standard.string(forKey: "Display Name")!)]
         
         for i in selectedPeers.indices {
-            let player = Player(name: selectedPeers[i].name, id: i+1)
-            players.append(player)
+            let player = Player(name: selectedPeers[i].name)
+            players.enqueue(player)
         }
         print("players set \(players)")
-        model.resetPlayers(players)
+        model = .init(players)
 
     }
     
@@ -358,18 +356,18 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         if selectedPeers.count > 0 {
             selectedPeers = []
             print("selected peers: \(selectedPeers)")
-            model.resetPlayers()
+            model = .init()
         }
         
         mpcStatus = ""
         hostingPeer = nil
     }
-    func nextPlayer() {
-        model.currentPlayer = players.next(currentPlayer)
-    }
+    
     
     // to allow contentView to read model's value and update
     var players: [Player] { model.players }
+    
+    var playerQueue: [Player] { model.playerQueue }
     
     var currentPlayer: Player { model.currentPlayer }
     

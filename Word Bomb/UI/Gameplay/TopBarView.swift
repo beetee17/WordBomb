@@ -33,7 +33,7 @@ struct TopBarView: View {
                 
                 Spacer()
  
-                if viewModel.players.numPlaying() > 2 {
+                if viewModel.playerQueue.count > 2 {
                     ZStack {
                         BombView()
                             .frame(width: 100, height: 100)
@@ -60,7 +60,7 @@ struct TopBarView: View {
                 else { gameOverButton.opacity(0) }
             }
             .padding(.horizontal, 20)
-            .padding(.top, viewModel.players.numPlaying() > 2 ? 0 : 50)
+            .padding(.top, viewModel.playerQueue.count > 2 ? 0 : 50)
         
     }
     

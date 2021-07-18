@@ -9,7 +9,7 @@
 import Foundation
 
 
-class Player: Codable, Equatable {
+class Player: Codable, Equatable, Identifiable {
     
     static func == (lhs: Player, rhs: Player) -> Bool {
         return lhs.id == rhs.id
@@ -17,22 +17,20 @@ class Player: Codable, Equatable {
 
     var score:Int = 0
     var name:String
-    var id:Int
+    var id = UUID()
     var livesLeft = UserDefaults.standard.integer(forKey: "Player Lives")
     
     
-    init(name:String, id:Int) {
-        if name == "Player" {
-            self.name = "\(name) \(id+1)"
-        }
-        else {
-            self.name = name
-        }
-        self.id = id
-        
+    init(name:String) {
+        self.name = name
     }
     
     func didRunOutOfTime() {
         livesLeft -= 1
+    }
+    
+    func reset() {
+        score = 0
+        livesLeft = UserDefaults.standard.integer(forKey: "Player Lives")
     }
 }

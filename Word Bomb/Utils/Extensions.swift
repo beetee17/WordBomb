@@ -45,6 +45,16 @@ extension Array where Element: Comparable {
     }
 }
 
+extension Array {
+    mutating func enqueue(_ element: Element) {
+        self.append(element)
+    }
+    
+    mutating func dequeue() -> Element? {
+        self.count == 0 ? nil : self.removeFirst()
+    }
+}
+
 
 extension Array where Element == Peer {
     func find(_ peer: Peer) -> Int? {
@@ -72,39 +82,49 @@ extension Array where Element == Player {
         return num
     }
 
-    func next(_ currentPlayer: Player) -> Player {
-        
-        var nextPlayerID = (currentPlayer.id + 1) % self.count
-        while self[nextPlayerID].livesLeft == 0 {
-            // get next player that has not run out of time
-            nextPlayerID = (nextPlayerID + 1) % self.count
+    mutating func nextPlayer(_ currentPlayer: Player) -> Player {
+        // if two players left do not rotate order for UI -> only remove the player if no lives left
+        if self.count == 2 && self.first!.livesLeft > 0 {
+            if currentPlayer == self.first! { return self.last! }
+            else { return self.first!}
         }
-        return self[nextPlayerID]
-    }
-    
-    func prev(_ currentPlayer: Player) -> Player {
-        var prevIndex = currentPlayer.id
-        repeat {
-            
-            prevIndex -= 1
-            
-            switch prevIndex < 0 {
-            case true:
-                prevIndex = self.count-1
-            case false:
-                break
-            }
-
-        }  while self[prevIndex].livesLeft == 0
         
-        return self[prevIndex]
+        // cycle current player to back of queue if still playing
+        if let currentPlayer = self.dequeue(), currentPlayer.livesLeft > 0 {
+            self.enqueue(currentPlayer)
+        }
+        return self.first! // there will always be at least 1 player in the array
     }
+//
+//    func prev(_ currentPlayer: Player) -> Player {
+//        var prevIndex = currentPlayer.id
+//        repeat {
+//
+//            prevIndex -= 1
+//
+//            switch prevIndex < 0 {
+//            case true:
+//                prevIndex = self.count-1
+//            case false:
+//                break
+//            }
+//
+//        }  while self[prevIndex].livesLeft == 0
+//
+//        return self[prevIndex]
+//    }
     
     mutating func reset() {
-        for i in self.indices {
-            let oldPlayer = self[i]
-            let newPlayer = Player(name: oldPlayer.name, id: oldPlayer.id)
-            self[i] = newPlayer
+        for player in self {
+            player.reset()
         }
+    }
+}
+
+extension Collection where Index == Int {
+
+    subscript(back i: Int) -> Iterator.Element {
+        let backBy = i + 1
+        return self[self.index(self.endIndex, offsetBy: -backBy)]
     }
 }

@@ -17,7 +17,7 @@ struct PlayerView: View {
     var body: some View {
         
         ZStack {
-            switch numPlaying {
+            switch viewModel.playerQueue.count {
                 
             case 3...Int.max:
                 PlayerCarouselView()
@@ -33,18 +33,7 @@ struct PlayerView: View {
                     
             }
         }
-        .onChange(of: viewModel.gameState) { _ in
-            
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0)) {
-                numPlaying = viewModel.players.numPlaying()
-            }
-        }
-        .onChange(of: viewModel.currentPlayer) { _ in
-            
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0)) {
-                numPlaying = viewModel.players.numPlaying()
-            }
-        }
+        .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
     }
 }
 

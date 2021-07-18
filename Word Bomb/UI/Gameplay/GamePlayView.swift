@@ -44,7 +44,7 @@ struct GamePlayView: View {
                 }
                 
                 VStack {
-                    PlayerView(numPlaying: viewModel.players.numPlaying())
+                    PlayerView(numPlaying: viewModel.playerQueue.count)
                         .offset(x: 0, y: UIScreen.main.bounds.height*0.1)
                     Spacer()
                 }

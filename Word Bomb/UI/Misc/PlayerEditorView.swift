@@ -11,7 +11,7 @@ struct PlayerEditorView: View {
     @Binding var playerNames: [String]
     var numPlayers: Int
     var body: some View {
-
+        
         Form {
             ForEach(1...numPlayers, id:\.self ) { index in
                 
@@ -20,11 +20,17 @@ struct PlayerEditorView: View {
                         get: {
                         if index-1 >= playerNames.count { return "Player" }
                         else { return playerNames[index-1] }
-                        },
+                    },
                         
-                        set: { (newValue) in return self.playerNames[index-1] = newValue }))
+                        set: { (newValue) in
+                        if newValue.trim() != "" {
+                            self.playerNames[index-1] = newValue
+                            
+                        }
+                    }))
+                    
                         .autocapitalization(.words)
-                        
+                    
                 }
             }
         }

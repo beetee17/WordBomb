@@ -11,7 +11,9 @@ struct WordBombGame: Codable {
     
     // This model is the mainModel, it implements everything that is independent of the game mode. e.g. it should not implement the processInput function as that differs depending on game mode
     
+    var playerQueue: [Player]
     var players: [Player]
+    
     var currentPlayer: Player
     var livesLeft = UserDefaults.standard.integer(forKey: "Player Lives")
     
@@ -29,41 +31,31 @@ struct WordBombGame: Codable {
     
     
     
-    init() {
-        players = []
-
-        let playerNames: [String] = UserDefaults.standard.stringArray(forKey: "Player Names")!
-
-        for i in 0..<UserDefaults.standard.integer(forKey: "Num Players") {
-            
-            if i >= playerNames.count {
-                players.append(Player(name: "Player", id: i))
-            }
-            else {
-            players.append(Player(name: playerNames[i], id: i))
-            }
-        }
-
-        currentPlayer = players[0]
-    }
-
-    mutating func resetPlayers(_ players: [Player]? = nil) {
+    init(_ players: [Player]? = nil) {
         if let players = players {
-            self.players = players
-            currentPlayer = players[0]
+            self.playerQueue = players
+            
         }
         else {
-            self.players = []
+            self.playerQueue = []
 
             let playerNames: [String] = UserDefaults.standard.stringArray(forKey: "Player Names")!
 
             for i in 0..<UserDefaults.standard.integer(forKey: "Num Players") {
-                self.players.append(Player(name: playerNames[i % playerNames.count], id: i))
+                
+                if i >= playerNames.count {
+                    self.playerQueue.enqueue(Player(name: "Player \(i+1)"))
+                }
+                else {
+                    self.playerQueue.enqueue(Player(name: playerNames[i]))
+                }
             }
-
-            currentPlayer = self.players[0]
         }
+
+        self.currentPlayer = self.playerQueue[0]
+        self.players = self.playerQueue
     }
+
     
     mutating func process(_ input: String, _ response: (status: String, newQuery: String?)) {
         
@@ -72,7 +64,9 @@ struct WordBombGame: Codable {
         case "correct":
             output = "\(input) IS CORRECT"
             query = response.newQuery
-            currentPlayer = players.next(currentPlayer)
+            
+            currentPlayer = playerQueue.nextPlayer(currentPlayer)
+            
             timeLimit = max(UserDefaults.standard.float(forKey:"Time Constraint"), timeLimit * UserDefaults.standard.float(forKey: "Time Difficulty"))
             timeLeft = timeLimit
             
@@ -96,7 +90,7 @@ struct WordBombGame: Codable {
         // mark player as no longer in the game
         currentPlayer.didRunOutOfTime()
         
-        switch players.numPlaying() < 2 {
+        switch playerQueue.numPlaying() < 2 {
         case true:
             // game over
             gameState = .gameOver
@@ -112,7 +106,7 @@ struct WordBombGame: Codable {
             output = "\(currentPlayer.name) Ran Out of Time!"
         }
         print("lives left: \(currentPlayer.livesLeft)")
-        currentPlayer = players.next(currentPlayer)
+        currentPlayer = playerQueue.nextPlayer(currentPlayer)
         
         animateExplosion = true
         
@@ -125,7 +119,8 @@ struct WordBombGame: Codable {
         timeLeft = timeLimit
         
         players.reset()
-        currentPlayer = players[0]
+        playerQueue = players
+        currentPlayer = playerQueue[0]
         
     }
     
@@ -145,7 +140,7 @@ struct WordBombGame: Codable {
             clearUI()
             
             if let players = data?["players"] as? [Player] {
-                resetPlayers(players)
+                self = .init(players)
                 
             }
             restartGame()

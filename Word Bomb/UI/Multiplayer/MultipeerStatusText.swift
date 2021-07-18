@@ -13,7 +13,7 @@ struct MPCText: View {
     @EnvironmentObject var mpcDataSource: MultipeerDataSource
     
     var body: some View {
-        VStack {
+        ZStack {
             
             let mpcStatusText = Text(viewModel.mpcStatus)
             
@@ -27,9 +27,8 @@ struct MPCText: View {
                 
             }
 
-            Spacer()
-
         }
+        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*0.93, alignment: .top)
         .font(.caption)
         .environmentObject(mpcDataSource)
     }
