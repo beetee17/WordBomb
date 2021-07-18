@@ -27,7 +27,7 @@ struct SettingsMenu: View {
                 Form {
                     
                     Section(footer: Text("Changes the number of players in offline gameplay.")) {
-                        Stepper("Number of Players: \(numPlayers)", value: $numPlayers, in: 1...20)
+                        Stepper("Number of Players: \(numPlayers)", value: $numPlayers, in: 2...10)
                         NavigationLink("Edit Player Names", destination: PlayerEditorView(playerNames: $playerNames, numPlayers: numPlayers))
                     }
                     

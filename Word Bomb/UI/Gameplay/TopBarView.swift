@@ -15,56 +15,66 @@ struct TopBarView: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
     
     var gameOverButton: some View {
-        Button("Restart") {
+        Button(action: {
             print("Restart Game")
             viewModel.restartGame()
+        }) {
+            Image(systemName: "gobackward")
+                .resizable().aspectRatio(contentMode: .fit)
+                .frame(width: 25, height: 25)
         }
     }
     
     var body: some View {
-
         
-            HStack {
-                Button("Pause") {
-                    print("Pause Game")
-                    // delay to allow keyboard to fully hide first -> may mean less responsiveness as user
-                    withAnimation(.spring(response:0.1, dampingFraction:0.6).delay(0.15)) { viewModel.changeViewToShow(.pauseMenu) }
+        
+        HStack {
+            Button(action: {
+                print("Pause Game")
+                // delay to allow keyboard to fully hide first -> may mean less responsiveness as user
+                withAnimation(.spring(response:0.1, dampingFraction:0.6).delay(0.15)) { viewModel.changeViewToShow(.pauseMenu) } }) {
+                    
+                    Image(systemName: "pause")
+                        .resizable().aspectRatio(contentMode: .fit)
+                        .frame(width: 25, height: 25)
+                    
                 }
-                
-                Spacer()
- 
-                if viewModel.playerQueue.count > 2 {
-                    ZStack {
-                        BombView()
-                            .frame(width: 100, height: 100)
-                            .overlay(
-                                Text(String(format: "%.1f", viewModel.timeLeft))
-                                    .foregroundColor(.white)
-                                    .offset(x: 5, y: 10))
-                            
-               
-                        BombExplosion()
-                            .offset(x: 10, y: 10)
-                        // to center explosion on bomb
-                    }
+            
+            
+            Spacer()
+            
+            if viewModel.playerQueue.count > 2 {
+                ZStack {
+                    BombView()
+                        .frame(width: 100, height: 100)
+                        .overlay(
+                            Text(String(format: "%.1f", viewModel.timeLeft))
+                                .foregroundColor(.white)
+                                .offset(x: 5, y: 10))
+                    
+                    
+                    BombExplosion()
+                        .offset(x: 10, y: 10)
+                    // to center explosion on bomb
                 }
-                
-                else {
-                    Text(String(format: "%.1f", viewModel.timeLeft))
-                        .font(.largeTitle)
-                }
-  
-                Spacer()
-  
-                if .gameOver == viewModel.gameState { gameOverButton.opacity(1) }
-                else { gameOverButton.opacity(0) }
             }
-            .padding(.horizontal, 20)
-            .padding(.top, viewModel.playerQueue.count > 2 ? 0 : 50)
+            
+            else {
+                Text(String(format: "%.1f", viewModel.timeLeft))
+                    .font(.largeTitle)
+            }
+            
+            Spacer()
+            
+            if .gameOver == viewModel.gameState { gameOverButton.opacity(1) }
+            else { gameOverButton.opacity(0) }
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, viewModel.playerQueue.count > 2 ? 0 : 50)
         
     }
     
- 
+    
 }
 
 

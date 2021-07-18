@@ -20,35 +20,49 @@ struct MainView: View {
                 Color.clear
 
                 VStack(spacing: 50) {
-                    Button("START GAME") {
-                        print("START GAME")
-                        withAnimation { viewModel.changeViewToShow(.gameTypeSelect) }
-                    }
-                        
-                    Button("Local Multiplayer") {
-                        print("Local Multiplayer")
-                        withAnimation {
-                            viewModel.changeViewToShow(.multipeer)
+                    Button(action: { withAnimation { viewModel.changeViewToShow(.gameTypeSelect) } }) {
+                        HStack {
+                            Image(systemName: "gamecontroller")
+                            Text("START GAME")
                         }
+                        
                     }
+                    .buttonStyle(MainButtonStyle())
+
+                        
+                    Button(action: { withAnimation { viewModel.changeViewToShow(.multipeer) } }) {
+                        HStack {
+                            Image(systemName: "wifi")
+                            Spacer()
+                            Text("LOCAL MULTIPLAYER")
+                            
+                        }
+                        
+                    }
+                    .buttonStyle(MainButtonStyle())
+
                     
-                    Button("CREATE MODE") {
-                        print("Create New Mode")
-                        withAnimation { creatingMode = true }
+                    Button(action: { withAnimation { creatingMode = true } }) {
+                        HStack {
+                            Image(systemName: "plus.circle")
+                            Text("CREATE MODE")
+                        }
                     }
                     .buttonStyle(MainButtonStyle())
                     .sheet(isPresented: $creatingMode, onDismiss: {}) { CustomModeForm() }
                     
-                    Button("SETTINGS") {
-                        print("Settings")
-                        withAnimation { changingSettings = true }
+                    Button(action: { withAnimation { changingSettings = true } }) {
+                        HStack {
+                            Image(systemName: "gearshape")
+                            Text("SETTINGS")
+                        }
+                    
                     }
                     .buttonStyle(MainButtonStyle())
                     .sheet(isPresented: $changingSettings) { SettingsMenu(isPresented: $changingSettings).environmentObject(viewModel) }
                         
                 }
                 .padding(.top, 125)
-                .buttonStyle(MainButtonStyle())
                 .ignoresSafeArea(.all)
                 
             }

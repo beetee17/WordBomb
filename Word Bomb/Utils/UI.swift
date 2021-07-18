@@ -11,7 +11,9 @@ import SwiftUI
 struct MainButtonStyle: ButtonStyle {
     let width = UIScreen.main.bounds.width/2
     let height = UIScreen.main.bounds.height*0.07
+    
     func makeBody(configuration: Configuration) -> some View {
+
         configuration.label
             .textCase(.uppercase)
             .font(Font.title2.bold())
@@ -138,6 +140,7 @@ extension View {
     func helpSheet(title: String, headers: [String], content: [String]) -> some View {
         self.modifier(HelpSheet(title: title, headers: headers, content: content))
     }
+
 }
 
 
