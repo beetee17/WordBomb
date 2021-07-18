@@ -21,37 +21,43 @@ struct ModeSelectView: View {
     @State private var contentOverflow = false
     
     var body: some View {
-
+        
         VStack {
             
             SelectModeText()
-
-                VStack(spacing: 50) {
-                    ForEach(Defaults.gameModes) { mode in
-                        if mode.gameType == gameType { ModeSelectButton(gameMode: mode) }
-                    }
+            
+            VStack(spacing: 50) {
+                ForEach(Defaults.gameModes) { mode in
+                    if mode.gameType == gameType { ModeSelectButton(gameMode: mode) }
+                }
+                
+                ForEach(items) {
+                    item in
                     
-                    ForEach(items) {
-                        item in
-                        
-                        ForEach(Defaults.gameTypes, id: \.0) { typeName, gameType in
-                            if item.gameType! == typeName && gameType == self.gameType {
-                                
-                                CustomModeButton(item: item)
-                            }
+                    ForEach(Defaults.gameTypes, id: \.0) { typeName, gameType in
+                        if item.gameType! == typeName && gameType == self.gameType {
+                            
+                            CustomModeButton(item: item)
                         }
                     }
+                }
                 
                 .frame(width: UIScreen.main.bounds.width)
                 
             }
             .background(
-                            GeometryReader { contentGeometry in
-                                Color.clear.onAppear {
-                                    contentOverflow = contentGeometry.size.height > UIScreen.main.bounds.height/2
-                                    print(contentGeometry.size.height)
-                                }
-                            })
+                // hacky way to ensure geometry is always updated
+                GeometryReader { contentGeometry in
+                Color.clear
+                .onAppear() {
+                    contentOverflow = contentGeometry.size.height > UIScreen.main.bounds.height/2
+                    print(contentGeometry.size.height)
+                }
+                .onChange(of: Date()) { _ in
+                    contentOverflow = contentGeometry.size.height > UIScreen.main.bounds.height/2
+                    print(contentGeometry.size.height)
+                }
+            })
             .useScrollView(when: contentOverflow)
             .frame(maxHeight: UIScreen.main.bounds.height/2, alignment: .center)
             
@@ -61,6 +67,7 @@ struct ModeSelectView: View {
                 withAnimation { viewModel.changeViewToShow(.gameTypeSelect) }
             }
             .buttonStyle(MainButtonStyle())
+            .offset(x: 0, y: 50) // offset by VStack spacing
         }
         .transition(.move(edge: .trailing))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
