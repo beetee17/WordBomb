@@ -47,7 +47,7 @@ extension Text {
 
 struct PermanentKeyboard: UIViewRepresentable {
     @Binding var text: String
-    var forceResignFirstResponder = false
+    @Binding var forceResignFirstResponder: Bool
     
     class Coordinator: NSObject, UITextFieldDelegate {
         var parent: PermanentKeyboard

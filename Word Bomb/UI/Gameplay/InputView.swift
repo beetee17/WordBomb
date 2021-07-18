@@ -18,11 +18,12 @@ struct InputView: View {
     var body: some View {
 
         ZStack {
-            PermanentKeyboard(text: $viewModel.input)
+            PermanentKeyboard(text: $viewModel.input, forceResignFirstResponder: $viewModel.forceHideKeyboard)
             Text(viewModel.input).onChange(of: viewModel.input,
                                            perform: { _ in if viewModel.input.last == "\n" {
                                                 viewModel.processInput()
                                                viewModel.input = ""
+                                               
                                            }
             }).ignoresSafeArea(.keyboard)
                 

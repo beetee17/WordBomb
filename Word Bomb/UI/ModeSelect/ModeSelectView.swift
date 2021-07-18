@@ -46,12 +46,12 @@ struct ModeSelectView: View {
                 
             }
             .background(
-                GeometryReader { contentGeometry in
-                Color.clear.onAppear {
-                    contentOverflow = contentGeometry.size.height > UIScreen.main.bounds.height/2
-                    print(contentGeometry.size.height)
-                }
-            })
+                            GeometryReader { contentGeometry in
+                                Color.clear.onAppear {
+                                    contentOverflow = contentGeometry.size.height > UIScreen.main.bounds.height/2
+                                    print(contentGeometry.size.height)
+                                }
+                            })
             .useScrollView(when: contentOverflow)
             .frame(maxHeight: UIScreen.main.bounds.height/2, alignment: .center)
             

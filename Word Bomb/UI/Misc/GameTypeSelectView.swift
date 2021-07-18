@@ -13,6 +13,7 @@ struct GameTypeSelectView: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
     
     var body: some View {
+        
         ZStack {
             Color.clear
             SelectGameTypeText()

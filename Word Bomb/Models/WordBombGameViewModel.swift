@@ -16,6 +16,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     @Published var viewToShow: ViewToShow = .main
     
     @Published var input = ""
+    @Published var forceHideKeyboard = true
     @Published var gameType: GameType?
     
     var wordGames: [GameMode] = Defaults.gameModes
@@ -38,6 +39,12 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     func changeViewToShow(_ view: ViewToShow) {
         viewToShow = view
+        if .game == viewToShow {
+            forceHideKeyboard = false
+        }
+        else {
+            forceHideKeyboard = true
+        }
     }
     
     func selectCustomMode(_ item: Item) {
@@ -365,8 +372,6 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     
     // to allow contentView to read model's value and update
-    var players: [Player] { model.players }
-    
     var playerQueue: [Player] { model.playerQueue }
     
     var currentPlayer: Player { model.currentPlayer }
@@ -390,6 +395,8 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         get { model.animateExplosion }
         set { model.animateExplosion =  newValue }
     }
+    
+    
    
 }
 

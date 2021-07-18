@@ -28,7 +28,7 @@ struct MPCText: View {
             }
 
         }
-        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*0.93, alignment: .top)
+//        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*0.93, alignment: .top)
         .font(.caption)
         .environmentObject(mpcDataSource)
     }
