@@ -28,8 +28,8 @@ struct CustomModeForm: View {
         Form {
             Section(header: Text("Game Mode")) {
                 Picker("Select a color", selection: $gameType) {
-                    ForEach(Defaults.gameTypes, id: \.0) { typeName, gameType in
-                        Text(typeName)
+                    ForEach(gameTypes) { gameType in
+                        Text(gameType.name)
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())

@@ -9,6 +9,8 @@ import SwiftUI
 import MultipeerKit
 import MultipeerConnectivity
 
+let gameTypes = [GameType(name: "Classic", type: gameType.Classic), GameType(name: "EXACT", type: gameType.Exact), GameType(name:"REVERSE", type:gameType.Reverse)]
+
 @main
 struct Word_BombApp: App {
 

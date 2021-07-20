@@ -8,18 +8,22 @@
 import Foundation
 import SwiftUI
 
+struct GameType: Equatable, Identifiable, Codable {
+    var id = UUID()
+    var name: String
+    var type: gameType
+}
+
 struct Defaults {
-    static let CountryGame = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "NAME A COUNTRY", words: nil, queries: nil, gameType: GameType.Exact, id: 1)
+    static let CountryGame = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "NAME A COUNTRY", words: nil, queries: nil, gameType: gameTypes[1], id: 1)
     
-    static let CountryGameReverse = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "COUNTRIES STARTING WITH...", words: nil, queries: nil, gameType: GameType.Reverse, id: 2)
+    static let CountryGameReverse = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "COUNTRIES STARTING WITH...", words: nil, queries: nil, gameType: gameTypes[2], id: 2)
     
-    static let WordGame = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables_2", instruction: "WORDS CONTAINING...", words: nil, queries: nil, gameType: GameType.Classic, id: 3)
+    static let WordGame = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables_2", instruction: "WORDS CONTAINING...", words: nil, queries: nil, gameType: gameTypes[0], id: 3)
     
-    static let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", instruction: "WORDS STARTING WITH...", words: nil, queries: nil, gameType: GameType.Reverse, id: 4)
+    static let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", instruction: "WORDS STARTING WITH...", words: nil, queries: nil, gameType: gameTypes[2], id: 4)
     
     static let gameModes = [CountryGame, CountryGameReverse, WordGame, WordGameReverse]
-    
-    static let gameTypes = [("Classic", GameType.Classic), ("EXACT", GameType.Exact), ("REVERSE", GameType.Reverse)]
     
     static let playerAvatarSize = UIScreen.main.bounds.width/3.5
     
@@ -31,3 +35,5 @@ struct Defaults {
     
     static let explosionDuration = 0.8
 }
+
+

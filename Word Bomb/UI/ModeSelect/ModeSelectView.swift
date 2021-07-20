@@ -22,26 +22,31 @@ struct ModeSelectView: View {
     
     var body: some View {
         
-        VStack {
+        VStack(spacing:25) {
             
             SelectModeText()
             
             VStack(spacing: 50) {
+
                 ForEach(Defaults.gameModes) { mode in
-                    if mode.gameType == gameType { ModeSelectButton(gameMode: mode) }
+                    if mode.gameType == gameType {
+                        ModeSelectButton(gameMode: mode)
+                    }
                 }
-                
-                ForEach(items) {
-                    item in
+                .transition(.move(edge: .trailing))
+                .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
+
+                ForEach(items) { item in
                     
-                    ForEach(Defaults.gameTypes, id: \.0) { typeName, gameType in
-                        if item.gameType! == typeName && gameType == self.gameType {
-                            
+                    ForEach(gameTypes) { gameType in
+                        if item.gameType! == gameType.name && self.gameType == gameType {
+
                             CustomModeButton(item: item)
                         }
                     }
                 }
-                
+                .transition(.move(edge: .trailing))
+                .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
                 .frame(width: UIScreen.main.bounds.width)
                 
             }
@@ -68,7 +73,7 @@ struct ModeSelectView: View {
                     .foregroundColor(.white)
                 
             }
-            .offset(x: 0, y: 50) // offset by VStack spacing
+            .offset(y: 25)
         }
         .transition(.move(edge: .trailing))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
@@ -97,7 +102,6 @@ struct ModeSelectButton: View {
             withAnimation { viewModel.startGame(mode: gameMode) }
             print("\(gameMode.modeName) mode!")
         }
-        .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
         .buttonStyle(MainButtonStyle())
     }
 }
@@ -106,6 +110,6 @@ struct ModeSelectButton: View {
 struct ModeSelectView_Previews: PreviewProvider {
     
     static var previews: some View {
-        ModeSelectView(gameType: .Exact).environmentObject(WordBombGameViewModel())
+        ModeSelectView(gameType: gameTypes[0]).environmentObject(WordBombGameViewModel())
     }
 }

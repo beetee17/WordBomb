@@ -25,6 +25,7 @@ struct MainButtonStyle: ButtonStyle {
 //            .shadow(color: .black, radius: 2, x: 0, y: 3)
             .scaleEffect(configuration.isPressed ? 1.2 : 1.0)
             .contentShape(RoundedRectangle(cornerRadius: 10, style: .circular))
+        
             
             
     }

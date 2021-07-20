@@ -9,19 +9,19 @@ import SwiftUI
 
 
 struct GameTypeSelectView: View {
-
+    
     @EnvironmentObject var viewModel: WordBombGameViewModel
     
     var body: some View {
         
-        ZStack {
-            Color.clear
+        VStack(spacing:100) {
+            
             SelectGameTypeText()
-                
+            
             VStack(spacing: 50) {
-                ForEach(Defaults.gameTypes, id: \.0) { typeName, gameType in
-                    Button(typeName) {
-
+                ForEach(gameTypes) { gameType in
+                    Button(gameType.name) {
+                        
                         viewModel.gameType = gameType
                         withAnimation { viewModel.changeViewToShow(.modeSelect) }
                         
@@ -29,13 +29,12 @@ struct GameTypeSelectView: View {
                     .buttonStyle(MainButtonStyle())
                     
                 }
-
-                Button(action: { withAnimation { viewModel.changeViewToShow(.main) } }) {
-                    Image(systemName: "arrow.backward")
-                        .font(Font.title.bold())
-                        .foregroundColor(.white)
-                    
-                }
+                
+            }
+            Button(action: { withAnimation { viewModel.changeViewToShow(.main) } }) {
+                Image(systemName: "arrow.backward")
+                    .font(Font.title.bold())
+                    .foregroundColor(.white)
             }
         }
         .helpSheet(title: "Game Types",
@@ -43,7 +42,7 @@ struct GameTypeSelectView: View {
                    content: ["Input a word that can be exactly found in the database!",
                              "Input a word that contains a certain syllable!",
                              "Input a word that starts with the letter of the previous word given!"])
-        
+        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height, alignment: .center)
         .transition(.asymmetric(insertion: AnyTransition.move(edge: .trailing), removal: AnyTransition.move(edge: .leading)))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
         .environmentObject(viewModel)
@@ -54,21 +53,18 @@ struct GameTypeSelectView: View {
 struct SelectGameTypeText: View {
     
     var body: some View {
-        VStack {
-            Text("Select Game Type")
-                .fontWeight(.bold)
-                .font(.largeTitle)
-            Spacer()
-        }
-        .padding(.top, 100)
+        
+        Text("Select Game Type")
+            .fontWeight(.bold)
+            .font(.largeTitle)
+        
     }
 }
 
-//
-//
-//struct ModeSelectView_Previews: PreviewProvider {
-//    
-//    static var previews: some View {
-//        ModeSelectView()
-//    }
-//}
+
+struct GameTypeSelectView_Previews: PreviewProvider {
+    
+    static var previews: some View {
+        GameTypeSelectView().environmentObject(WordBombGameViewModel())
+    }
+}

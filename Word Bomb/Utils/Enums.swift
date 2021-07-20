@@ -22,7 +22,8 @@ struct GameMode: Identifiable, Codable {
     
 }
 
-enum GameType: Int, Codable {
+
+enum gameType: Int, Codable {
     case Exact
     case Classic
     case Reverse
