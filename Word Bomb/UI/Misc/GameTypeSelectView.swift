@@ -30,11 +30,12 @@ struct GameTypeSelectView: View {
                     
                 }
 
-                Button("BACK") {
-                    print("BACK")
-                    withAnimation { viewModel.changeViewToShow(.main) }
+                Button(action: { withAnimation { viewModel.changeViewToShow(.main) } }) {
+                    Image(systemName: "arrow.backward")
+                        .font(Font.title.bold())
+                        .foregroundColor(.white)
+                    
                 }
-                .buttonStyle(MainButtonStyle())
             }
         }
         .helpSheet(title: "Game Types",

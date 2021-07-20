@@ -17,7 +17,9 @@ struct GamePlayView: View {
         }
     }
     var queryText: some View {
-        viewModel.query.map { Text($0).boldText() }
+        viewModel.query.map { Text($0)
+            .boldText()
+        }
     }
     
     var body: some View {

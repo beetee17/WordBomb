@@ -106,7 +106,7 @@ struct PlayerAvatar: View {
                         .font(.system(size: 60,
                                       weight: .regular,
                                       design: .rounded))
-                        .foregroundColor(.white))
+                        )
             
     }
 }

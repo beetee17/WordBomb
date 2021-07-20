@@ -13,8 +13,6 @@ import MultipeerConnectivity
 struct Word_BombApp: App {
 
     let game: WordBombGameViewModel
-    let persistenceController: PersistenceController
-    
     
     
     init() {
@@ -31,19 +29,18 @@ struct Word_BombApp: App {
         ])
         
         game = WordBombGameViewModel()
-        persistenceController = PersistenceController.shared
+        
         
         
     }
 
-
     var body: some Scene {
         
         WindowGroup {
-            ContentView()
+            Prelaunch()
                 .environmentObject(game)
                 .environmentObject(Multipeer.dataSource)
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+//                .environment(\.managedObjectContext, persistenceController.container.viewContext)
             
         }
     }

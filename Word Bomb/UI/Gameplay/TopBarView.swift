@@ -21,6 +21,7 @@ struct TopBarView: View {
         }) {
             Image(systemName: "gobackward")
                 .resizable().aspectRatio(contentMode: .fit)
+                .foregroundColor(.white)
                 .frame(width: 25, height: 25)
         }
     }
@@ -36,6 +37,7 @@ struct TopBarView: View {
                     
                     Image(systemName: "pause")
                         .resizable().aspectRatio(contentMode: .fit)
+                        .foregroundColor(.white)
                         .frame(width: 25, height: 25)
                     
                 }
@@ -49,7 +51,6 @@ struct TopBarView: View {
                         .frame(width: 100, height: 100)
                         .overlay(
                             Text(String(format: "%.1f", viewModel.timeLeft))
-                                .foregroundColor(.white)
                                 .offset(x: 5, y: 10))
                     
                     

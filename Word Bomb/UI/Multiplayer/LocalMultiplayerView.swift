@@ -26,6 +26,7 @@ struct LocalMultiplayerView: View {
                     print("Host Game")
                     withAnimation { presentPeersSheet = true }
                 }
+                .buttonStyle(MainButtonStyle())
                 .sheet(isPresented: $presentPeersSheet) { LocalPeersView() }
                 
                 Button("Reconnect") {
@@ -36,14 +37,15 @@ struct LocalMultiplayerView: View {
                         
                     }
                 }
+                .buttonStyle(MainButtonStyle())
                 
-                Button("Back") {
-                    print("Back")
-                    withAnimation { viewModel.changeViewToShow(.main) }
-                }
+                Button(action: { withAnimation { viewModel.changeViewToShow(.main) } }) {
+                    Image(systemName: "arrow.backward")
+                        .font(Font.title.bold())
+                        .foregroundColor(.white)
                     
+                }
             }
-            .buttonStyle(MainButtonStyle())
             
         }
         .helpSheet(title: "Local Multiplayer",

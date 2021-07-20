@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct MainButtonStyle: ButtonStyle {
     let width = UIScreen.main.bounds.width/2
     let height = UIScreen.main.bounds.height*0.07
@@ -20,9 +19,8 @@ struct MainButtonStyle: ButtonStyle {
             .frame(width: width, height: height)
             .padding(.horizontal)
             .lineLimit(1).minimumScaleFactor(0.5)
-            .foregroundColor(Color.white)
 //            .background(Color(red: 229/255, green: 142/255, blue:38/255, opacity: 1))
-            .background(RadialGradient(colors: [.orange, .gray], center: .center, startRadius: 0 , endRadius: 400))
+//            .background(RadialGradient(colors: [.orange, .gray], center: .center, startRadius: 0 , endRadius: 400))
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
 //            .shadow(color: .black, radius: 2, x: 0, y: 3)
             .scaleEffect(configuration.isPressed ? 1.2 : 1.0)
@@ -158,7 +156,7 @@ struct HelpSheet: ViewModifier {
                 print("HELP")
                 showHelpSheet = true}) {
                 Image(systemName: "info.circle")
-                    .foregroundColor(.black)
+                    .foregroundColor(.white)
                     .frame(width: 100, height: 100) // tappable area
                     .sheet(isPresented: $showHelpSheet) {
                         NavigationView {
@@ -166,7 +164,6 @@ struct HelpSheet: ViewModifier {
                                 ForEach(Array(zip(self.headers, self.content)), id: \.0) { item in
                                     Section(header: Text(item.0)) {
                                         Text(item.1)
-                                            .foregroundColor(.black)
                                     }
                                 }
                             }

@@ -12,11 +12,15 @@ struct MainView: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
     @State var creatingMode = false
     @State var changingSettings = false
+
     
     var body: some View {
         
-            ZStack {                
-                LogoView()
+            ZStack {
+                VStack {
+                    LogoView()
+                    Spacer()
+                }
                 Color.clear
 
                 VStack(spacing: 50) {
@@ -71,6 +75,7 @@ struct MainView: View {
                                  "This is where you are able to host a multiplayer game with nearby players!",
                                  "This is where you can create your own custom modes to play with friends!",
                                  "This is where you can customise various settings of the game mechanics"])
+
             .transition(.asymmetric(insertion: AnyTransition.move(edge: .leading), removal: AnyTransition.move(edge: .trailing)))
             .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
             .zIndex(/*@START_MENU_TOKEN@*/1.0/*@END_MENU_TOKEN@*/) // transition does not work with zIndex set to 0
@@ -79,8 +84,8 @@ struct MainView: View {
 }
 
 
-struct MainView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainView().environmentObject(WordBombGameViewModel())
-    }
-}
+//struct MainView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        MainView().environmentObject(WordBombGameViewModel())
+//    }
+//}

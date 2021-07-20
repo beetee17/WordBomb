@@ -62,12 +62,12 @@ struct ModeSelectView: View {
             .frame(maxHeight: UIScreen.main.bounds.height/2, alignment: .center)
             .frame(width: UIScreen.main.bounds.width)
             
-            
-            Button("BACK") {
-                print("BACK")
-                withAnimation { viewModel.changeViewToShow(.gameTypeSelect) }
+            Button(action: { withAnimation { viewModel.changeViewToShow(.gameTypeSelect) } }) {
+                Image(systemName: "arrow.backward")
+                    .font(Font.title.bold())
+                    .foregroundColor(.white)
+                
             }
-            .buttonStyle(MainButtonStyle())
             .offset(x: 0, y: 50) // offset by VStack spacing
         }
         .transition(.move(edge: .trailing))
