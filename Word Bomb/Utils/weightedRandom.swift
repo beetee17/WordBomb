@@ -9,14 +9,16 @@ import Foundation
 
 // maybe adapt to allow floating point weights
 
-func weightedRandomElement<T>(items: [(T, UInt)]) -> T {
-
+func weightedRandomElement<T>(items: [(T, Int)]) -> T {
+    
     let total = items.map { $0.1 }.reduce(0, +)
+    precondition(items.count > 0, "There must be at least 1 element")
     precondition(total > 0, "The sum of the weights must be positive")
 
-    let rand = UInt(arc4random_uniform(UInt32(total)))
+    let rand = Int.random(in: 0 ..< total)
 
-    var sum = UInt(0)
+    var sum = 0
+    
     for (element, weight) in items {
         sum += weight
         if rand < sum {

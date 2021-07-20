@@ -26,7 +26,9 @@ struct Word_BombApp: App {
             "Time Constraint" : 0,
             "Num Players" : 4,
             "Player Names" : ["A", "B", "C"],
-            "Player Lives" : 3
+            "Player Lives" : 3,
+            "Difficulty Multiplier" : 0.1,
+            "Syllable Difficulty" : 5.0
             // ... other settings
         ])
         

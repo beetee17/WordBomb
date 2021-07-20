@@ -9,59 +9,68 @@ import Foundation
 
 // Loading of Data
 
-func getWordSets(_ rawData:[String]) -> (words:[String], wordSets:[String: [String]])  {
+func loadWordSets(_ mode: GameMode) -> (words:[String], wordSets:[String: [String]])  {
     
     var wordSets: [String: [String]] = [:]
     var words: [String] = []
-    
-    for wordSet in rawData {
-        // if more than one variation of the answer => wordSet will be comma separated String
-        let variations:[String] = wordSet.components(separatedBy: ", ")
-        if variations.count > 1 {
-            for i in variations.indices {
-                words.append(variations[i])
-                wordSets[variations[i]] = []
-                for j in variations.indices {
-                    if i != j {
-                        // iterate through all of the other variations
-                        wordSets[variations[i]]?.append(variations[j])
-                    }
-                }
-            }
-        } else { words.append(variations[0]) }
-    }
-    return (words, wordSets)
-}
-
-func loadData(_ mode: GameMode) -> (data: [String: [String]], wordSets: [String: [String]])    {
-    
-    var data: [String: [String]] = [:]
-    var wordSets: [String: [String]] = [:]
     
     do {
         print("loading \(mode.dataFile)")
         let path = Bundle.main.path(forResource: mode.dataFile, ofType: "txt", inDirectory: "Data")
         print(path ?? "no path found")
-        let string = try String(contentsOfFile: path!, encoding: String.Encoding.utf8)
         
-        let Data = getWordSets(string.components(separatedBy: "\n"))
+        let rawData = try String(contentsOfFile: path!, encoding: String.Encoding.utf8).components(separatedBy: "\n")
         
-        data["data"] = Data.words.sorted()
-        wordSets = Data.wordSets
+        for wordSet in rawData {
+            // if more than one variation of the answer => wordSet will be comma separated String
+            let variations:[String] = wordSet.components(separatedBy: ", ")
+            if variations.count > 1 {
+                for i in variations.indices {
+                    words.append(variations[i])
+                    wordSets[variations[i]] = []
+                    for j in variations.indices {
+                        if i != j {
+                            // iterate through all of the other variations
+                            wordSets[variations[i]]?.append(variations[j])
+                        }
+                    }
+                }
+            } else { words.append(variations[0]) }
+        }
     }
     
     catch let error {
         Swift.print("Fatal Error: \(error.localizedDescription)")
     }
     
+    return (words, wordSets)
+}
+
+
+func loadSyllables(_ mode: GameMode) -> [(String, Int)] {
+    var syllables = [(String, Int)]()
+    
     if let queryFile = mode.queryFile {
         
         do {
             let path = Bundle.main.path(forResource: queryFile, ofType: "txt", inDirectory: "Data")
             let string = try String(contentsOfFile: path!, encoding: String.Encoding.utf8)
+            
+            let items = string.components(separatedBy: "\n")
+            
+            for item in items {
+                let components = item.components(separatedBy: " ")
+                if components.count == 2 {
+                    let syllable = components[0]
 
-            data["queries"] = string.components(separatedBy: "\n")
-            data["queries"]?.removeLast()
+                    let frequency = Int(components[1])!
+                    syllables.append((syllable, frequency))
+                }
+                else {
+                    print(components)
+                }
+            }
+            
         }
         
         catch let error {
@@ -69,7 +78,8 @@ func loadData(_ mode: GameMode) -> (data: [String: [String]], wordSets: [String:
         }
     }
     
-    return (data, wordSets)
+    return syllables
+    
 }
 
 // for custom modes using core data

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ReverseWordGameModel: WordGameModel, Codable {
+struct ReverseWordGameModel: WordGameModel {
     
     var data: [String]
     var dataDict: [String : [String]]
@@ -39,7 +39,7 @@ struct ReverseWordGameModel: WordGameModel, Codable {
         }
     }
     
-    mutating func resetUsedWords() {
+    mutating func reset() {
         usedWords = Set<Int>()
     }
     

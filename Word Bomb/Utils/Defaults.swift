@@ -13,9 +13,9 @@ struct Defaults {
     
     static let CountryGameReverse = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "COUNTRIES STARTING WITH...", words: nil, queries: nil, gameType: GameType.Reverse, id: 2)
     
-    static let WordGame = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables", instruction: "WORDS CONTAINING...", words: nil, queries: nil, gameType: GameType.Contains, id: 3)
+    static let WordGame = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables_2", instruction: "WORDS CONTAINING...", words: nil, queries: nil, gameType: GameType.Contains, id: 3)
     
-    static let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables", instruction: "WORDS STARTING WITH...", words: nil, queries: nil, gameType: GameType.Reverse, id: 4)
+    static let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", instruction: "WORDS STARTING WITH...", words: nil, queries: nil, gameType: GameType.Reverse, id: 4)
     
     static let gameModes = [CountryGame, CountryGameReverse, WordGame, WordGameReverse]
     

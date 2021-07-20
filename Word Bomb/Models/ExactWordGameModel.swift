@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ExactWordGameModel: WordGameModel, Codable {
+struct ExactWordGameModel: WordGameModel {
     var data: [String]
     var dataDict: [String : [String]]
     var usedWords = Set<Int>()
@@ -37,7 +37,7 @@ struct ExactWordGameModel: WordGameModel, Codable {
         }
     }
     
-    mutating func resetUsedWords() {
+    mutating func reset() {
         usedWords = Set<Int>()
     }
     mutating func getRandQuery(_ input: String? = nil) -> String { return "" }

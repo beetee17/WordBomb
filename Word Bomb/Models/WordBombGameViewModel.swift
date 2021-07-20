@@ -71,15 +71,16 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         // process the gameMode by initing the appropriate WordGameModel
         
         if mode.dataFile != nil {
-            let (data, wordSets) = loadData(mode)
+            let (words, wordSets) = loadWordSets(mode)
             switch mode.gameType {
-            case .Exact: gameModel = ExactWordGameModel(data: data["data"]!, dataDict: wordSets)
+            case .Exact: gameModel = ExactWordGameModel(data: words, dataDict: wordSets)
                 
             case .Contains:
-                gameModel = ContainsWordGameModel(data: data["data"]!, queries: data["queries"]!)
+                let queries = loadSyllables(mode)
+                gameModel = ContainsWordGameModel(data: words, queries: queries)
                 
             case .Reverse:
-                gameModel = ReverseWordGameModel(data: data["data"]!, dataDict: wordSets)
+                gameModel = ReverseWordGameModel(data: words, dataDict: wordSets)
             }
         }
         else {
@@ -88,7 +89,8 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             case .Exact: gameModel = ExactWordGameModel(data: mode.words!, dataDict: [:])
                 
             case .Contains:
-                gameModel = ContainsWordGameModel(data: mode.words!, queries: mode.queries!)
+                break
+//                gameModel = ContainsWordGameModel(data: mode.words!, queries: mode.queries!)
             case .Reverse:
                 gameModel = ReverseWordGameModel(data: mode.words!, dataDict: [:])
             }
@@ -119,7 +121,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     func restartGame() {
         if gameModel != nil {
-            gameModel!.resetUsedWords()
+            gameModel!.reset()
             model.handleGameState(.initial,
                                   data: ["query" : gameModel!.getRandQuery(input),
                                          "instruction" : model.instruction as Any])

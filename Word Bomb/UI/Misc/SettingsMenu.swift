@@ -18,6 +18,8 @@ struct SettingsMenu: View {
     @State private var timeLimit = UserDefaults.standard.float(forKey: "Time Limit")
     @State private var timeDifficulty = UserDefaults.standard.float(forKey: "Time Difficulty")
     @State private var timeConstraint = UserDefaults.standard.float(forKey: "Time Constraint")
+    @State private var difficultyMultiplier = UserDefaults.standard.double(forKey: "Difficulty Multiplier")
+    @State private var syllableDifficulty = UserDefaults.standard.double(forKey: "Syllable Difficulty")
     
     @Binding var isPresented: Bool
     
@@ -59,6 +61,14 @@ struct SettingsMenu: View {
                         Stepper("Time Constraint: \(timeConstraint, specifier: "%.1f") s", value: $timeConstraint, in: 1...timeLimit, step: 0.5)
                         
                     }
+                    Section(footer: Text("Changes the rate of increase in difficulty level. Only applies to Contains game mode")) {
+                        Stepper("Difficulty Multiplier: \(difficultyMultiplier, specifier: "%.2f")", value: $difficultyMultiplier, in: 0...0.5, step: 0.05)
+                    
+                    }
+                    Section(footer: Text("Determines the maximum frequency (in 100s) of syllables during end-game. Only applies to Contains game mode")) {
+                        Stepper("Syllable Difficulty: \(syllableDifficulty, specifier: "%.1f")", value: $syllableDifficulty, in: 1...10, step: 0.5)
+                    
+                    }
                     
                     
                 }
@@ -96,6 +106,8 @@ struct SettingsMenu: View {
         UserDefaults.standard.set(timeLimit, forKey: "Time Limit")
         UserDefaults.standard.set(timeConstraint, forKey: "Time Constraint")
         UserDefaults.standard.set(timeDifficulty, forKey: "Time Difficulty")
+        UserDefaults.standard.set(difficultyMultiplier, forKey: "Difficulty Multiplier")
+        UserDefaults.standard.set(syllableDifficulty, forKey: "Syllable Difficulty")
         isPresented = false
         viewModel.updateGameSettings()
         

@@ -43,6 +43,37 @@ extension Array where Element: Comparable {
         
         return -1
     }
+    
+}
+
+extension Array where Element == (String, Int) {
+    
+    func bisect(at element: Int) -> Int {
+        
+        var low = 0
+        var high = count - 1
+        var mid = Int(high / 2)
+        
+        while low <= high {
+            
+            let midElement = self[mid].1
+            
+            if element == midElement {
+                return mid
+            }
+            
+            else if element < midElement {
+                high = mid - 1
+            }
+            else {
+                low = mid + 1
+            }
+            
+            mid = (low + high) / 2
+        }
+        
+        return mid
+    }
 }
 
 extension Array {
@@ -95,25 +126,7 @@ extension Array where Element == Player {
         }
         return self.first! // there will always be at least 1 player in the array
     }
-//
-//    func prev(_ currentPlayer: Player) -> Player {
-//        var prevIndex = currentPlayer.id
-//        repeat {
-//
-//            prevIndex -= 1
-//
-//            switch prevIndex < 0 {
-//            case true:
-//                prevIndex = self.count-1
-//            case false:
-//                break
-//            }
-//
-//        }  while self[prevIndex].livesLeft == 0
-//
-//        return self[prevIndex]
-//    }
-    
+
     mutating func reset() {
         for player in self {
             player.reset()
