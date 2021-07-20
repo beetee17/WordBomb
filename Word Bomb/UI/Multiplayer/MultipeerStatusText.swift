@@ -13,12 +13,12 @@ struct MPCText: View {
     @EnvironmentObject var mpcDataSource: MultipeerDataSource
     
     var body: some View {
-        ZStack {
+        VStack() {
             
             let mpcStatusText = Text(viewModel.mpcStatus)
             
             let text = viewModel.mpcStatus.lowercased()
-            switch text.contains("connected to") || text.contains("are host")  || text.contains("discoverable") {
+            switch text.contains("connected to") || text.contains("hosting")  || text.contains("discoverable") {
             case true:
                 mpcStatusText.foregroundColor(.green)
                 
@@ -26,9 +26,10 @@ struct MPCText: View {
                 mpcStatusText.foregroundColor(.red)
                 
             }
+            Spacer()
 
         }
-//        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height*0.93, alignment: .top)
+        .offset(x: 0, y: -10)
         .font(.caption)
         .environmentObject(mpcDataSource)
     }

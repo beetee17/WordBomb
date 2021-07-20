@@ -13,13 +13,13 @@ struct Defaults {
     
     static let CountryGameReverse = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "COUNTRIES STARTING WITH...", words: nil, queries: nil, gameType: GameType.Reverse, id: 2)
     
-    static let WordGame = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables_2", instruction: "WORDS CONTAINING...", words: nil, queries: nil, gameType: GameType.Contains, id: 3)
+    static let WordGame = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables_2", instruction: "WORDS CONTAINING...", words: nil, queries: nil, gameType: GameType.Classic, id: 3)
     
     static let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", instruction: "WORDS STARTING WITH...", words: nil, queries: nil, gameType: GameType.Reverse, id: 4)
     
     static let gameModes = [CountryGame, CountryGameReverse, WordGame, WordGameReverse]
     
-    static let gameTypes = [("EXACT", GameType.Exact), ("CONTAINS", GameType.Contains), ("REVERSE", GameType.Reverse)]
+    static let gameTypes = [("Classic", GameType.Classic), ("EXACT", GameType.Exact), ("REVERSE", GameType.Reverse)]
     
     static let playerAvatarSize = UIScreen.main.bounds.width/3.5
     

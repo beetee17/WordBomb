@@ -50,7 +50,7 @@ struct CustomModeForm: View {
                 }
             }
             
-            if gameType == "CONTAINS" {
+            if gameType == "Classic" {
                 Section(header: Text("Queries")) {
                     
                     ZStack {
@@ -128,7 +128,7 @@ struct CustomModeForm: View {
             
         }
         
-        else if queries.trim() == "" && gameType != "EXACT" {
+        else if queries.trim() == "" && gameType != "EXACT" && gameType != "REVERSE" {
             showEmptyFieldAlert = true
             emptyFieldAlertType = .queries
             

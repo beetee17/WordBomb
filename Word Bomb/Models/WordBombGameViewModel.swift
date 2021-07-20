@@ -59,7 +59,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         else if item.gameType! == "CONTAINS" {
             
             let queries = decodeJSONStringtoArray(item.queries!)
-            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: GameType.Contains, id: -1))
+            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: GameType.Classic, id: -1))
             
         }
         
@@ -75,7 +75,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             switch mode.gameType {
             case .Exact: gameModel = ExactWordGameModel(data: words, dataDict: wordSets)
                 
-            case .Contains:
+            case .Classic:
                 let queries = loadSyllables(mode)
                 gameModel = ContainsWordGameModel(data: words, queries: queries)
                 
@@ -88,7 +88,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             switch mode.gameType {
             case .Exact: gameModel = ExactWordGameModel(data: mode.words!, dataDict: [:])
                 
-            case .Contains:
+            case .Classic:
                 break
 //                gameModel = ContainsWordGameModel(data: mode.words!, queries: mode.queries!)
             case .Reverse:

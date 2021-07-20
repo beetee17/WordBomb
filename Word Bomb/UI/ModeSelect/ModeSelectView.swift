@@ -60,6 +60,7 @@ struct ModeSelectView: View {
             })
             .useScrollView(when: contentOverflow)
             .frame(maxHeight: UIScreen.main.bounds.height/2, alignment: .center)
+            .frame(width: UIScreen.main.bounds.width)
             
             
             Button("BACK") {
