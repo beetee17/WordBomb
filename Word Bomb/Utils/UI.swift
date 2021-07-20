@@ -163,7 +163,7 @@ struct HelpSheet: ViewModifier {
                             List {
                                 ForEach(Array(zip(self.headers, self.content)), id: \.0) { item in
                                     Section(header: Text(item.0)) {
-                                        Text(item.1)
+                                        Text(item.1).foregroundColor(.white)
                                     }
                                 }
                             }

@@ -23,7 +23,6 @@ struct Prelaunch: View {
             case true:
         
                 ContentView()
-                    .animation(nil)
                     .environmentObject(viewModel)
                     .environmentObject(mpcDataSource)
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
@@ -40,6 +39,7 @@ struct Prelaunch: View {
                             
                             Spacer()
                         }
+                        .offset(y: -UIScreen.main.bounds.height*0.18)
                     }
                     else {
                         LogoView()

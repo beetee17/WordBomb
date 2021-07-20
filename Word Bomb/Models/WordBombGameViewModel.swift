@@ -176,7 +176,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             
             
             DispatchQueue.main.async { [self]
-//                model.timeLeft = max(0, model.timeLeft - 0.1)
+                model.timeLeft = max(0, model.timeLeft - 0.1)
                 
                 if selectedPeers.count > 0 {
                     // device is hosting a multiplayer game

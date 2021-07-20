@@ -19,6 +19,7 @@ struct MainView: View {
             ZStack {
                 VStack {
                     LogoView()
+                        .offset(y: -UIScreen.main.bounds.height*0.18)
                     Spacer()
                 }
                 Color.clear
