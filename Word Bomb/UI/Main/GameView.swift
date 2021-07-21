@@ -44,7 +44,7 @@ struct GameView_Previews: PreviewProvider {
     
     static var previews: some View {
         let game = WordBombGameViewModel(.game)
-        game.startGame(mode: Defaults.WordGame)
+        game.startGame(mode: WordGame)
         
         return Group {
             GameView().environmentObject(game)

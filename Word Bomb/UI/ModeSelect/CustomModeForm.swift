@@ -28,7 +28,7 @@ struct CustomModeForm: View {
         Form {
             Section(header: Text("Game Mode")) {
                 Picker("Select a color", selection: $gameType) {
-                    ForEach(gameTypes) { gameType in
+                    ForEach(Game.types) { gameType in
                         Text(gameType.name)
                     }
                 }

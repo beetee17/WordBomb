@@ -39,7 +39,7 @@ struct Prelaunch: View {
                             
                             Spacer()
                         }
-                        .offset(y: UIScreen.main.bounds.height*0.03)
+                        .offset(y: Device.height*0.03)
                     }
                     else {
                         LogoView()

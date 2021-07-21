@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct MainButtonStyle: ButtonStyle {
-    let width = UIScreen.main.bounds.width/2
-    let height = UIScreen.main.bounds.height*0.07
+    let width = Device.width/2
+    let height = Device.height*0.07
     
     func makeBody(configuration: Configuration) -> some View {
 
@@ -175,7 +175,7 @@ struct HelpSheet: ViewModifier {
                     
                     }
                 }
-                .offset(x: UIScreen.main.bounds.width*0.425, y: -UIScreen.main.bounds.height*0.45) //top-right
+                .offset(x: Device.width*0.425, y: -Device.height*0.45) //top-right
         }
     }
 }

@@ -14,22 +14,21 @@ struct GameType: Equatable, Identifiable, Codable {
     var type: gameType
 }
 
-struct Defaults {
-    static let CountryGame = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "NAME A COUNTRY", words: nil, queries: nil, gameType: gameTypes[1], id: 1)
+struct Device {
+    static let width = UIScreen.main.bounds.width
+    static let height = UIScreen.main.bounds.height
+}
+
+struct Game {
+    static let types = [GameType(name: "Classic", type: gameType.Classic), GameType(name: "EXACT", type: gameType.Exact), GameType(name:"REVERSE", type: gameType.Reverse)]
     
-    static let CountryGameReverse = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "COUNTRIES STARTING WITH...", words: nil, queries: nil, gameType: gameTypes[2], id: 2)
+    static let modes = [CountryGame, CountryGameReverse, WordGame, WordGameReverse]
     
-    static let WordGame = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables_2", instruction: "WORDS CONTAINING...", words: nil, queries: nil, gameType: gameTypes[0], id: 3)
+    static let playerAvatarSize = Device.width/3.5
     
-    static let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", instruction: "WORDS STARTING WITH...", words: nil, queries: nil, gameType: gameTypes[2], id: 4)
+    static let bombSize = Device.width*0.4
     
-    static let gameModes = [CountryGame, CountryGameReverse, WordGame, WordGameReverse]
-    
-    static let playerAvatarSize = UIScreen.main.bounds.width/3.5
-    
-    static let bombSize = UIScreen.main.bounds.width*0.4
-    
-    static let miniBombSize = UIScreen.main.bounds.width*0.2
+    static let miniBombSize = Device.width*0.2
     
     static let miniBombExplosionOffset = 10.0
     

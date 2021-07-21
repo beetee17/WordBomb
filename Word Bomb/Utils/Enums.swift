@@ -24,9 +24,9 @@ struct GameMode: Identifiable, Codable {
 
 
 enum gameType: Int, Codable {
-    case Exact
-    case Classic
-    case Reverse
+    case Classic = 0
+    case Exact = 1
+    case Reverse = 2
 }
 
 enum GameState: Int, Codable {

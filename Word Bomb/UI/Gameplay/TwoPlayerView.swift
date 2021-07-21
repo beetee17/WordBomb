@@ -15,7 +15,7 @@ struct TwoPlayerView: View {
     
     var body: some View {
 
-        let frameWidth = UIScreen.main.bounds.width*0.85
+        let frameWidth = Device.width*0.85
         
         ZStack {
             HStack(spacing: 90) {
@@ -31,22 +31,22 @@ struct TwoPlayerView: View {
             }
             .frame(minWidth: frameWidth, maxWidth: frameWidth, minHeight: 0, alignment: .top)
             
-            let leftPlayerOffset = -frameWidth/2 + Defaults.playerAvatarSize*0.75
+            let leftPlayerOffset = -frameWidth/2 + Game.playerAvatarSize*0.75
             let rightPlayerOffset = -leftPlayerOffset
             
             BombView()
             
-                .frame(width: Defaults.miniBombSize,
-                       height: Defaults.miniBombSize)
+                .frame(width: Game.miniBombSize,
+                       height: Game.miniBombSize)
                 .offset(x: viewModel.currentPlayer == viewModel.playerQueue[0] ? leftPlayerOffset : rightPlayerOffset,
                         y: 0)
                 .animation(.easeInOut(duration: 0.3).delay(.playerTimedOut == viewModel.gameState ? 0.8 : 0))
                 .overlay (
                     BombExplosion()
-                        .frame(width: Defaults.miniBombSize*1.5,
-                               height: Defaults.miniBombSize*1.5)
-                        .offset(x: viewModel.currentPlayer == viewModel.playerQueue[0] ? rightPlayerOffset + Defaults.miniBombExplosionOffset : leftPlayerOffset + Defaults.miniBombExplosionOffset,
-                                y: Defaults.miniBombExplosionOffset)
+                        .frame(width: Game.miniBombSize*1.5,
+                               height: Game.miniBombSize*1.5)
+                        .offset(x: viewModel.currentPlayer == viewModel.playerQueue[0] ? rightPlayerOffset + Game.miniBombExplosionOffset : leftPlayerOffset + Game.miniBombExplosionOffset,
+                                y: Game.miniBombExplosionOffset)
                 )
  
         }

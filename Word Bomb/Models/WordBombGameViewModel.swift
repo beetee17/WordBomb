@@ -18,8 +18,6 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     @Published var input = ""
     @Published var forceHideKeyboard = true
     @Published var gameType: GameType?
-    
-    var wordGames: [GameMode] = Defaults.gameModes
 
     @Published var selectedPeers: [Peer] = []
     @Published var hostingPeer: Peer?
@@ -53,13 +51,13 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         
         if item.gameType! == "EXACT" {
 
-            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: nil, gameType: gameTypes[0], id: -1))
+            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: nil, gameType: Game.types[.Classic], id: -1))
         }
         
         else if item.gameType! == "CONTAINS" {
             
             let queries = decodeJSONStringtoArray(item.queries!)
-            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: gameTypes[0], id: -1))
+            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: Game.types[.Classic], id: -1))
             
         }
         
@@ -175,7 +173,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         _ = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [self] gameLoop in
             
             
-            DispatchQueue.main.async { [self]
+            DispatchQueue.main.async { 
                 model.timeLeft = max(0, model.timeLeft - 0.1)
                 
                 if selectedPeers.count > 0 {

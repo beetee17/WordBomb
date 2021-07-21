@@ -133,7 +133,13 @@ extension Array where Element == Player {
         }
     }
 }
-
+extension Array where Element == GameType {
+    subscript(type: gameType) -> GameType {
+        get {
+            return self[type.rawValue]
+        }
+    }
+}
 extension Collection where Index == Int {
 
     subscript(back i: Int) -> Iterator.Element {

@@ -100,7 +100,7 @@ struct PlayerAvatar: View {
         let text = String(playerName?.first?.uppercased() ?? "")
         Image(systemName: "circle.fill")
             .resizable()
-            .frame(width: Defaults.playerAvatarSize, height: Defaults.playerAvatarSize, alignment: .center)
+            .frame(width: Game.playerAvatarSize, height: Game.playerAvatarSize, alignment: .center)
             .foregroundColor(.gray)
             .overlay(Text(text)
                         .font(.system(size: 60,

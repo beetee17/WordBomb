@@ -25,7 +25,7 @@
 		6C249D4C2698C1C000B9C002 /* CustomModeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C249D4B2698C1C000B9C002 /* CustomModeButton.swift */; };
 		6C2D67CA26A2A7EA006A0347 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2D67C926A2A7EA006A0347 /* Defaults.swift */; };
 		6C2D67CC26A2A800006A0347 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2D67CB26A2A800006A0347 /* Enums.swift */; };
-		6C2D67F626A596AD006A0347 /* weightedRandom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2D67F526A596AD006A0347 /* weightedRandom.swift */; };
+		6C2D67F626A596AD006A0347 /* WeightedRandom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2D67F526A596AD006A0347 /* WeightedRandom.swift */; };
 		6C2E20C2268DD81600CECD3F /* Word_Bomb_App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2E20C1268DD81600CECD3F /* Word_Bomb_App.swift */; };
 		6C2E20C4268DD81600CECD3F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2E20C3268DD81600CECD3F /* ContentView.swift */; };
 		6C2E20C6268DD82900CECD3F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C2E20C5268DD82900CECD3F /* Assets.xcassets */; };
@@ -76,7 +76,7 @@
 		6C249D4B2698C1C000B9C002 /* CustomModeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomModeButton.swift; sourceTree = "<group>"; };
 		6C2D67C926A2A7EA006A0347 /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
 		6C2D67CB26A2A800006A0347 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
-		6C2D67F526A596AD006A0347 /* weightedRandom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = weightedRandom.swift; sourceTree = "<group>"; };
+		6C2D67F526A596AD006A0347 /* WeightedRandom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightedRandom.swift; sourceTree = "<group>"; };
 		6C2E20BE268DD81600CECD3F /* Word Bomb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Word Bomb.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2E20C1268DD81600CECD3F /* Word_Bomb_App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Word_Bomb_App.swift; sourceTree = "<group>"; };
 		6C2E20C3268DD81600CECD3F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -257,7 +257,7 @@
 				6C0CEE9F269323CE007717E1 /* Multipeer.swift */,
 				6CB6F947268F633600FA9654 /* UI.swift */,
 				6CF9538D2692F55000D16E60 /* Extensions.swift */,
-				6C2D67F526A596AD006A0347 /* weightedRandom.swift */,
+				6C2D67F526A596AD006A0347 /* WeightedRandom.swift */,
 				6CF9539B2692F68E00D16E60 /* Data.swift */,
 				6C2D67CB26A2A800006A0347 /* Enums.swift */,
 				6C2D67C926A2A7EA006A0347 /* Defaults.swift */,
@@ -364,7 +364,7 @@
 				6CF9539C2692F68E00D16E60 /* Data.swift in Sources */,
 				6CB6F93F268F627300FA9654 /* GameView.swift in Sources */,
 				6CB6F94B268F64A300FA9654 /* LogoView.swift in Sources */,
-				6C2D67F626A596AD006A0347 /* weightedRandom.swift in Sources */,
+				6C2D67F626A596AD006A0347 /* WeightedRandom.swift in Sources */,
 				6C37E91E269F287B0079279E /* GamePlayView.swift in Sources */,
 				6C249D4C2698C1C000B9C002 /* CustomModeButton.swift in Sources */,
 				6C0CEEA8269458D6007717E1 /* TopBarView.swift in Sources */,

@@ -44,10 +44,10 @@ struct BombExplosion: View {
         AnimatedImage(name: "explosion-2-merge.gif", isAnimating: $viewModel.animateExplosion)
             .resizable()
             .pausable(false)
-            .frame(width: Defaults.bombSize, height: Defaults.bombSize)
+            .frame(width: Game.bombSize, height: Game.bombSize)
             .opacity(viewModel.animateExplosion ? 1 : 0)
             .onChange(of: viewModel.animateExplosion) { _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + Defaults.explosionDuration) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Game.explosionDuration) {
                     viewModel.animateExplosion = false
                 }
             }

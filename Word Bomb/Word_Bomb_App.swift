@@ -9,7 +9,14 @@ import SwiftUI
 import MultipeerKit
 import MultipeerConnectivity
 
-let gameTypes = [GameType(name: "Classic", type: gameType.Classic), GameType(name: "EXACT", type: gameType.Exact), GameType(name:"REVERSE", type:gameType.Reverse)]
+// initialise default modes
+let CountryGame = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "NAME A COUNTRY", words: nil, queries: nil, gameType: Game.types[.Exact], id: 1)
+
+let CountryGameReverse = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "COUNTRIES STARTING WITH...", words: nil, queries: nil, gameType: Game.types[.Reverse], id: 2)
+
+let WordGame = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables_2", instruction: "WORDS CONTAINING...", words: nil, queries: nil, gameType: Game.types[.Classic], id: 3)
+
+let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", instruction: "WORDS STARTING WITH...", words: nil, queries: nil, gameType: Game.types[.Reverse], id: 4)
 
 @main
 struct Word_BombApp: App {
@@ -21,12 +28,13 @@ struct Word_BombApp: App {
         // register "default defaults"
         UserDefaults.standard.register(defaults: [
             "Display Name": MCPeerID.defaultDisplayName.trim(),
-            "Time Limit" : 5.0,
-            "Time Difficulty" : 0.5,
-            "Time Constraint" : 0,
-            "Num Players" : 4,
-            "Player Names" : ["A", "B", "C"],
-            "Player Lives" : 3
+            "Time Limit" : 10.0,
+            "Time Multiplier" : 0.95,
+            "Time Constraint" : 5.0,
+            "Num Players" : 3,
+            "Player Lives" : 3,
+            "Player Names" : ["A", "B", "C"]
+            
             // ... other settings
         ])
         

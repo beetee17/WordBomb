@@ -24,7 +24,6 @@ struct GamePlayView: View {
     
     var body: some View {
         ZStack {
-            let screen = UIScreen.main.bounds
             
                   // for debugging preview
 //                ZStack {
@@ -47,7 +46,7 @@ struct GamePlayView: View {
                 
                 VStack {
                     PlayerView(numPlaying: viewModel.playerQueue.count)
-                        .offset(x: 0, y: UIScreen.main.bounds.height*0.1)
+                        .offset(x: 0, y: Device.height*0.1)
                     Spacer()
                 }
 

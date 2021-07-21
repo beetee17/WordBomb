@@ -28,7 +28,7 @@ struct ModeSelectView: View {
             
             VStack(spacing: 50) {
 
-                ForEach(Defaults.gameModes) { mode in
+                ForEach(Game.modes) { mode in
                     if mode.gameType == gameType {
                         ModeSelectButton(gameMode: mode)
                     }
@@ -38,7 +38,7 @@ struct ModeSelectView: View {
 
                 ForEach(items) { item in
                     
-                    ForEach(gameTypes) { gameType in
+                    ForEach(Game.types) { gameType in
                         if item.gameType! == gameType.name && self.gameType == gameType {
 
                             CustomModeButton(item: item)
@@ -47,7 +47,7 @@ struct ModeSelectView: View {
                 }
                 .transition(.move(edge: .trailing))
                 .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
-                .frame(width: UIScreen.main.bounds.width)
+                .frame(width: Device.width)
                 
             }
             .background(
@@ -55,17 +55,17 @@ struct ModeSelectView: View {
                 GeometryReader { contentGeometry in
                 Color.clear
                 .onAppear() {
-                    contentOverflow = contentGeometry.size.height > UIScreen.main.bounds.height/2
+                    contentOverflow = contentGeometry.size.height > Device.height/2
                     print(contentGeometry.size.height)
                 }
                 .onChange(of: Date()) { _ in
-                    contentOverflow = contentGeometry.size.height > UIScreen.main.bounds.height/2
+                    contentOverflow = contentGeometry.size.height > Device.height/2
                     print(contentGeometry.size.height)
                 }
             })
             .useScrollView(when: contentOverflow)
-            .frame(maxHeight: UIScreen.main.bounds.height/2, alignment: .center)
-            .frame(width: UIScreen.main.bounds.width)
+            .frame(maxHeight: Device.height/2, alignment: .center)
+            .frame(width: Device.width)
             
             Button(action: { withAnimation { viewModel.changeViewToShow(.gameTypeSelect) } }) {
                 Image(systemName: "arrow.backward")
@@ -110,6 +110,6 @@ struct ModeSelectButton: View {
 struct ModeSelectView_Previews: PreviewProvider {
     
     static var previews: some View {
-        ModeSelectView(gameType: gameTypes[0]).environmentObject(WordBombGameViewModel())
+        ModeSelectView(gameType: Game.types[.Classic]).environmentObject(WordBombGameViewModel())
     }
 }

@@ -15,7 +15,7 @@ func loadWordSets(_ mode: GameMode) -> (words:[String], wordSets:[String: [Strin
     var words: [String] = []
     
     do {
-        print("loading \(mode.dataFile)")
+        print("loading \(String(describing: mode.dataFile))")
         let path = Bundle.main.path(forResource: mode.dataFile, ofType: "txt", inDirectory: "Data")
         print(path ?? "no path found")
         
