@@ -53,7 +53,7 @@ struct SettingsMenu: View {
                     }
                     
                     Section(footer: Text("Factor applied to the time limit after each round.")) {
-                        Stepper("Time Multiplier: \(timeMultipier, specifier: "%.2f")", value: $timeMultipier, in: 0.5...1, step: 0.05)
+                        Stepper("Time Multiplier: \(timeMultipier, specifier: "%.2f")", value: $timeMultipier, in: 0.7...1, step: 0.01)
                     }
                     
                     Section(footer: Text("Minimum amount of time allowed for each turn.")) {
