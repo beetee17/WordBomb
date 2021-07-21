@@ -56,7 +56,11 @@ struct WordBombGame: Codable {
         self.players = self.playerQueue
     }
 
-    
+    mutating func updateTime() {
+        if currentPlayer == players.first! {
+            timeLimit = max(UserDefaults.standard.float(forKey:"Time Constraint"), timeLimit * UserDefaults.standard.float(forKey: "Time Multiplier"))
+        }
+    }
     mutating func process(_ input: String, _ response: (status: String, newQuery: String?)) {
         
         // reset the time for other player iff answer from prev player was correct
@@ -67,7 +71,8 @@ struct WordBombGame: Codable {
             
             currentPlayer = playerQueue.nextPlayer(currentPlayer)
             
-            timeLimit = max(UserDefaults.standard.float(forKey:"Time Constraint"), timeLimit * UserDefaults.standard.float(forKey: "Time Difficulty"))
+            updateTime()
+            
             timeLeft = timeLimit
             
         case "wrong":
@@ -107,6 +112,7 @@ struct WordBombGame: Codable {
         }
         print("lives left: \(currentPlayer.livesLeft)")
         currentPlayer = playerQueue.nextPlayer(currentPlayer)
+        updateTime()
         
         animateExplosion = true
         

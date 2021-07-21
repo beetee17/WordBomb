@@ -16,7 +16,7 @@ struct SettingsMenu: View {
     @State var playerNames = UserDefaults.standard.stringArray(forKey: "Player Names")!
     @State private var playerLives = UserDefaults.standard.integer(forKey: "Player Lives")
     @State private var timeLimit = UserDefaults.standard.float(forKey: "Time Limit")
-    @State private var timeDifficulty = UserDefaults.standard.float(forKey: "Time Difficulty")
+    @State private var timeMultipier = UserDefaults.standard.float(forKey: "Time Multiplier")
     @State private var timeConstraint = UserDefaults.standard.float(forKey: "Time Constraint")
 
     
@@ -27,12 +27,12 @@ struct SettingsMenu: View {
             VStack {
                 Form {
                     
-                    Section(footer: Text("Changes the number of players in offline gameplay.")) {
+                    Section(footer: Text("Number of players in offline gameplay.")) {
                         Stepper("Number of Players: \(numPlayers)", value: $numPlayers, in: 2...10)
                         NavigationLink("Edit Player Names", destination: PlayerEditorView(playerNames: $playerNames, numPlayers: numPlayers))
                     }
                     
-                    Section(footer: Text("Changes the number of lives each player begins with.")) {
+                    Section(footer: Text("Number of lives each player starts with.")) {
                         
                         Stepper("Player Lives: \(playerLives)", value: $playerLives, in: 1...10)
                         
@@ -48,15 +48,15 @@ struct SettingsMenu: View {
                     }
                     
                     
-                    Section(footer: Text("Changes the initial time for each player.")) {
+                    Section(footer: Text("Initial time given to each player.")) {
                         Stepper("Time Limit: \(timeLimit, specifier: "%.1f") s", value: $timeLimit, in: 1...50, step: 0.5)
                     }
                     
-                    Section(footer: Text("Changes the factor applied to the time limit after each turn.")) {
-                        Stepper("Time Multiplier: \(timeDifficulty, specifier: "%.2f")", value: $timeDifficulty, in: 0.5...1, step: 0.05)
+                    Section(footer: Text("Factor applied to the time limit after each round.")) {
+                        Stepper("Time Multiplier: \(timeMultipier, specifier: "%.2f")", value: $timeMultipier, in: 0.5...1, step: 0.05)
                     }
                     
-                    Section(footer: Text("Changes the lowest amount of time allowed for each turn.")) {
+                    Section(footer: Text("Minimum amount of time allowed for each turn.")) {
                         Stepper("Time Constraint: \(timeConstraint, specifier: "%.1f") s", value: $timeConstraint, in: 1...timeLimit, step: 0.5)
                         
                     }
@@ -74,7 +74,7 @@ struct SettingsMenu: View {
                         Spacer()
                     }
                 }
-                .frame(width: UIScreen.main.bounds.width, height: 50, alignment: .center)
+                .frame(width: Device.width, height: 50, alignment: .center)
                 .contentShape(Rectangle())
                 
             }
@@ -96,7 +96,7 @@ struct SettingsMenu: View {
         UserDefaults.standard.set(playerLives, forKey: "Player Lives")
         UserDefaults.standard.set(timeLimit, forKey: "Time Limit")
         UserDefaults.standard.set(timeConstraint, forKey: "Time Constraint")
-        UserDefaults.standard.set(timeDifficulty, forKey: "Time Difficulty")
+        UserDefaults.standard.set(timeMultipier, forKey: "Time Multiplier")
 
         isPresented = false
         viewModel.updateGameSettings()
