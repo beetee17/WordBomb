@@ -22,7 +22,7 @@ struct MainView: View {
 
                     Spacer()
                 }
-                .offset(y: UIScreen.main.bounds.height*0.03)
+                .offset(y: Device.height*0.03)
                 
                 Color.clear
 
@@ -73,11 +73,13 @@ struct MainView: View {
                 
             }
             .helpSheet(title: "Welcome to Word Bomb",
-                       headers: ["START GAME", "LOCAL MULTIPLAYER", "CREATE MODE", "SETTINGS"],
-                       content: ["Press this to start a game!",
-                                 "This is where you are able to host a multiplayer game with nearby players!",
-                                 "This is where you can create your own custom modes to play with friends!",
-                                 "This is where you can customise various settings of the game mechanics"])
+                       headers: ["About", "HOW TO PLAY", "START GAME", "MULTIPLAYER", "CREATE MODE", "SETTINGS"],
+                       content: ["Word Bomb is a multiplayer word game that allows you to test your quick-thinking and general knowledge of vocabulary or other custom categories such as countries.\n\nThere are 3 game types currently implemented: Classic, Exact and Reverse.",
+                                 "In all cases, players are tasked to form a word according to the game mode's instruction before their time runs out which loses them a life. The last player standing is declared the winner of the game!\n\nIn a Classic game, players are given a random syllable, and your task is to come up with a valid word that contains the syllable.\n\nIn an Exact game, you must come up with an answer that is found in the database. For example, the database of countries would mean players are only allowed to name countries. You can create your own custom database to play with friends!\n\nA Reverse game is similar to the Exact game, with the added constraint that the answer must start with the ending letter of the previous player's answer.",
+                                 "Press it to start a game!",
+                                 "This is where you are able to host a local multiplayer game with nearby players, and change your display name for online play.",
+                                 "This is where you can create your own custom modes to play with friends.",
+                                 "Customise various settings of the game mechanics here."])
 
             .transition(.asymmetric(insertion: AnyTransition.move(edge: .leading), removal: AnyTransition.move(edge: .trailing)))
             .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
