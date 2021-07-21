@@ -17,7 +17,7 @@ struct ContainsWordGameModel: WordGameModel {
     var pivot: Int
     var numTurns = 0
     var numTurnsBeforeDifficultyIncrease = 2
-//    var difficultyMultiplier = UserDefaults.standard.double(forKey: "Difficulty Multiplier")
+    //    var difficultyMultiplier = UserDefaults.standard.double(forKey: "Difficulty Multiplier")
     var syllableDifficulty = UserDefaults.standard.double(forKey: "Syllable Difficulty")
     
     init(data: [String], queries: [(String, Int)]) {
@@ -29,7 +29,7 @@ struct ContainsWordGameModel: WordGameModel {
     
     mutating func process(_ input: String, _ query: String? = nil) -> (status: String, query: String?) {
         let searchResult = data.search(element: input)
-//        return ("correct", getRandQuery(input))
+        //        return ("correct", getRandQuery(input))
         if usedWords.contains(searchResult) {
             print("\(input.uppercased()) ALREADY USED")
             return ("used", nil)
@@ -41,13 +41,13 @@ struct ContainsWordGameModel: WordGameModel {
             usedWords.insert(searchResult)
             return ("correct", getRandQuery(input))
         }
-                
+        
         else {
             print("\(input.uppercased()) IS WRONG")
             return ("wrong", nil)
-
+            
         }
-
+        
     }
     
     mutating func reset() {
@@ -75,7 +75,7 @@ struct ContainsWordGameModel: WordGameModel {
         
         numTurns += 1
         return query
-
+        
     }
     
     mutating func updateSyllableWeights(pivot: Int) {
@@ -89,26 +89,26 @@ struct ContainsWordGameModel: WordGameModel {
                 let currentOffset = Double(abs(queries[i].1 - queries[pivot].1))
                 
                 if i < pivot {
-
+                    
                     queries[i] = (queries[i].0, min(queriesCopy.last!.1, weight + Int(currentOffset*0.05) + Int(originalOffset*0.1)))
-
+                    
                 }
                 
                 else {
                     queries[i] = (queries[i].0, max(0, weight - Int(currentOffset*0.05) - Int(originalOffset*0.1)))
                 }
             }
-           
             
-            if i < 600 && i > 590{
-                print(queries[i])
-                
-            }
+            
+            //            if i < 600 && i > 590{
+            //                print(queries[i])
+            //
+            //            }
             
         }
-        print("pivot \(queries[pivot])")
+        //        print("pivot \(queries[pivot])")
         
     }
-
+    
 }
 

@@ -28,7 +28,7 @@ struct PlayerCarouselView: View {
                     .zIndex(2)
 
                 LeftPlayer(player: nextPlayer, animatePlayer: .constant(false))
-                    .scaleEffect(animatePlayers ? 0.9 : 0)
+                    .scaleEffect(animatePlayers ? 0.9 : 0.01)
                     .zIndex(0)
 
             }
@@ -42,7 +42,7 @@ struct PlayerCarouselView: View {
             ZStack {
 
                 RightPlayer(player: animatePlayers ? viewModel.playerQueue[back: 1] : prevPlayer)
-                    .scaleEffect(animatePlayers ? 0 : 0.9)
+                    .scaleEffect(animatePlayers ? 0.01 : 0.9)
 
             }
         }

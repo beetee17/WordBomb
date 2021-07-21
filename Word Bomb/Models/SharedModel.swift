@@ -59,6 +59,7 @@ struct WordBombGame: Codable {
     mutating func updateTime() {
         if currentPlayer == players.first! {
             timeLimit = max(UserDefaults.standard.float(forKey:"Time Constraint"), timeLimit * UserDefaults.standard.float(forKey: "Time Multiplier"))
+            print("time multiplied")
         }
     }
     mutating func process(_ input: String, _ response: (status: String, newQuery: String?)) {
