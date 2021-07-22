@@ -70,9 +70,6 @@ struct GamePlayView: View {
                 Spacer()
             }
             .ignoresSafeArea(.all)
-            
-            
-            
         }
         .blur(radius: .pauseMenu == viewModel.viewToShow ? 10 : 0, opaque: false)
     }

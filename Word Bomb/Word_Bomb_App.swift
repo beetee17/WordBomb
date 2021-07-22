@@ -22,10 +22,8 @@ let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", instruction
 
 @main
 struct Word_BombApp: App {
-
-    let game: WordBombGameViewModel
-    @ObservedObject var viewModel = GKMatchMakerAppModel()
-    
+    @ObservedObject var gkViewModel: GKMatchMakerAppModel
+    var gameViewModel: WordBombGameViewModel
     init() {
         // register "default defaults"
         UserDefaults.standard.register(defaults: [
@@ -33,51 +31,55 @@ struct Word_BombApp: App {
             "Time Limit" : 10.0,
             "Time Multiplier" : 0.95,
             "Time Constraint" : 5.0,
+            "Player Names" : ["A", "B", "C"],
             "Num Players" : 3,
-            "Player Lives" : 3,
-            "Player Names" : ["A", "B", "C"]
-            
+            "Player Lives" : 3
+
             // ... other settings
         ])
-        
-        game = WordBombGameViewModel()
-        
-        
-        
+        self.gkViewModel = GKMatchMakerAppModel()
+        self.gameViewModel = WordBombGameViewModel()
     }
-
+    
+    
     var body: some Scene {
         
         WindowGroup {
-            Prelaunch()
-                .environmentObject(game)
-                .environmentObject(Multipeer.dataSource)
-                .alert(isPresented: self.$viewModel.showAlert) {
-                    Alert(title: Text(self.viewModel.alertTitle),
-                          message: Text(self.viewModel.alertMessage),
-                          dismissButton: .default(Text("Ok")))
-                }
-            if self.viewModel.showAuthentication {
+            
+            if self.gkViewModel.showAuthentication {
                 GKAuthenticationView { (error) in
-                    self.viewModel.showAlert(title: "Authentication Failed", message: error.localizedDescription)
+                    self.gkViewModel.showAlert(title: "Authentication Failed", message: error.localizedDescription)
                 } authenticated: { (player) in
-                    self.viewModel.showAuthentication = false
+                    self.gkViewModel.showAuthentication = false
                 }
-            } else if self.viewModel.showInvite {
+            } else if self.gkViewModel.showInvite {
                 GKInviteView(
-                    invite: self.viewModel.invite.gkInvite!
+                    invite: self.gkViewModel.invite.gkInvite!
                 ) {
                 } failed: { (error) in
-                    self.viewModel.showAlert(title: "Invitation Failed", message: error.localizedDescription)
+                    self.gkViewModel.showAlert(title: "Invitation Failed", message: error.localizedDescription)
                 } started: { (gkMatch) in
-                    self.viewModel.showInvite = false
-                    self.viewModel.gkMatch = gkMatch
+                    self.gkViewModel.showInvite = false
+                    self.gkViewModel.gkMatch = gkMatch
                 }
-            } else if self.viewModel.showMatch,
-                      let gkMatch = self.viewModel.gkMatch {
+            } else if self.gkViewModel.showMatch,
+                      let gkMatch = self.gkViewModel.gkMatch {
+                
                 MatchView(gkMatch)
+                    .environmentObject(self.gkViewModel)
+                    .environmentObject(self.gameViewModel)
             }
-//                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            else {
+                Prelaunch()
+                    .environmentObject(self.gameViewModel)
+                    .environmentObject(Multipeer.dataSource)
+                    .alert(isPresented: self.$gkViewModel.showAlert) {
+                        Alert(title: Text(self.gkViewModel.alertTitle),
+                              message: Text(self.gkViewModel.alertMessage),
+                              dismissButton: .default(Text("Ok")))
+                    }
+            }
+
             
         }
     }

@@ -29,7 +29,7 @@ import Foundation
 import GameKit
 import GameKitUI
 
-class GKMatchMakerAppModel: ObservableObject {
+class GKMatchMakerAppModel: NSObject, ObservableObject {
 
     @Published public var showAlert = false
     @Published public var alertTitle: String = ""
@@ -48,31 +48,22 @@ class GKMatchMakerAppModel: ObservableObject {
         didSet {
             self.showInvite = false
             self.showMatch = true
+            
         }
     }
 
     private var cancellableInvite: AnyCancellable?
     private var cancellableMatch: AnyCancellable?
-
-    public init() {
+    
+    public override init() {
+        super.init()
         self.subscribe()
-        /*
-        NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
-            os_log("Notification found with:\r\n name:%{public}@\r\nobject:%{public}\r\nuserInfo: %{public})",
-                   log: .default,
-                   type: .info,
-                   String(describing: notification.name),
-                   String(describing: notification.object),
-                   String(describing: notification.userInfo)
-            )
-        }
- */
     }
 
     deinit {
         self.unsubscribe()
     }
-
+    
     func subscribe() {
         self.cancellableInvite = GKMatchManager
             .shared
@@ -85,6 +76,21 @@ class GKMatchMakerAppModel: ObservableObject {
             .match
             .sink { (match) in
                 self.gkMatch = match.gkMatch
+                self.gkMatch?.delegate = self
+                self.gkMatch?.chooseBestHostingPlayer { player in
+                    print("Best hosting player is: \(String(describing: player?.displayName))")
+                    if let playerName = player?.displayName {
+                        GKMatchGlobal.hostPlayerName = playerName
+                        do {
+                            try self.gkMatch?.sendData(toAllPlayers: playerName.data(using: .utf8)!, with: .reliable)
+                        } catch {
+                            print("could not send hosting player name")
+                            print(error.localizedDescription)
+                        }
+                        
+                    }
+                }
+                
         }
     }
 
@@ -99,3 +105,18 @@ class GKMatchMakerAppModel: ObservableObject {
         self.alertMessage = message
     }
 }
+
+extension GKMatchMakerAppModel: GKMatchDelegate {
+    func match(_ match: GKMatch, didReceive data: Data, fromRemotePlayer player: GKPlayer) {
+        
+        guard let hostPlayerName = String(data: data, encoding: .utf8) else { return }
+        print("Received some data")
+        GKMatchGlobal.hostPlayerName = hostPlayerName
+        
+    }
+    func match(_ match: GKMatch, player: GKPlayer, didChange state: GKPlayerConnectionState) {
+        print("player changed")
+    }
+}
+
+

@@ -43,8 +43,6 @@ struct GKPlayerView: View {
                 Image(systemName: "person.fill")
                     .font(Font.custom("System", size: 64))
                     .frame(width: 128, height: 128)
-                    .background(Color("TextColor"))
-                    .foregroundColor(Color("BackgroundColor"))
                     .clipShape(Circle())
                     .shadow(radius: 10)
             }

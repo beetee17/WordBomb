@@ -8,7 +8,8 @@
 import Foundation
 import MultipeerConnectivity
 import MultipeerKit
-
+import GameKit
+import GameKitUI
 
 
 class WordBombGameViewModel: NSObject, ObservableObject {
@@ -464,6 +465,14 @@ extension WordBombGameViewModel {
         print("players set \(players)")
         model = .init(players)
         
+    }
+    
+    func setGKPlayers(_ gkPlayers: [GKPlayer]) {
+        var players: [Player] = [Player(name: GKLocalPlayer.local.displayName)]
+        for player in gkPlayers {
+            players.append(Player(name: player.displayName))
+        }
+        model = .init(players)
     }
     
     func disconnect() {
