@@ -30,6 +30,7 @@ struct ContentView: View {
         }
         .environmentObject(viewModel)
         .environmentObject(mpcDataSource)
+        
     }
 }
 

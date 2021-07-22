@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MultipeerKit
 
 struct WordBombGame: Codable {
     
@@ -28,8 +29,7 @@ struct WordBombGame: Codable {
     
     var animateExplosion: Bool = false
     
-    
-    
+    var selectedPeers: [Peer] { Multipeer.selectedPeers }
     
     init(_ players: [Player]? = nil) {
         if let players = players {
@@ -56,25 +56,43 @@ struct WordBombGame: Codable {
         self.players = self.playerQueue
     }
 
-    mutating func updateTime() {
+    mutating func updateTimeLimit() {
         if currentPlayer == players.first! {
             timeLimit = max(UserDefaults.standard.float(forKey:"Time Constraint"), timeLimit * UserDefaults.standard.float(forKey: "Time Multiplier"))
             print("time multiplied")
         }
+        timeLeft = timeLimit
     }
     mutating func process(_ input: String, _ response: (status: String, newQuery: String?)) {
         
         // reset the time for other player iff answer from prev player was correct
+        if Multipeer.isHost {
+            Multipeer.transceiver.send(["input" : input, "status" : response.status], to: selectedPeers)
+        }
+
         switch response.status {
         case "correct":
             output = "\(input) IS CORRECT"
-            query = response.newQuery
+
+            if let newQuery = response.newQuery {
+                self.query = newQuery
+                
+                if Multipeer.isHost {
+                    Multipeer.transceiver.send(["query" : newQuery], to: selectedPeers)
+                }
+            }
             
             currentPlayer = playerQueue.nextPlayer(currentPlayer)
             
-            updateTime()
+            if !Multipeer.isNonHost {
+                updateTimeLimit()
+                if Multipeer.isHost {
+                    Multipeer.transceiver.send(["New Time Limit" : timeLimit], to: selectedPeers)
+                }
+                
+            }
             
-            timeLeft = timeLimit
+            
             
         case "wrong":
             output = "\(input) IS WRONG"
@@ -92,32 +110,39 @@ struct WordBombGame: Codable {
 
     
     mutating func currentPlayerRanOutOfTime() {
-
-        // mark player as no longer in the game
-        currentPlayer.didRunOutOfTime()
         
-        switch playerQueue.numPlaying() < 2 {
-        case true:
-            // game over
-            gameState = .gameOver
-        case false:
-            // continue game
-            timeLeft = timeLimit
+        if Multipeer.isHost {
+            Multipeer.transceiver.send("Current Player Timed Out", to: selectedPeers)
         }
         
+        // mark player as no longer in the game
+        currentPlayer.livesLeft -= 1
+        for player in playerQueue {
+            print("\(player.name): \(player.livesLeft) lives")
+            
+        }
         switch currentPlayer.livesLeft == 0 {
         case true:
             output = "\(currentPlayer.name) Lost!"
         case false:
             output = "\(currentPlayer.name) Ran Out of Time!"
         }
-        print("lives left: \(currentPlayer.livesLeft)")
+        
         currentPlayer = playerQueue.nextPlayer(currentPlayer)
-        updateTime()
+        
+        switch playerQueue.count < 2 {
+        case true:
+            // game over
+            handleGameState(.gameOver)
+        case false:
+            // continue game
+            updateTimeLimit()
+        }
+
+        
         
         animateExplosion = true
         
-
     }
     
     mutating func restartGame() {
@@ -159,16 +184,23 @@ struct WordBombGame: Codable {
                 self.instruction = instruction
             }
             
+            if Multipeer.isHost {
+                Multipeer.transceiver.send(self, to: selectedPeers)
+            }
+            
         case .playerInput:
             if let input = data?["input"] as? String, let response = data?["response"] as? (String, String?) {
+                
                 process(input, response)
+                print("shared model processing input")
+                print("\(response)")
             }
             
         case .playerTimedOut:
             currentPlayerRanOutOfTime()
             
         case .gameOver:
-            break
+            Game.stopTimer()
 
         }
     }

@@ -8,14 +8,13 @@
 
 import Foundation
 
-
 class Player: Codable, Equatable, Identifiable {
     
     static func == (lhs: Player, rhs: Player) -> Bool {
         return lhs.id == rhs.id
     }
-
-    var score:Int = 0
+    
+    var score = 0
     var name:String
     var id = UUID()
     var livesLeft = UserDefaults.standard.integer(forKey: "Player Lives")
@@ -23,10 +22,6 @@ class Player: Codable, Equatable, Identifiable {
     
     init(name:String) {
         self.name = name
-    }
-    
-    func didRunOutOfTime() {
-        livesLeft -= 1
     }
     
     func reset() {

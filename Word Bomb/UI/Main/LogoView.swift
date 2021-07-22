@@ -11,11 +11,11 @@ struct LogoView: View {
     
     var body: some View {
         
-        Image("logo")
+        Image("logo-bomb-no-shadow")
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(width: 794/2, height: 511/2)
-            .shadow(color: .black, radius: 2, x: 0, y: 4)
+            .shadow(color: .black, radius: 0, x: 5, y: 5)
             .ignoresSafeArea(.all)
     }
 }

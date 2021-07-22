@@ -12,7 +12,6 @@ struct PlayerView: View {
     // Appears in game scene to display current player's name
     
     @EnvironmentObject var viewModel: WordBombGameViewModel
-    @State var numPlaying: Int
     
     var body: some View {
         
@@ -39,18 +38,18 @@ struct PlayerView: View {
 
 struct PlayerName: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
-    var playerName: String
+    var player: Player
     
     var body: some View {
-        switch .gameOver == viewModel.gameState && viewModel.currentPlayer.name == playerName {
+        switch .gameOver == viewModel.gameState && viewModel.currentPlayer.name == player.name {
         case true:
             
-            Text("\(playerName) WINS!")
+            Text("\(player.name) WINS!")
                 .font(/*@START_MENU_TOKEN@*/.largeTitle/*@END_MENU_TOKEN@*/)
                 .lineLimit(1).minimumScaleFactor(0.5)
         case false:
             
-            Text("\(playerName)")
+            Text("\(player.name)")
                 .font(.largeTitle)
                 .lineLimit(1).minimumScaleFactor(0.5)
         }
@@ -59,7 +58,7 @@ struct PlayerName: View {
 
 struct PlayerLives: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
-    var playerLives: Int
+    var player: Player
     
     var body: some View {
         
@@ -68,7 +67,7 @@ struct PlayerLives: View {
             // redraws the hearts when player livesLeft changes
             // smaller size depending on total number of lives to fit under avatar
             
-            ForEach(0..<playerLives, id: \.self) { i in
+            ForEach(0..<player.livesLeft, id: \.self) { i in
                 // draws remaining lives filled with red
                 Image(systemName: "heart.fill")
                     .resizable()
@@ -79,7 +78,7 @@ struct PlayerLives: View {
                 
             }
             
-            ForEach(0..<viewModel.livesLeft - playerLives, id: \.self) { i in
+            ForEach(0..<max(0, viewModel.livesLeft - player.livesLeft), id: \.self) { i in
                 // draws lives lost (if any) unfilled
                 Image(systemName: "heart")
                     .resizable()
@@ -94,10 +93,10 @@ struct PlayerLives: View {
 }
 struct PlayerAvatar: View {
     
-    var playerName: String?
+    var player: Player
     
     var body: some View {
-        let text = String(playerName?.first?.uppercased() ?? "")
+        let text = String(player.name.first?.uppercased() ?? "")
         Image(systemName: "circle.fill")
             .resizable()
             .frame(width: Game.playerAvatarSize, height: Game.playerAvatarSize, alignment: .center)
@@ -113,6 +112,6 @@ struct PlayerAvatar: View {
 struct PlayerView_Previews: PreviewProvider {
     
     static var previews: some View {
-        PlayerView(numPlaying: 3).environmentObject(WordBombGameViewModel())
+        PlayerView().environmentObject(WordBombGameViewModel())
     }
 }

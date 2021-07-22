@@ -69,7 +69,6 @@ struct MainView: View {
                         
                 }
                 .padding(.top, 125)
-                .ignoresSafeArea(.all)
                 
             }
             .helpSheet(title: "Welcome to Word Bomb",

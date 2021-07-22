@@ -66,13 +66,13 @@ struct LeftPlayer: View {
 
         VStack(spacing: 5) {
 
-            PlayerAvatar(playerName: player.name)
+            PlayerAvatar(player: player)
             if animatePlayer {
-                PlayerName(playerName: player.name)
+                PlayerName(player: player)
                     .transition(.identity)
 
             }
-            PlayerLives(playerLives: player.livesLeft)
+            PlayerLives(player: player)
 
         }
     }
@@ -86,8 +86,8 @@ struct RightPlayer: View {
 
         VStack(spacing: 5) {
 
-            PlayerAvatar(playerName: player.name)
-            PlayerLives(playerLives: player.livesLeft)
+            PlayerAvatar(player: player)
+            PlayerLives(player: player)
 
         }
     }
@@ -100,12 +100,12 @@ struct MainPlayer:  View {
 
         VStack(spacing: 5) {
 
-            PlayerAvatar(playerName: player.name)
+            PlayerAvatar(player: player)
             if !animatePlayer {
-                PlayerName(playerName: player.name)
+                PlayerName(player: player)
                     .transition(.identity)
             }
-            PlayerLives(playerLives: player.livesLeft)
+            PlayerLives(player: player)
 
         }
     }

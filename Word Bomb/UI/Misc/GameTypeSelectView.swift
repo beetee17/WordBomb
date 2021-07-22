@@ -43,7 +43,6 @@ struct GameTypeSelectView: View {
                              "In a Classic game, players are given a random syllable, and your task is to come up with a valid word that contains the syllable.",
                              "In an Exact game, you must come up with an answer that is found in the database. For example, the database of countries would mean players are only allowed to name countries. You can create your own custom database to play with friends!",
                              "A Reverse game is similar to the Exact game, with the added constraint that the answer must start with the ending letter of the previous player's answer."])
-        .frame(width: Device.width, height: Device.height, alignment: .center)
         .transition(.asymmetric(insertion: AnyTransition.move(edge: .trailing), removal: AnyTransition.move(edge: .leading)))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
         .environmentObject(viewModel)

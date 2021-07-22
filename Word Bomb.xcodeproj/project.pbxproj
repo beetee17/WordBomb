@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6C0CEEA0269323CE007717E1 /* Multipeer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0CEE9F269323CE007717E1 /* Multipeer.swift */; };
+		6C0CEEA0269323CE007717E1 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0CEE9F269323CE007717E1 /* Utils.swift */; };
 		6C0CEEA8269458D6007717E1 /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0CEEA7269458D6007717E1 /* TopBarView.swift */; };
 		6C0CEEAB26945926007717E1 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0CEEAA26945926007717E1 /* InputView.swift */; };
 		6C0CEEAE2694595C007717E1 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0CEEAD2694595C007717E1 /* PlayerView.swift */; };
@@ -59,7 +59,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6C0CEE9F269323CE007717E1 /* Multipeer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Multipeer.swift; sourceTree = "<group>"; };
+		6C0CEE9F269323CE007717E1 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		6C0CEEA7269458D6007717E1 /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
 		6C0CEEAA26945926007717E1 /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
 		6C0CEEAD2694595C007717E1 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
@@ -203,6 +203,7 @@
 			children = (
 				6CF953B52692F9F900D16E60 /* Data */,
 				6C2E20C1268DD81600CECD3F /* Word_Bomb_App.swift */,
+				6C403FE626A94049001B4CF1 /* Multipeer */,
 				6CF953902692F61200D16E60 /* Models */,
 				6CF9538A2692E92200D16E60 /* UI */,
 				6CF9539A2692F67F00D16E60 /* Utils */,
@@ -224,6 +225,14 @@
 				6C2E20C8268DD82900CECD3F /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		6C403FE626A94049001B4CF1 /* Multipeer */ = {
+			isa = PBXGroup;
+			children = (
+				6C0CEE9F269323CE007717E1 /* Utils.swift */,
+			);
+			path = Multipeer;
 			sourceTree = "<group>";
 		};
 		6CF9538A2692E92200D16E60 /* UI */ = {
@@ -254,7 +263,6 @@
 		6CF9539A2692F67F00D16E60 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				6C0CEE9F269323CE007717E1 /* Multipeer.swift */,
 				6CB6F947268F633600FA9654 /* UI.swift */,
 				6CF9538D2692F55000D16E60 /* Extensions.swift */,
 				6C2D67F526A596AD006A0347 /* WeightedRandom.swift */,
@@ -383,7 +391,7 @@
 				6C0CEEE72695BEAF007717E1 /* wordbomb.xcdatamodeld in Sources */,
 				6C0CEEB82694BB88007717E1 /* MultipeerStatusText.swift in Sources */,
 				6CD8DA062695D342006A27ED /* CustomModeForm.swift in Sources */,
-				6C0CEEA0269323CE007717E1 /* Multipeer.swift in Sources */,
+				6C0CEEA0269323CE007717E1 /* Utils.swift in Sources */,
 				6CB6F942268F62C000FA9654 /* PauseMenuView.swift in Sources */,
 				6CF9539F2692F6D100D16E60 /* Player.swift in Sources */,
 				6C5DBE0E269CA6E3004A7F71 /* TwoPlayerView.swift in Sources */,

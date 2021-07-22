@@ -33,6 +33,14 @@ struct Game {
     static let miniBombExplosionOffset = 10.0
     
     static let explosionDuration = 0.8
+    
+    static var timer: Timer? = nil
+    
+    static func stopTimer() {
+        Game.timer?.invalidate()
+        Game.timer = nil
+        print("Timer stopped")
+    }
 }
 
 

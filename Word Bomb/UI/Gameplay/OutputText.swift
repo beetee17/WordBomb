@@ -12,20 +12,22 @@ import AVFoundation
 struct OutputText: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
     var body: some View {
-
-
+        
+        
         let output = viewModel.output
         let outputText = Text(output)
-//            .padding(.top, 150)
+        //            .padding(.top, 150)
             .font(.system(size: 20, weight: .bold, design: .default))
             .textCase(.uppercase)
+            .lineLimit(1)
             .transition(AnyTransition.scale.animation(.easeInOut(duration:0.3)))
             .id(output)
-            .onAppear(perform: {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1,
-                                                      execute: { viewModel.clearOutput(output) })
+            .onChange(of: viewModel.output, perform: { newOutput in
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1,
+                                              execute: { viewModel.clearOutput(newOutput) })
             })
-    
+        
         switch viewModel.output.contains("CORRECT") {
         case true:
             outputText
@@ -38,7 +40,7 @@ struct OutputText: View {
     }
     
     @State var audioPlayer: AVAudioPlayer?
-
+    
     func playSound(sound: String, type: String) {
         if let path = Bundle.main.path(forResource: sound, ofType: type) {
             do {

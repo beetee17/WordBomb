@@ -153,29 +153,37 @@ struct HelpSheet: ViewModifier {
     func body(content: Content) -> some View {
         ZStack{
             content
-            Button(action: {
-                print("HELP")
-                showHelpSheet = true}) {
-                Image(systemName: "info.circle")
-                    .foregroundColor(.white)
-                    .frame(width: 100, height: 100) // tappable area
-                    .sheet(isPresented: $showHelpSheet) {
-                        NavigationView {
-                            List {
-                                ForEach(Array(zip(self.headers, self.content)), id: \.0) { item in
-                                    Section(header: Text(item.0)) {
-                                        Text(item.1).foregroundColor(.white)
+            VStack {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        print("HELP")
+                        showHelpSheet = true}) {
+                        Image(systemName: "info.circle")
+                            
+                            .foregroundColor(.white)
+                            .frame(width: 70, height: 100, alignment:.center) // tappable area
+                            .sheet(isPresented: $showHelpSheet) {
+                                NavigationView {
+                                    List {
+                                        ForEach(Array(zip(self.headers, self.content)), id: \.0) { item in
+                                            Section(header: Text(item.0)) {
+                                                Text(item.1).foregroundColor(.white)
+                                            }
+                                        }
                                     }
+                                    .navigationBarTitle(Text(title))
+                                    .listStyle(GroupedListStyle())
+                                    
                                 }
+                            
                             }
-                            .navigationBarTitle(Text(title))
-                            .listStyle(GroupedListStyle())
                             
                         }
-                    
-                    }
                 }
-                .offset(x: Device.width*0.425, y: -Device.height*0.45) //top-right
+                Spacer()
+            }
+            .ignoresSafeArea(.all) 
         }
     }
 }

@@ -22,6 +22,7 @@ struct BombView: View {
     
     private func updateFrame(numTotalFrames: Int, timeLeft: Float, timeLimit: Float) -> String {
         let frameNumber = numTotalFrames - Int(timeLeft / (timeLimit / Float(numTotalFrames))) + 1
+        
         if frameNumber >= 10 {
             
             return String(format: "frame_apngframe%02d", frameNumber)
