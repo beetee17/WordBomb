@@ -465,9 +465,8 @@ extension WordBombGameViewModel {
     }
     
     func disconnect() {
-        print("manual disconnect")
-        
-        //        Multipeer.transceiver.stop()
+
+        Multipeer.transceiver.stop()
         
         if Multipeer.isHost {
             selectedPeers = []

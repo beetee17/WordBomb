@@ -42,6 +42,23 @@ struct LocalMultiplayerView: View {
                     
                     Button(action:{
                         
+                        print("Manual Disconnect")
+                        withAnimation {
+                            viewModel.disconnect()
+                            
+                            
+                        } }) {
+                            
+                            HStack {
+                                Image(systemName: "antenna.radiowaves.left.and.right.slash")
+                                Text("DISCONNECT")
+                            }
+                            
+                        }
+                        .buttonStyle(MainButtonStyle())
+                    
+                    Button(action:{
+                        
                         print("Reconnect")
                         withAnimation {
                             viewModel.disconnect()
