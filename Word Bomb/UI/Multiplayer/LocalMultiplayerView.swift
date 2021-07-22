@@ -50,7 +50,7 @@ struct LocalMultiplayerView: View {
                         } }) {
                             
                             HStack {
-                                Image(systemName: "antenna.radiowaves.left.and.right.slash")
+                                Image(systemName: "wifi.slash")
                                 Text("DISCONNECT")
                             }
                             
