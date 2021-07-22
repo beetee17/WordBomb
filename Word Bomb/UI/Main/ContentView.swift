@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MultipeerKit
+import GameKit
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
@@ -21,8 +22,9 @@ struct ContentView: View {
             
             GameView()
             MPCText()
+            
+            
                 
-
         }
         .onAppear() {
             Multipeer.transceiver.resume()
@@ -32,6 +34,7 @@ struct ContentView: View {
         .environmentObject(mpcDataSource)
         
     }
+   
 }
 
 

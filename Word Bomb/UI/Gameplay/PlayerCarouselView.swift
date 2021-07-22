@@ -16,7 +16,7 @@ struct PlayerCarouselView: View {
         let prevPlayer = viewModel.playerQueue[back: 0]
         
         let playerSize = Game.playerAvatarSize
-        let spacing = 5.0
+        let spacing = CGFloat(5.0)
 
         HStack(spacing: spacing) {
 

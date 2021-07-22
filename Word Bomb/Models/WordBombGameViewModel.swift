@@ -9,21 +9,23 @@ import Foundation
 import MultipeerConnectivity
 import MultipeerKit
 
+
+
 class WordBombGameViewModel: NSObject, ObservableObject {
     
     @Published private var model: WordBombGame = WordBombGame()
-    @Published private var gameModel: WordGameModel?
+    @Published private var gameModel: WordGameModel? = nil
     @Published var viewToShow: ViewToShow = .main
     
     @Published var input = ""
     @Published var forceHideKeyboard = true
-    @Published var gameType: GameType?
+    @Published var gameType: GameType? = nil
     
     @Published var mpcStatus = ""
     
-    
     init(_ viewToShow: ViewToShow = .main) {
         self.viewToShow = viewToShow
+
     }
     func updateGameSettings() {
         model = WordBombGame()

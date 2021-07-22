@@ -8,6 +8,8 @@
 import SwiftUI
 import CoreData
 import MultipeerKit
+import GameKit
+import GameKitUI
 
 struct GameView: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
@@ -15,7 +17,7 @@ struct GameView: View {
     @State var pauseMenu = false
     
     
-    
+
     var body: some View {
         
         switch viewModel.viewToShow {
@@ -25,6 +27,8 @@ struct GameView: View {
         case .modeSelect: ModeSelectView(gameType: viewModel.gameType!)
         case .multipeer: LocalMultiplayerView()
         case .peersView: LocalPeersView()
+        case .gameCenterInvite:
+            GKContentView()
             
         default:
             ZStack {

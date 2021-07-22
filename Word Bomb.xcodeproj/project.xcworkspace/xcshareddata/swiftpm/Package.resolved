@@ -2,12 +2,12 @@
   "object": {
     "pins": [
       {
-        "package": "MultipeerKit",
-        "repositoryURL": "https://github.com/insidegui/MultipeerKit",
+        "package": "GameKitUI",
+        "repositoryURL": "https://github.com/SwiftPackageRepository/GameKitUI.swift.git",
         "state": {
           "branch": null,
-          "revision": "ee013fd04f20166ea40ff456a67058c040289c1c",
-          "version": "0.4.0"
+          "revision": "8152fa267503d58232c4c7109e910a9863e678ca",
+          "version": "0.5.0"
         }
       },
       {

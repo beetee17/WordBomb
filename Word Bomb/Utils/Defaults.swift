@@ -30,7 +30,7 @@ struct Game {
     
     static let miniBombSize = Device.width*0.2
     
-    static let miniBombExplosionOffset = 10.0
+    static let miniBombExplosionOffset = CGFloat(10.0)
     
     static let explosionDuration = 0.8
     
