@@ -157,6 +157,11 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
                     Game.viewModel.timeLimit = Float(timeLimit)!
                 }
                 
+                if let updatedLives = data["Updated Player Lives"] {
+                    print("Non host notifed of updated player lives \(updatedLives)")
+                    Game.viewModel.updatePlayerLives(updatedLives)
+                }
+                
                 
             } catch {
                 print("error getting input from non-host")

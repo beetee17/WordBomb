@@ -46,7 +46,7 @@ struct GamePlayView: View {
                 
                 VStack {
                     PlayerView()
-                        .offset(x: 0, y: Device.height*0.15)
+                        .offset(x: 0, y: Device.height*0.1)
                     Spacer()
                 }
                 
@@ -85,6 +85,7 @@ struct GamePlayView: View {
                 
                 Spacer()
             }
+            .offset(y: Device.height*0.05)
             .ignoresSafeArea(.all)
         }
         .blur(radius: .pauseMenu == viewModel.viewToShow ? 10 : 0, opaque: false)

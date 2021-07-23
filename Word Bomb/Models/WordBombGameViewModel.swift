@@ -76,7 +76,9 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             model.handleGameState(.initial,
                                   data: ["query" : gameModel!.getRandQuery(input),
                                          "instruction" : model.instruction as Any])
-            changeViewToShow(.game)
+            if !GameCenter.isHost {
+                changeViewToShow(.game)
+            }
             startTimer()
             
         }
@@ -211,6 +213,14 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                     if roundedValue % 5 == 0 && model.timeLeft > 0.4 {
                         GameCenter.sendDictionary(["Updated Time Left" : String(model.timeLeft)], toHost: false)
                     }
+                    if roundedValue % 10 == 0 && model.timeLeft > 0.1 {
+                        var updatedLives = [String]()
+                        for player in model.players {
+                            updatedLives.append(String(player.livesLeft))
+                        }
+                        
+                        GameCenter.sendDictionary(["Updated Player Lives" : updatedLives.joined(separator: ",")], toHost: false)
+                    }
                     
                 }
             }
@@ -284,6 +294,15 @@ extension WordBombGameViewModel {
             players.append(Player(name: player.displayName))
         }
         model = .init(players)
+    }
+    func updatePlayerLives(_ lives: String) {
+        let updatedLives = lives.components(separatedBy: ",")
+        for i in model.players.indices {
+            if let value: Int = Int(updatedLives[i]) {
+                model.players[i].livesLeft = value
+            }
+            print("updated \(model.players[i].name): \(model.players[i].livesLeft) lives")
+        }
     }
     
     func processGKInput() {
