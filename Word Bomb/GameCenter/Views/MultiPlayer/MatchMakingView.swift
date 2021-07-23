@@ -52,7 +52,7 @@ struct MatchMakingView: View {
         .sheet(isPresented: self.$viewModel.showModal) {
             GKMatchmakerView(
                 minPlayers: 2,
-                maxPlayers: 8,
+                maxPlayers: 4,
                 inviteMessage: "Let us play together!"
             ) {
                 self.viewModel.showModal = false

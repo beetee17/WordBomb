@@ -13,8 +13,9 @@ struct GameCenter {
     static var viewModel = GKMatchMakerAppModel()
     static var hostPlayerName: String? = nil
     static var isHost: Bool {
-        hostPlayerName == nil
+        hostPlayerName == nil && viewModel.gkMatch != nil
     }
+    static var isNonHost: Bool { hostPlayerName != nil && viewModel.gkMatch != nil }
     static var isOffline: Bool {
         viewModel.gkMatch == nil
     }

@@ -60,6 +60,9 @@ struct SettingsMenu: View {
                         Stepper("Time Constraint: \(timeConstraint, specifier: "%.1f") s", value: $timeConstraint, in: 1...timeLimit, step: 0.5)
                         
                     }
+                    Section(footer: Text("For debugging")) {
+                        Toggle("Debug", isOn:$viewModel.debugging) 
+                    }
                     
                     
                 }

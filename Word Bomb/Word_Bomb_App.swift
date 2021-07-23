@@ -71,18 +71,9 @@ struct Word_BombApp: App {
                     GamePlayView(match: gkMatch)
                         .environmentObject(self.gkViewModel)
                         .environmentObject(Game.viewModel)
-                    
-                    
+
                     VStack {
-                        Button(action: {
-                            GKMatchManager.shared.cancel()
-                        }) {
-                            HStack(alignment: .center) {
-                                Image(systemName: "xmark.circle")
-                                    .imageScale(.large)
-                                Text("Quit")
-                            }
-                        }
+                        
                         Text(hostText)
                             .font(.caption)
                             .foregroundColor(.green)

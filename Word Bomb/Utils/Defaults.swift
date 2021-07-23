@@ -29,7 +29,7 @@ struct Game {
     
     static let playerAvatarSize = Device.width/3.5
     
-    static let bombSize = Device.width*0.4
+    static let bombSize = Device.width*0.3
     
     static let miniBombSize = Device.width*0.2
     

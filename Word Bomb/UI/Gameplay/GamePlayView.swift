@@ -16,7 +16,7 @@ struct GamePlayView: View {
     
     var instructionText: some View {
         viewModel.instruction.map { Text($0)
-                .boldText()
+            .boldText()
             
         }
     }
@@ -29,31 +29,43 @@ struct GamePlayView: View {
     var body: some View {
         ZStack {
             
-                  // for debugging preview
-//                ZStack {
-//                    Button("ANIMATE") {
-//                        viewModel.animate.toggle()
-//                    }
-//                }
-//                .padding(.top,200)
+            // for debugging preview
+            //                ZStack {
+            //                    Button("ANIMATE") {
+            //                        viewModel.animate.toggle()
+            //                    }
+            //                }
+            //                .padding(.top,200)
             ZStack {
                 Color.clear
                 
                 VStack {
-                    TopBarView()
-                        .padding(.horizontal, 5)
-                        .ignoresSafeArea(.all)
-
+                    switch self.match == nil {
+                    case true:
+                        TopBarView()
+                            .padding(.horizontal, 5)
+                            .ignoresSafeArea(.all)
+                        
+                    case false:
+                        HStack() {
+                            GKQuitButton()
+                            Spacer()
+                            TimerView()
+                            Spacer()
+                            Text("Hi").opacity(0)
+                        }
+                        .padding(.horizontal, 25)
+                        .padding(.top, viewModel.playerQueue.count > 2 ? 10 : 50)
+                    }
                     Spacer()
-                    
                 }
                 
                 VStack {
                     PlayerView()
-                        .offset(x: 0, y: Device.height*0.1)
+                        .offset(x: 0, y: Device.height*0.15)
                     Spacer()
                 }
-
+                
             }
             .ignoresSafeArea(.all)
             
@@ -61,10 +73,11 @@ struct GamePlayView: View {
                 Spacer()
                 
                 instructionText
+                queryText
                 switch self.match == nil {
                 case true:
                     InputView()
-                        
+                    
                 case false:
                     TextField("INPUT",
                               text: $viewModel.input,
@@ -78,7 +91,6 @@ struct GamePlayView: View {
                     
                 }
                 
-                queryText
                 ZStack {
                     Text("INVISIBLE PLACEHOLDER TEXT")
                         .font(.system(size: 20, weight: .bold, design: .default))
@@ -98,6 +110,6 @@ struct GamePlayView: View {
 
 struct GamePlayView_Previews: PreviewProvider {
     static var previews: some View {
-        GamePlayView().environmentObject(WordBombGameViewModel())
+        GamePlayView(match: GKMatch()).environmentObject(WordBombGameViewModel())
     }
 }

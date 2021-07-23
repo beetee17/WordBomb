@@ -45,6 +45,7 @@ struct BombExplosion: View {
         AnimatedImage(name: "explosion-2-merge.gif", isAnimating: $viewModel.animateExplosion)
             .resizable()
             .pausable(false)
+            .aspectRatio(contentMode: .fill)
             .frame(width: Game.bombSize, height: Game.bombSize)
             .opacity(viewModel.animateExplosion ? 1 : 0)
             .onChange(of: viewModel.animateExplosion) { _ in

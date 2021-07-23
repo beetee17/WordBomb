@@ -17,7 +17,10 @@ struct TopBarView: View {
     var gameOverButton: some View {
         Button(action: {
             print("Restart Game")
-            viewModel.restartGame()
+            if !Multipeer.isNonHost && !GameCenter.isNonHost {
+                // do not allow restart for non host in online match
+                viewModel.restartGame()
+            }
         }) {
             Image(systemName: "gobackward")
                 .resizable().aspectRatio(contentMode: .fit)
@@ -33,41 +36,26 @@ struct TopBarView: View {
             Button(action: {
                 print("Pause Game")
                 // delay to allow keyboard to fully hide first -> may mean less responsiveness as user
-                withAnimation(.spring(response:0.1, dampingFraction:0.6).delay(0.15)){
+                
+                // do not allow pause for non host in online match
+                withAnimation(.spring(response:0.1, dampingFraction:0.6).delay(0.15)) {
                     
                     viewModel.pauseGame()
                     
-                } }) {
-                    
-                    Image(systemName: "pause")
-                        .resizable().aspectRatio(contentMode: .fit)
-                        .foregroundColor(.white)
-                        .frame(width: 25, height: 25)
                     
                 }
+            }) {
+                
+                Image(systemName: "pause")
+                    .resizable().aspectRatio(contentMode: .fit)
+                    .foregroundColor(.white)
+                    .frame(width: 25, height: 25)
+            }
             
             
             Spacer()
             
-            if viewModel.playerQueue.count > 2 {
-                ZStack {
-                    BombView()
-                        .frame(width: 100, height: 100)
-                        .overlay(
-                            Text(String(format: "%.1f", viewModel.timeLeft))
-                                .offset(x: 5, y: 10))
-                    
-                    
-                    BombExplosion()
-                        .offset(x: 10, y: 10)
-                    // to center explosion on bomb
-                }
-            }
-            
-            else {
-                Text(String(format: "%.1f", viewModel.timeLeft))
-                    .font(.largeTitle)
-            }
+            TimerView()
             
             Spacer()
             
@@ -75,13 +63,36 @@ struct TopBarView: View {
             else { gameOverButton.opacity(0) }
         }
         .padding(.horizontal, 20)
-        .padding(.top, viewModel.playerQueue.count > 2 ? 0 : 50)
+        .padding(.top, viewModel.playerQueue.count > 2 ? 10 : 50)
         
     }
     
     
 }
-
+struct TimerView: View {
+    @EnvironmentObject var viewModel: WordBombGameViewModel
+    var body: some View {
+        if viewModel.playerQueue.count > 2 {
+            ZStack {
+                BombView()
+                    .frame(width: 100, height: 100)
+                    .overlay(
+                        Text(String(format: "%.1f", viewModel.timeLeft))
+                            .offset(x: 5, y: 10))
+                
+                
+                BombExplosion()
+                    .offset(x: 10, y: 10)
+                // to center explosion on bomb
+            }
+        }
+        
+        else {
+            Text(String(format: "%.1f", viewModel.timeLeft))
+                .font(.largeTitle)
+        }
+    }
+}
 
 
 

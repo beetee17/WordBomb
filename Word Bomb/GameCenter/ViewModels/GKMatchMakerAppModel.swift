@@ -30,11 +30,11 @@ import GameKit
 import GameKitUI
 
 class GKMatchMakerAppModel: NSObject, ObservableObject {
-
+    
     @Published public var showAlert = false
     @Published public var alertTitle: String = ""
     @Published public var alertMessage: String = ""
-
+    
     @Published public var showAuthentication = false
     @Published public var showInvite = false
     @Published public var showMatch = false
@@ -52,7 +52,9 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
             
         }
     }
-
+    
+    public var gkIsConnected: [GKPlayer : Bool] = [:]
+    
     private var cancellableInvite: AnyCancellable?
     private var cancellableMatch: AnyCancellable?
     
@@ -60,7 +62,7 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
         super.init()
         self.subscribe()
     }
-
+    
     deinit {
         self.unsubscribe()
     }
@@ -71,23 +73,31 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
             .invite
             .sink { (invite) in
                 self.invite = invite
-        }
+            }
         self.cancellableMatch = GKMatchManager
             .shared
             .match
             .sink { (match) in
+    
                 self.gkMatch = match.gkMatch
                 self.gkMatch?.delegate = self
-               
-                
-        }
+                if let gkMatch = match.gkMatch {
+                    for player in gkMatch.players {
+                        self.gkIsConnected[player] = true
+                    }
+                }
+                else {
+                    print("GKMatch was nil")
+                    GameCenter.hostPlayerName = nil
+                }
+            }
     }
-
+    
     func unsubscribe() {
         self.cancellableInvite?.cancel()
         self.cancellableMatch?.cancel()
     }
-
+    
     public func showAlert(title: String, message: String) {
         self.showAlert = true
         self.alertTitle = title
@@ -98,7 +108,7 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
 extension GKMatchMakerAppModel: GKMatchDelegate {
     func match(_ match: GKMatch, didReceive data: Data, fromRemotePlayer player: GKPlayer) {
         do {
-//            print(String(data: data, encoding: .utf8))
+            //            print(String(data: data, encoding: .utf8))
             let gameModel = try JSONDecoder().decode(WordBombGame.self, from: data)
             Game.viewModel.setGameModel(gameModel)
             Game.viewModel.startTimer()
@@ -118,14 +128,14 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
                     print("Host received input \(input)")
                     Game.viewModel.processPeerInput(input)
                 }
-
+                
                 if let input = data["input"], let status = data["status"] {
                     print("Non host received response status  \(status) for input \(input)")
                     
                     let nilQuery: String? = nil
                     Game.viewModel.handleGameState(.playerInput,
-                                               data: ["input" : input,
-                                                      "response" : (status, nilQuery)])
+                                                   data: ["input" : input,
+                                                          "response" : (status, nilQuery)])
                 }
                 
                 if let query = data["query"] {
@@ -138,12 +148,12 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
                 }
                 
                 if let timeLeft = data["Updated Time Left"] {
-                    print("Non host notified of updated time left \(String(format: "%.1f", timeLeft))")
+                    print("Non host notified of updated time left \(String(format: "%.3f", timeLeft))")
                     Game.viewModel.timeLeft = Float(timeLeft)!
                     
                 }
                 if let timeLimit = data["New Time Limit"] {
-                    print("Non host notified of new time limit \(String(format: "%.1f", timeLimit))")
+                    print("Non host notified of new time limit \(String(format: "%.3f", timeLimit))")
                     Game.viewModel.timeLimit = Float(timeLimit)!
                 }
                 
@@ -160,6 +170,8 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
     func match(_ match: GKMatch, player: GKPlayer, didChange state: GKPlayerConnectionState) {
         print("player \(player) connection status changed to \(state)")
         print("players left \(match.players)")
+        print("$waiting to see if reconnection occurs... \(Date())")
+        self.gkIsConnected[player] = .disconnected == state ? false : true
         
         if GameCenter.isHost {
             // set new players
@@ -169,26 +181,44 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
                 Game.viewModel.setGKPlayers(match.players)
             case false:
                 //end the game if no players left
-                match.disconnect()
-                match.delegate = nil
-                
-                DispatchQueue.main.async {
-                    Game.viewModel.resetGameModel()
-                    self.gkMatch = nil
-                    self.showMatch = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    
+                    if !(self.gkIsConnected[player] ?? false) {
+                        print(self.gkIsConnected)
+                        print("$player still disconnected \(Date())")
+                        match.disconnect()
+                        match.delegate = nil
+                        
+                        DispatchQueue.main.async {
+                            Game.viewModel.resetGameModel()
+                            GKMatchManager.shared.cancel()
+                            self.gkMatch = nil
+                            self.showMatch = false
+                        }
+                    }
+                    
                 }
             }
         }
         
         if .disconnected == state && player.displayName == GameCenter.hostPlayerName {
-                        // exit the game if host disconnect
-            GameCenter.hostPlayerName = nil
-            match.disconnect()
-            match.delegate = nil
-            DispatchQueue.main.async {
-                Game.viewModel.resetGameModel()
-                self.gkMatch = nil
-                self.showMatch = false
+            // exit the game if host disconnect
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                
+                if !(self.gkIsConnected[player] ?? false) {
+                    print(self.gkIsConnected)
+                    print("player still disconnected \(Date())")
+                    GameCenter.hostPlayerName = nil
+                    match.disconnect()
+                    match.delegate = nil
+                    
+                    DispatchQueue.main.async {
+                        Game.viewModel.resetGameModel()
+                        GKMatchManager.shared.cancel()
+                        self.gkMatch = nil
+                        self.showMatch = false
+                    }
+                }
             }
         }
     }

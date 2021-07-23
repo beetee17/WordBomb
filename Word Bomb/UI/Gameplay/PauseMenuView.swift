@@ -33,8 +33,10 @@ struct PauseMenuView: View {
             .buttonStyle(MainButtonStyle())
             
             Button(action: {
-                print("Restart Game")
-                viewModel.restartGame()
+                if !Multipeer.isNonHost && !GameCenter.isNonHost {
+                    print("Restart Game")
+                    viewModel.restartGame()
+                }
             }) {
                 HStack {
                     Image(systemName: "gobackward")
