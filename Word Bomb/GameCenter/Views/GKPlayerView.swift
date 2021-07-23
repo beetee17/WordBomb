@@ -28,23 +28,24 @@ import GameKit
 
 struct GKPlayerView: View {
     @ObservedObject var viewModel: GKPlayerViewModel
-
+    @State var playerImage: UIImage?
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
-            if self.viewModel.imageLoaded,
-               let uiImage = self.viewModel.uiImage {
-                Image(uiImage: uiImage)
+
+            if let image = playerImage {
+                Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 128, height: 128)
                     .clipShape(Circle())
                     .shadow(radius: 10)
-            } else {
+            }
+            else {
                 Image("GK Profile")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 128, height: 128)
-
+                
             }
             Text(self.viewModel.player.displayName)
             VStack(alignment: .center, spacing: 4) {
@@ -57,35 +58,25 @@ struct GKPlayerView: View {
             }
         }
         .onAppear() {
-            self.viewModel.load()
+            DispatchQueue.global().async {
+                GKLocalPlayer.local.loadPhoto(for: GKPlayer.PhotoSize.normal) { (image, error) in
+                    print("\(String(describing: error)) Error loading GKPlayer Image: \(image)")
+                    playerImage = image
+                    
+                }
+            }
         }
     }
 }
 
 class GKPlayerViewModel: ObservableObject {
-
+    
     let player: GKPlayer
-
+    
     @Published var displayName: String
-    @Published var imageLoaded = false
-    @Published var uiImage: UIImage?
-
+    
     public init(_ player: GKPlayer) {
         self.player = player
         self.displayName = self.player.displayName
-    }
-
-    public func load() {
-        DispatchQueue.global().async { [self] in
-            self.player.loadPhoto(for: GKPlayer.PhotoSize.normal, withCompletionHandler: { (image, error) in
-                guard let image = image else {
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.uiImage = image
-                    self.imageLoaded = true
-                }
-            })
-        }
     }
 }

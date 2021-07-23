@@ -40,11 +40,11 @@ struct MatchMakingView: View {
                 Button() {
                     self.viewModel.showMatchMakerModal()
                 } label: {
-                    Text("HOST MATCH")
+                    Text("HOST GAME")
                 }
                 .buttonStyle(MainButtonStyle())
             }
-            .frame(width: Device.width, height: Device.height, alignment: .center)
+            
         }
         .onAppear() {
             self.viewModel.load()
