@@ -16,9 +16,13 @@ struct GKQuitButton: View {
             Game.viewModel.resetGameModel()
             print("Manual Quit, isGKOnline \(GameCenter.isOnline)")
         }) {
-            
-            Image(systemName: "xmark.circle")
-                .imageScale(.large)
+            HStack {
+                Image(systemName: "xmark.circle")
+                    .imageScale(.large)
+                    
+                Text("Quit")
+            }
+            .foregroundColor(.white)
             
         }
     }

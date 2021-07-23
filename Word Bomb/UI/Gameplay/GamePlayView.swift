@@ -40,23 +40,7 @@ struct GamePlayView: View {
                 Color.clear
                 
                 VStack {
-                    switch self.match == nil {
-                    case true:
-                        TopBarView()
-                            .padding(.horizontal, 5)
-                            .ignoresSafeArea(.all)
-                        
-                    case false:
-                        HStack() {
-                            GKQuitButton()
-                            Spacer()
-                            TimerView()
-                            Spacer()
-                            Text("Hi").opacity(0)
-                        }
-                        .padding(.horizontal, 25)
-                        .padding(.top, viewModel.playerQueue.count > 2 ? 10 : 50)
-                    }
+                    TopBarView(match: match)
                     Spacer()
                 }
                 

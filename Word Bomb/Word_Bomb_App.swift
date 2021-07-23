@@ -33,7 +33,7 @@ struct Word_BombApp: App {
             "Time Multiplier" : 0.95,
             "Time Constraint" : 5.0,
             "Player Names" : ["A", "B", "C"],
-            "Num Players" : 3,
+            "Num Players" : 2,
             "Player Lives" : 3
 
             // ... other settings
