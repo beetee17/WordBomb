@@ -40,11 +40,11 @@ struct GKPlayerView: View {
                     .clipShape(Circle())
                     .shadow(radius: 10)
             } else {
-                Image(systemName: "person.fill")
-                    .font(Font.custom("System", size: 64))
+                Image("GK Profile")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: 128, height: 128)
-                    .clipShape(Circle())
-                    .shadow(radius: 10)
+
             }
             Text(self.viewModel.player.displayName)
             VStack(alignment: .center, spacing: 4) {

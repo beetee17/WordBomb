@@ -40,11 +40,10 @@ struct MatchMakingView: View {
                 Button() {
                     self.viewModel.showMatchMakerModal()
                 } label: {
-                    Text("Create Match")
+                    Text("HOST MATCH")
                 }
                 .buttonStyle(MainButtonStyle())
             }
-            .navigationTitle(Text("GameKit Matchmaker"))
         }
         .onAppear() {
             self.viewModel.load()
@@ -52,11 +51,11 @@ struct MatchMakingView: View {
         .sheet(isPresented: self.$viewModel.showModal) {
             GKMatchmakerView(
                 minPlayers: 2,
-                maxPlayers: 4,
+                maxPlayers: 8,
                 inviteMessage: "Let us play together!"
             ) {
                 self.viewModel.showModal = false
-                self.viewModel.currentState = "Player Canceled"
+                self.viewModel.currentState = "User Canceled"
             } failed: { (error) in
                 self.viewModel.showModal = false
                 self.viewModel.currentState = "Match Making Failed"

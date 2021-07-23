@@ -41,12 +41,12 @@ struct GKContentView: View {
                     VStack(alignment: .center, spacing: 32) {
                         
                         NavigationLink(destination: AuthenticationView()) {
-                            Text("Authentication")
+                            Text("LOGIN")
                         }
                         .buttonStyle(MainButtonStyle())
                         
                         NavigationLink(destination: MatchMakingView()) {
-                            Text("Match Making")
+                            Text("HOST MATCH")
                         }
                         .buttonStyle(MainButtonStyle())
  
@@ -63,6 +63,7 @@ struct GKContentView: View {
             }
 
         }
+        .navigationBarHidden(true)
     }
 }
 

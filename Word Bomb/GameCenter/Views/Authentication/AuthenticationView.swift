@@ -50,7 +50,6 @@ struct AuthenticationView: View {
                     .buttonStyle(MainButtonStyle())
                 }
             }
-            .navigationTitle(Text("GameKit Authentication"))
         }
         .onAppear() {
             self.viewModel.load()

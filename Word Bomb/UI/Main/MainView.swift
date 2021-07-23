@@ -36,6 +36,19 @@ struct MainView: View {
                     }
                     .buttonStyle(MainButtonStyle())
                     
+                    Button(action:  { withAnimation { viewModel.changeViewToShow(.gameCenterInvite)
+                    } })
+                    {
+                        HStack {
+                            Image("GK Icon")
+                                .resizable().aspectRatio(contentMode: .fit)
+                                .frame(height: 25)
+
+                            Text("GAME CENTER")
+                            
+                        }
+                    }
+                    .buttonStyle(MainButtonStyle())
                     
                     Button(action: { withAnimation { viewModel.changeViewToShow(.multipeer) } }) {
                         HStack {
@@ -46,18 +59,6 @@ struct MainView: View {
                         
                     }
                     .buttonStyle(MainButtonStyle())
-                    
-                    Button(action:  { withAnimation { viewModel.changeViewToShow(.gameCenterInvite)
-                    } })
-                    {
-                        HStack {
-                            Image(systemName: "network")
-                            Text("GAME CENTER")
-                            
-                        }
-                    }
-                    .buttonStyle(MainButtonStyle())
-                    
                     
                     Button(action: { withAnimation { creatingMode = true } }) {
                         HStack {
