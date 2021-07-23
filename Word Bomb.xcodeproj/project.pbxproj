@@ -60,7 +60,7 @@
 		6CE00F1226A9BCF9005406FF /* GKContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00F1026A9BCF9005406FF /* GKContentView.swift */; };
 		6CE00F1426A9EE05005406FF /* GKUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00F1326A9EE05005406FF /* GKUtils.swift */; };
 		6CE00F1626AB015F005406FF /* GKQuitButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00F1526AB015D005406FF /* GKQuitButton.swift */; };
-		6CE00F1926AB2A55005406FF /* RestartButton in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00F1826AB2A55005406FF /* RestartButton */; };
+		6CE00F1926AB2A55005406FF /* RestartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00F1826AB2A55005406FF /* RestartButton.swift */; };
 		6CE00F1B26AB2A64005406FF /* PauseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00F1A26AB2A64005406FF /* PauseButton.swift */; };
 		6CE00F1D26AB2A7B005406FF /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00F1C26AB2A7B005406FF /* TimerView.swift */; };
 		6CF953872692A08400D16E60 /* WordGameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF953862692A08400D16E60 /* WordGameModel.swift */; };
@@ -126,7 +126,7 @@
 		6CE00F1026A9BCF9005406FF /* GKContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GKContentView.swift; sourceTree = "<group>"; };
 		6CE00F1326A9EE05005406FF /* GKUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GKUtils.swift; sourceTree = "<group>"; };
 		6CE00F1526AB015D005406FF /* GKQuitButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GKQuitButton.swift; sourceTree = "<group>"; };
-		6CE00F1826AB2A55005406FF /* RestartButton */ = {isa = PBXFileReference; lastKnownFileType = text; path = RestartButton; sourceTree = "<group>"; };
+		6CE00F1826AB2A55005406FF /* RestartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestartButton.swift; sourceTree = "<group>"; };
 		6CE00F1A26AB2A64005406FF /* PauseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseButton.swift; sourceTree = "<group>"; };
 		6CE00F1C26AB2A7B005406FF /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		6CF953862692A08400D16E60 /* WordGameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordGameModel.swift; sourceTree = "<group>"; };
@@ -343,7 +343,7 @@
 			isa = PBXGroup;
 			children = (
 				6C0CEEA7269458D6007717E1 /* TopBarView.swift */,
-				6CE00F1826AB2A55005406FF /* RestartButton */,
+				6CE00F1826AB2A55005406FF /* RestartButton.swift */,
 				6CE00F1A26AB2A64005406FF /* PauseButton.swift */,
 				6CE00F1C26AB2A7B005406FF /* TimerView.swift */,
 			);
@@ -473,7 +473,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6CE00F1926AB2A55005406FF /* RestartButton in Sources */,
+				6CE00F1926AB2A55005406FF /* RestartButton.swift in Sources */,
 				6C0FB7F026975ACB0038751A /* LocalPeersView.swift in Sources */,
 				6CE00F1B26AB2A64005406FF /* PauseButton.swift in Sources */,
 				6C5DBE0C269BA600004A7F71 /* PlayerCarouselView.swift in Sources */,
