@@ -77,19 +77,7 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
             .sink { (match) in
                 self.gkMatch = match.gkMatch
                 self.gkMatch?.delegate = self
-                self.gkMatch?.chooseBestHostingPlayer { player in
-                    print("Best hosting player is: \(String(describing: player?.displayName))")
-                    if let playerName = player?.displayName {
-                        GKMatchGlobal.hostPlayerName = playerName
-                        do {
-                            try self.gkMatch?.sendData(toAllPlayers: playerName.data(using: .utf8)!, with: .reliable)
-                        } catch {
-                            print("could not send hosting player name")
-                            print(error.localizedDescription)
-                        }
-                        
-                    }
-                }
+               
                 
         }
     }
@@ -108,10 +96,37 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
 
 extension GKMatchMakerAppModel: GKMatchDelegate {
     func match(_ match: GKMatch, didReceive data: Data, fromRemotePlayer player: GKPlayer) {
+        do {
+//            print(String(data: data, encoding: .utf8))
+            let gameModel = try JSONDecoder().decode(WordBombGame.self, from: data)
+            Game.viewModel.setGameModel(gameModel)
+            
+        } catch {
+            print("error getting model from host")
+            print(String(describing: error))
+            do {
+                print(String(data: data, encoding: .utf8))
+                let data = try JSONDecoder().decode([String : String].self, from: data)
+                if let hostPlayerName = data["Host Name"] {
+                    GameCenter.hostPlayerName = hostPlayerName
+                    print("Got host name \(GameCenter.hostPlayerName)")
+                }
+                
+                if let inputData = data["input"] {
+                    print("Got input \(data["input"]) from non-host player")
+                    Game.viewModel.processPeerInput(inputData)
+                }
+            } catch {
+                print("error getting input from non-host")
+                print(String(describing: error))
+                
+            }
+            
+        }
         
-        guard let hostPlayerName = String(data: data, encoding: .utf8) else { return }
-        print("Received some data")
-        GKMatchGlobal.hostPlayerName = hostPlayerName
+        
+        
+        
         
     }
     func match(_ match: GKMatch, player: GKPlayer, didChange state: GKPlayerConnectionState) {

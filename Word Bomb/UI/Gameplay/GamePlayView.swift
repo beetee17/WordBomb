@@ -6,9 +6,13 @@
 //
 
 import SwiftUI
+import GameKit
+import GameKitUI
 
 struct GamePlayView: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
+    
+    var match: GKMatch? 
     
     var instructionText: some View {
         viewModel.instruction.map { Text($0)
@@ -57,7 +61,23 @@ struct GamePlayView: View {
                 Spacer()
                 
                 instructionText
-                InputView()
+                switch self.match == nil {
+                case true:
+                    InputView()
+                        
+                case false:
+                    TextField("INPUT",
+                              text: $viewModel.input,
+                              onCommit: {
+                                viewModel.processGKInput()
+                                viewModel.input = ""
+                              })
+                        .disableAutocorrection(true)
+                        .autocapitalization(.words)
+                        .multilineTextAlignment(.center)
+                    
+                }
+                
                 queryText
                 ZStack {
                     Text("INVISIBLE PLACEHOLDER TEXT")

@@ -53,7 +53,6 @@
 		6CE00E7226A9A009005406FF /* GameKitUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6CE00E7126A9A009005406FF /* GameKitUI */; };
 		6CE00F0126A9BBBB005406FF /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00EFD26A9BBBB005406FF /* AuthenticationView.swift */; };
 		6CE00F0226A9BBBB005406FF /* MatchMakingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00EFF26A9BBBB005406FF /* MatchMakingView.swift */; };
-		6CE00F0326A9BBBB005406FF /* MatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00F0026A9BBBB005406FF /* MatchView.swift */; };
 		6CE00F0A26A9BBF8005406FF /* GKMatchMakerAppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00F0526A9BBF8005406FF /* GKMatchMakerAppModel.swift */; };
 		6CE00F0B26A9BBF8005406FF /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00F0726A9BBF8005406FF /* AuthenticationViewModel.swift */; };
 		6CE00F0C26A9BBF8005406FF /* MatchMakingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE00F0926A9BBF8005406FF /* MatchMakingViewModel.swift */; };
@@ -116,7 +115,6 @@
 		6CE00E6E26A99FD4005406FF /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		6CE00EFD26A9BBBB005406FF /* AuthenticationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		6CE00EFF26A9BBBB005406FF /* MatchMakingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchMakingView.swift; sourceTree = "<group>"; };
-		6CE00F0026A9BBBB005406FF /* MatchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchView.swift; sourceTree = "<group>"; };
 		6CE00F0526A9BBF8005406FF /* GKMatchMakerAppModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GKMatchMakerAppModel.swift; sourceTree = "<group>"; };
 		6CE00F0726A9BBF8005406FF /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		6CE00F0926A9BBF8005406FF /* MatchMakingViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchMakingViewModel.swift; sourceTree = "<group>"; };
@@ -303,7 +301,6 @@
 			isa = PBXGroup;
 			children = (
 				6CE00EFF26A9BBBB005406FF /* MatchMakingView.swift */,
-				6CE00F0026A9BBBB005406FF /* MatchView.swift */,
 			);
 			path = MultiPlayer;
 			sourceTree = "<group>";
@@ -468,7 +465,6 @@
 				6CE00F0B26A9BBF8005406FF /* AuthenticationViewModel.swift in Sources */,
 				6C249D462698B2D400B9C002 /* MultiplayerDisplayName.swift in Sources */,
 				6C65A31D26A1458D004209F4 /* BombAnimation.swift in Sources */,
-				6CE00F0326A9BBBB005406FF /* MatchView.swift in Sources */,
 				6C2E20D2268DEFBC00CECD3F /* SharedModel.swift in Sources */,
 				6C2E20C4268DD81600CECD3F /* ContentView.swift in Sources */,
 				6CF953872692A08400D16E60 /* WordGameModel.swift in Sources */,

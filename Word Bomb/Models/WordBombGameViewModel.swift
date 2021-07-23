@@ -146,8 +146,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         }
         else { model.handleGameState(.initial,
                                      data: ["instruction" : mode.instruction as Any]) }
-        
-        changeViewToShow(.game)
+    
         startTimer()
 
     }
@@ -201,6 +200,18 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                         Multipeer.transceiver.send(["Updated Time Left" : model.timeLeft], to: selectedPeers)
                     }
                 }
+                
+                if GameCenter.isHost {
+                    do {
+                        let data = try JSONEncoder().encode(self.model)
+                        try GameCenter.viewModel.gkMatch?.sendData(toAllPlayers: data, with: .reliable)
+                        
+                    } catch {
+                        print("Could not send model")
+                        print(error.localizedDescription)
+                    }
+                    
+                }
             }
             
             if model.timeLeft <= 0 && !Multipeer.isNonHost {
@@ -245,8 +256,65 @@ class WordBombGameViewModel: NSObject, ObservableObject {
    
 }
 
+// MARK: - GAME CENTER
+extension WordBombGameViewModel {
+    
+    var isMyGKTurn: Bool { GKLocalPlayer.local.displayName == model.currentPlayer.name }
+    
+    func setGameModel(_ model: WordBombGame) {
+        self.model = model
+    }
+    
+    func setGKPlayers(_ gkPlayers: [GKPlayer]) {
+        var players: [Player] = [Player(name: GKLocalPlayer.local.displayName)]
+        for player in gkPlayers {
+            players.append(Player(name: player.displayName))
+        }
+        model = .init(players)
+    }
+    
+    func processGKInput() {
+
+        input = input.lowercased().trim()
+        print("processing input \(input)")
+        if !(input == "" || model.timeLeft <= 0) {
+            
+            if GameCenter.isHost && isMyGKTurn {
+                // turn for device hosting multiplayer game
+                print("Am host and my turn")
+                let response = gameModel!.process(input, model.query)
+                model.handleGameState(.playerInput, data: ["input" : input, "response" : response])
+                
+            }
+            
+            else if !GameCenter.isHost && isMyGKTurn  {
+                print("Not host and my turn")
+                // turn for device not hosting but in multiplayer game
+                do {
+                    let inputData = try JSONEncoder().encode(["input" : input])
+                    print("ENCODED JSON \(String(data: inputData, encoding: .utf8))")
+                    let hostPlayer = GameCenter.getGKHostPlayer()
+                    try GameCenter.viewModel.gkMatch?.send(inputData, to: hostPlayer, dataMode: .reliable)
+                    print("SENT \(input) to \(hostPlayer)")
+                    
+                } catch {
+                    print("could not send input data")
+                    print(error.localizedDescription)
+                }
+            }
+            else {
+                print("Host: \(GameCenter.hostPlayerName), Am Host: \(GameCenter.isHost)")
+                print("My turn: \(isMyGKTurn)")
+            }
+            
+        }
+        
+    }
+    
+}
 
 
+// MARK: - Multipeer
 
 extension WordBombGameViewModel {
     
@@ -465,14 +533,6 @@ extension WordBombGameViewModel {
         print("players set \(players)")
         model = .init(players)
         
-    }
-    
-    func setGKPlayers(_ gkPlayers: [GKPlayer]) {
-        var players: [Player] = [Player(name: GKLocalPlayer.local.displayName)]
-        for player in gkPlayers {
-            players.append(Player(name: player.displayName))
-        }
-        model = .init(players)
     }
     
     func disconnect() {

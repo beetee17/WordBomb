@@ -41,25 +41,13 @@ struct MatchView: View {
         
         ZStack {
             Color("Background").ignoresSafeArea()
-            GamePlayView()
             
-            VStack {
-                Button(action: {
-                    GKMatchManager.shared.cancel()
-                }) {
-                    HStack(alignment: .center) {
-                        Image(systemName: "xmark.circle").imageScale(.large)
-                        Text("Quit")
-                    }
-                }
-                Spacer()
-            }
-            .offset(x:-50)
+            
+            GamePlayView().environmentObject(gameViewModel)
+            
             
         }
-        .onAppear() {
-            gameViewModel.setGKPlayers(match.players)
-        }
+        
     }
     
     

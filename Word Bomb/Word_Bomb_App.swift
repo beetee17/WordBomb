@@ -22,8 +22,9 @@ let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", instruction
 
 @main
 struct Word_BombApp: App {
-    @ObservedObject var gkViewModel: GKMatchMakerAppModel
-    var gameViewModel: WordBombGameViewModel
+    
+    @ObservedObject var gkViewModel = GameCenter.viewModel
+
     init() {
         // register "default defaults"
         UserDefaults.standard.register(defaults: [
@@ -37,8 +38,6 @@ struct Word_BombApp: App {
 
             // ... other settings
         ])
-        self.gkViewModel = GKMatchMakerAppModel()
-        self.gameViewModel = WordBombGameViewModel()
     }
     
     
@@ -59,21 +58,58 @@ struct Word_BombApp: App {
                 } failed: { (error) in
                     self.gkViewModel.showAlert(title: "Invitation Failed", message: error.localizedDescription)
                 } started: { (gkMatch) in
+                    GameCenter.hostPlayerName = GKLocalPlayer.local.displayName
+                    do {
+                        let hostNameData = try JSONEncoder().encode(["Host Name" : GKLocalPlayer.local.displayName])
+                        try gkMatch.sendData(toAllPlayers: hostNameData, with: .reliable)
+                        
+                    } catch {
+                        print("could not send hosting player name")
+                        print(error.localizedDescription)
+                    }
+                    
                     self.gkViewModel.showInvite = false
                     self.gkViewModel.gkMatch = gkMatch
                 }
             } else if self.gkViewModel.showMatch,
                       let gkMatch = self.gkViewModel.gkMatch {
                 
-                MatchView(gkMatch)
-                    .environmentObject(self.gkViewModel)
-                    .environmentObject(self.gameViewModel)
+                ZStack {
+                    let hostText = "\(GameCenter.hostPlayerName ?? "NIL") IS HOSTING"
+                    Color("Background")
+                    GamePlayView(match: gkMatch)
+                        .environmentObject(self.gkViewModel)
+                        .environmentObject(Game.viewModel)
+                    
+                    Text(hostText)
+                        .foregroundColor(.green)
+                        .offset(y:-50)
+                        .ignoresSafeArea(.all)
+                    VStack {
+                        Button(action: {
+                            GKMatchManager.shared.cancel()
+                        }) {
+                            HStack(alignment: .center) {
+                                Image(systemName: "xmark.circle").imageScale(.large)
+                                Text("Quit")
+                            }
+                        }
+                        Spacer()
+                    }
+                    .offset(x:-50)
+                }
+                .onAppear() {
+                    Game.viewModel.setGKPlayers(gkMatch.players)
+                    if GameCenter.isHost {
+                        Game.viewModel.startGame(mode: WordGame)
+                    }
+                }
             }
             else {
                 Prelaunch()
-                    .environmentObject(self.gameViewModel)
+                    .environmentObject(Game.viewModel)
                     .environmentObject(Multipeer.dataSource)
-                    .alert(isPresented: self.$gkViewModel.showAlert) {
+                    .alert(isPresented: $gkViewModel.showAlert) {
                         Alert(title: Text(self.gkViewModel.alertTitle),
                               message: Text(self.gkViewModel.alertMessage),
                               dismissButton: .default(Text("Ok")))

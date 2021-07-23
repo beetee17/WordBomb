@@ -99,7 +99,10 @@ struct ModeSelectButton: View {
         
         Button("\(gameMode.modeName)") {
             // set game mode and proceed to start game
-            withAnimation { viewModel.startGame(mode: gameMode) }
+            withAnimation {
+                viewModel.startGame(mode: gameMode)
+                viewModel.changeViewToShow(.game)
+            }
             print("\(gameMode.modeName) mode!")
         }
         .buttonStyle(MainButtonStyle())
