@@ -50,6 +50,7 @@ struct AuthenticationView: View {
                     .buttonStyle(MainButtonStyle())
                 }
             }
+            .frame(width: Device.width, height: Device.height, alignment: .center)
         }
         .onAppear() {
             self.viewModel.load()
