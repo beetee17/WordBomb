@@ -23,6 +23,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     @Published var gameType: GameType? = nil
     
     @Published var mpcStatus = ""
+    @Published var debugging = false
     
     init(_ viewToShow: ViewToShow = .main) {
         self.viewToShow = viewToShow
@@ -43,6 +44,8 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         else {
             forceHideKeyboard = true
         }
+        GKMatchManager.shared.cancel()
+        GameCenter.hostPlayerName = nil
     }
     
     func pauseGame() {
@@ -192,25 +195,28 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             
             
             DispatchQueue.main.async {
-                model.timeLeft = max(0, model.timeLeft - 0.1)
+                if !debugging {
+                    model.timeLeft = max(0, model.timeLeft - 0.1)
+                }
                 
                 if Multipeer.isHost {
                     let roundedValue = Int(round(model.timeLeft * 10))
-                    if roundedValue % 5 == 0 {
+                    if roundedValue % 5 == 0 && model.timeLeft > 0.4 {
                         Multipeer.transceiver.send(["Updated Time Left" : model.timeLeft], to: selectedPeers)
                     }
                 }
                 
                 if GameCenter.isHost {
                     let roundedValue = Int(round(model.timeLeft * 10))
-                    if roundedValue % 5 == 0 {
+                    if roundedValue % 5 == 0 && model.timeLeft > 0.4 {
                         GameCenter.sendDictionary(["Updated Time Left" : String(model.timeLeft)], toHost: false)
                     }
                     
                 }
             }
             
-            if model.timeLeft <= 0 && !Multipeer.isNonHost {
+            if model.timeLeft <= 0 && (Multipeer.isHost || GameCenter.isHost || (GameCenter.isOffline && Multipeer.isOffline)) {
+                // only handle time out in offline play or if host of online match
                 
                 DispatchQueue.main.async {
                     self.model.handleGameState(.playerTimedOut)
@@ -339,22 +345,25 @@ extension WordBombGameViewModel {
             selectedPeers.remove(at: index)
             // notify peer of disconnection
             Multipeer.transceiver.send(false, to: [peer])
-        }
-        else { print("did not find peer") }
-        
-        if hostingPeer == nil {
+    
             switch selectedPeers.count == 0 {
             case true:
+                // all players disconnected
                 mpcStatus = ""
                 resetGameModel()
             case false:
+                // some players disconnected
                 mpcStatus = "Hosting: \(selectedPeers.count) Player(s)"
                 setOnlinePlayers()
             }
             print("selected peers \(selectedPeers)")
+            
         }
+        else { print("did not find peer") }
         
-        else if peer == hostingPeer {
+       
+        
+        if peer == hostingPeer {
             
             // reset hostPeer to nil and update status
             hostingPeer = nil
