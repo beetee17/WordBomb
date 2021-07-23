@@ -94,3 +94,18 @@ func decodeJSONStringtoArray(_ json: String) -> [String] {
         return data.sorted()
     } else { return [] }
 }
+
+func encodeDict(_ dictionary: [String: String]) -> Data? {
+    do {
+        let data = try JSONEncoder().encode(dictionary)
+        print("ENCODED JSON \(String(data: data, encoding: .utf8))")
+        return data
+        
+    } catch {
+        print("could not encode GK data")
+        print(error.localizedDescription)
+        return nil
+    }
+}
+
+

@@ -58,15 +58,15 @@ struct Word_BombApp: App {
                 } failed: { (error) in
                     self.gkViewModel.showAlert(title: "Invitation Failed", message: error.localizedDescription)
                 } started: { (gkMatch) in
-                    GameCenter.hostPlayerName = GKLocalPlayer.local.displayName
-                    do {
-                        let hostNameData = try JSONEncoder().encode(["Host Name" : GKLocalPlayer.local.displayName])
-                        try gkMatch.sendData(toAllPlayers: hostNameData, with: .reliable)
-                        
-                    } catch {
-                        print("could not send hosting player name")
-                        print(error.localizedDescription)
-                    }
+//                    GameCenter.hostPlayerName = GKLocalPlayer.local.displayName
+//                    do {
+//                        let hostNameData = try JSONEncoder().encode(["Host Name" : GKLocalPlayer.local.displayName])
+//                        try gkMatch.sendData(toAllPlayers: hostNameData, with: .reliable)
+//
+//                    } catch {
+//                        print("could not send hosting player name")
+//                        print(error.localizedDescription)
+//                    }
                     
                     self.gkViewModel.showInvite = false
                     self.gkViewModel.gkMatch = gkMatch
@@ -75,25 +75,28 @@ struct Word_BombApp: App {
                       let gkMatch = self.gkViewModel.gkMatch {
                 
                 ZStack {
-                    let hostText = "\(GameCenter.hostPlayerName ?? "NIL") IS HOSTING"
-                    Color("Background")
+                    let hostText = "\(GameCenter.isHost ? GKLocalPlayer.local.displayName : GameCenter.hostPlayerName) IS HOSTING"
+                    Color("Background").ignoresSafeArea(.all)
                     GamePlayView(match: gkMatch)
                         .environmentObject(self.gkViewModel)
                         .environmentObject(Game.viewModel)
                     
-                    Text(hostText)
-                        .foregroundColor(.green)
-                        .offset(y:-50)
-                        .ignoresSafeArea(.all)
+                    
                     VStack {
                         Button(action: {
                             GKMatchManager.shared.cancel()
                         }) {
                             HStack(alignment: .center) {
-                                Image(systemName: "xmark.circle").imageScale(.large)
+                                Image(systemName: "xmark.circle")
+                                    .imageScale(.large)
                                 Text("Quit")
                             }
                         }
+                        Text(hostText)
+                            .font(.caption)
+                            .foregroundColor(.green)
+                            .offset(y:-50)
+                            .ignoresSafeArea(.all)
                         Spacer()
                     }
                     .offset(x:-50)

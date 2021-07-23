@@ -202,13 +202,9 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                 }
                 
                 if GameCenter.isHost {
-                    do {
-                        let data = try JSONEncoder().encode(self.model)
-                        try GameCenter.viewModel.gkMatch?.sendData(toAllPlayers: data, with: .reliable)
-                        
-                    } catch {
-                        print("Could not send model")
-                        print(error.localizedDescription)
+                    let roundedValue = Int(round(model.timeLeft * 10))
+                    if roundedValue % 5 == 0 {
+                        GameCenter.sendDictionary(["Updated Time Left" : String(model.timeLeft)], toHost: false)
                     }
                     
                 }
@@ -223,7 +219,9 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         }
     }
     
-    
+    func handleGameState(_ gameState: GameState, data: [String : Any]? = [:]) {
+        model.handleGameState(gameState, data: data)
+    }
     
     // check if output is still the same as current to avoid clearing of new outputs
     func clearOutput(_ output: String) { if output == model.output { model.clearOutput() } }
@@ -237,11 +235,20 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     var instruction: String? { model.instruction }
     
-    var query: String? { model.query }
+    var query: String? {
+        get { model.query }
+        set { model.query = newValue }
+    }
     
-    var timeLimit: Float { model.timeLimit }
+    var timeLimit: Float {
+        get { model.timeLimit }
+        set { model.timeLimit = newValue }
+    }
     
-    var timeLeft: Float { model.timeLeft }
+    var timeLeft: Float {
+        get { model.timeLeft }
+        set { model.timeLeft = newValue }
+    }
     
     var output: String { model.output }
     
@@ -290,17 +297,8 @@ extension WordBombGameViewModel {
             else if !GameCenter.isHost && isMyGKTurn  {
                 print("Not host and my turn")
                 // turn for device not hosting but in multiplayer game
-                do {
-                    let inputData = try JSONEncoder().encode(["input" : input])
-                    print("ENCODED JSON \(String(data: inputData, encoding: .utf8))")
-                    let hostPlayer = GameCenter.getGKHostPlayer()
-                    try GameCenter.viewModel.gkMatch?.send(inputData, to: hostPlayer, dataMode: .reliable)
-                    print("SENT \(input) to \(hostPlayer)")
-                    
-                } catch {
-                    print("could not send input data")
-                    print(error.localizedDescription)
-                }
+                GameCenter.sendDictionary(["nonHostInput" : input], toHost: true)
+               
             }
             else {
                 print("Host: \(GameCenter.hostPlayerName), Am Host: \(GameCenter.isHost)")
@@ -348,7 +346,7 @@ extension WordBombGameViewModel {
             switch selectedPeers.count == 0 {
             case true:
                 mpcStatus = ""
-                model = .init()
+                resetGameModel()
             case false:
                 mpcStatus = "Hosting: \(selectedPeers.count) Player(s)"
                 setOnlinePlayers()
@@ -361,7 +359,7 @@ extension WordBombGameViewModel {
             // reset hostPeer to nil and update status
             hostingPeer = nil
             mpcStatus = "Lost Connection to Host: \(peer.name)"
-            model = .init()
+            resetGameModel()
             
         }
         
@@ -397,7 +395,7 @@ extension WordBombGameViewModel {
             setOnlinePlayers()
         case false:
             mpcStatus = "" // not hosting a game
-            model = .init()
+            resetGameModel()
         }
         
         print("toggled, selected peers \(selectedPeers)")
@@ -542,10 +540,15 @@ extension WordBombGameViewModel {
         if Multipeer.isHost {
             selectedPeers = []
             print("selected peers: \(selectedPeers)")
-            model = .init()
+            resetGameModel()
         }
         
         mpcStatus = ""
         hostingPeer = nil
+    }
+    
+    func resetGameModel() {
+        // called when a multiplayer game has ended either due to lack of players, lost of connection or game just ended
+        model = .init()
     }
 }

@@ -41,6 +41,7 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
     @Published public var invite: Invite = Invite.zero {
         didSet {
             self.showInvite = invite.gkInvite != nil
+            GameCenter.hostPlayerName = invite.gkInvite?.sender.displayName
             self.showAuthentication = invite.needsToAuthenticate ?? false
         }
     }
@@ -100,6 +101,7 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
 //            print(String(data: data, encoding: .utf8))
             let gameModel = try JSONDecoder().decode(WordBombGame.self, from: data)
             Game.viewModel.setGameModel(gameModel)
+            Game.viewModel.startTimer()
             
         } catch {
             print("error getting model from host")
@@ -109,13 +111,43 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
                 let data = try JSONDecoder().decode([String : String].self, from: data)
                 if let hostPlayerName = data["Host Name"] {
                     GameCenter.hostPlayerName = hostPlayerName
-                    print("Got host name \(GameCenter.hostPlayerName)")
+                    print("Got host name \(hostPlayerName)")
                 }
                 
-                if let inputData = data["input"] {
-                    print("Got input \(data["input"]) from non-host player")
-                    Game.viewModel.processPeerInput(inputData)
+                if let input = data["nonHostInput"] {
+                    print("Host received input \(input)")
+                    Game.viewModel.processPeerInput(input)
                 }
+
+                if let input = data["input"], let status = data["status"] {
+                    print("Non host received response status  \(status) for input \(input)")
+                    
+                    let nilQuery: String? = nil
+                    Game.viewModel.handleGameState(.playerInput,
+                                               data: ["input" : input,
+                                                      "response" : (status, nilQuery)])
+                }
+                
+                if let query = data["query"] {
+                    print("Non host received updated query \(query)")
+                    Game.viewModel.query = query
+                }
+                if let playerTimedOut = data["Player Timed Out"] {
+                    print("Non host notified of player time out \(playerTimedOut)")
+                    Game.viewModel.handleGameState(.playerTimedOut)
+                }
+                
+                if let timeLeft = data["Updated Time Left"] {
+                    print("Non host notified of updated time left \(String(format: "%.1f", timeLeft))")
+                    Game.viewModel.timeLeft = Float(timeLeft)!
+                    
+                }
+                if let timeLimit = data["New Time Limit"] {
+                    print("Non host notified of new time limit \(String(format: "%.1f", timeLimit))")
+                    Game.viewModel.timeLimit = Float(timeLimit)!
+                }
+                
+                
             } catch {
                 print("error getting input from non-host")
                 print(String(describing: error))
@@ -124,13 +156,39 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
             
         }
         
-        
-        
-        
-        
     }
     func match(_ match: GKMatch, player: GKPlayer, didChange state: GKPlayerConnectionState) {
-        print("player changed")
+        print("player \(player) connection status changed to \(state)")
+        print("players left \(match.players)")
+        
+        if GameCenter.isHost {
+            // set new players
+            switch match.players.count > 0 {
+            case true:
+                // simply reset players without disconnected player
+                Game.viewModel.setGKPlayers(match.players)
+            case false:
+                //end the game if no players left
+                match.disconnect()
+                match.delegate = nil
+                
+                DispatchQueue.main.async {
+                    Game.viewModel.resetGameModel()
+                    self.showMatch = false
+                }
+            }
+        }
+        
+        if .disconnected == state && player.displayName == GameCenter.hostPlayerName {
+                        // exit the game if host disconnect
+            GameCenter.hostPlayerName = nil
+            match.disconnect()
+            match.delegate = nil
+            DispatchQueue.main.async {
+                Game.viewModel.resetGameModel()
+                self.showMatch = false
+            }
+        }
     }
 }
 

@@ -69,6 +69,9 @@ struct WordBombGame: Codable {
         if Multipeer.isHost {
             Multipeer.transceiver.send(["input" : input, "status" : response.status], to: selectedPeers)
         }
+        else if GameCenter.isHost {
+            GameCenter.sendDictionary(["input" : input, "status" : response.status], toHost: false)
+        }
 
         switch response.status {
         case "correct":
@@ -80,17 +83,26 @@ struct WordBombGame: Codable {
                 if Multipeer.isHost {
                     Multipeer.transceiver.send(["query" : newQuery], to: selectedPeers)
                 }
+                else if GameCenter.isHost {
+                    GameCenter.sendDictionary(["query" : newQuery], toHost: false)
+                }
             }
             
             currentPlayer = playerQueue.nextPlayer(currentPlayer)
             
-            if !Multipeer.isNonHost {
+            if Multipeer.isOffline && GameCenter.isOffline {
+                // only if host or offline should update time limit
                 updateTimeLimit()
-                if Multipeer.isHost {
-                    Multipeer.transceiver.send(["New Time Limit" : timeLimit], to: selectedPeers)
-                }
-                
             }
+            else if Multipeer.isHost  {
+                updateTimeLimit()
+                Multipeer.transceiver.send(["New Time Limit" : timeLimit], to: selectedPeers)
+            }
+            else if GameCenter.isHost {
+                updateTimeLimit()
+                GameCenter.sendDictionary(["New Time Limit" : String(timeLimit)], toHost: false)
+            }
+            
             
             
             
@@ -113,6 +125,9 @@ struct WordBombGame: Codable {
         
         if Multipeer.isHost {
             Multipeer.transceiver.send("Current Player Timed Out", to: selectedPeers)
+        }
+        else if GameCenter.isHost {
+            GameCenter.sendDictionary(["Player Timed Out" : "true"], toHost: false)
         }
         
         // mark player as no longer in the game
@@ -186,6 +201,9 @@ struct WordBombGame: Codable {
             
             if Multipeer.isHost {
                 Multipeer.transceiver.send(self, to: selectedPeers)
+            }
+            else if GameCenter.isHost {
+                GameCenter.sendModel(self)
             }
             
         case .playerInput:

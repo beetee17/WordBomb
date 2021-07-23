@@ -23,7 +23,7 @@ struct Multipeer {
     static var isHost: Bool { selectedPeers.count > 0 }
     static var isNonHost: Bool { hostingPeer != nil && selectedPeers.count == 0 }
     static var isOnline: Bool { isHost || isNonHost }
-    static var isOffline: Bool { !isOnline }
+    static var isOffline: Bool { hostingPeer == nil && selectedPeers.count == 0 }
     
     
 //    static func reconnect() {
