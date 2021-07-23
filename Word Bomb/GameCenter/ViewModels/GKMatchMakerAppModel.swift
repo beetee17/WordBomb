@@ -174,6 +174,7 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
                 
                 DispatchQueue.main.async {
                     Game.viewModel.resetGameModel()
+                    self.gkMatch = nil
                     self.showMatch = false
                 }
             }
@@ -186,6 +187,7 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
             match.delegate = nil
             DispatchQueue.main.async {
                 Game.viewModel.resetGameModel()
+                self.gkMatch = nil
                 self.showMatch = false
             }
         }

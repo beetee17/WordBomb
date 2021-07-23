@@ -550,5 +550,6 @@ extension WordBombGameViewModel {
     func resetGameModel() {
         // called when a multiplayer game has ended either due to lack of players, lost of connection or game just ended
         model = .init()
+        Game.stopTimer()
     }
 }
