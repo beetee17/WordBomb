@@ -15,7 +15,15 @@ struct RestartButton: View {
             print("Restart Game")
             if !Multipeer.isNonHost && !GameCenter.isNonHost {
                 // do not allow restart for non host in online match
-                viewModel.restartGame()
+                
+                if GameCenter.isHost {
+                    viewModel.setGKPlayers(GameCenter.viewModel.gkMatch!.players)
+                    viewModel.startGame(mode: WordGame)
+                    
+                }
+                else {
+                    viewModel.restartGame()
+                }
             }
         }) {
             Image(systemName: "gobackward")

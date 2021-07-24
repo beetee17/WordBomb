@@ -132,6 +132,7 @@ struct WordBombGame: Codable {
         
         // mark player as no longer in the game
         currentPlayer.livesLeft -= 1
+        
         for player in playerQueue {
             print("\(player.name): \(player.livesLeft) lives")
             
@@ -170,8 +171,18 @@ struct WordBombGame: Codable {
         currentPlayer = playerQueue[0]
         
     }
+    mutating func updatePlayerLives(_ lives: String) {
+        let updatedLives = lives.components(separatedBy: ",")
+        
+        for i in playerQueue.indices {
+            print("before updated \(playerQueue[i].name): \(playerQueue[i].livesLeft) lives")
+            if let value: Int = Int(updatedLives[i]), value != playerQueue[i].livesLeft {
+                playerQueue[i].livesLeft = value
+            }
+            print("updated \(playerQueue[i].name): \(playerQueue[i].livesLeft) lives")
+        }
+    }
     
-
     mutating func clearUI() {
         output = ""
         query = ""

@@ -25,8 +25,7 @@ struct MainView: View {
             VStack(spacing:0) {
                 if viewModel.animateLogo {
                     LogoView()
-                        .matchedGeometryEffect(id: "logo", in: logo, isSource: true)
-                        .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
+                        .matchedGeometryEffect(id: "logo", in: logo, isSource: false)
                 }
                 
                 VStack(spacing: 35) {
@@ -62,16 +61,16 @@ struct MainView: View {
                     .sheet(isPresented: $changingSettings) { SettingsMenu(isPresented: $changingSettings).environmentObject(viewModel) }
                     
                 }
-                .opacity(viewModel.showPreLaunchAnimation ? 0 : 1)
+                .opacity(viewModel.showPreLaunchAnimation ? 0.01 : 1)
             }
             .padding(.bottom, 20)
             
             
             if !viewModel.animateLogo && viewModel.showPreLaunchAnimation {
                 LogoView()
+                    
+                    .matchedGeometryEffect(id: "logo", in: logo, isSource: true)
                     .frame(width: Device.width, height: Device.height, alignment: .center)
-                    .matchedGeometryEffect(id: "logo", in: logo, isSource: false)
-                    .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
             }
             
         }
@@ -85,13 +84,13 @@ struct MainView: View {
                              "The Create Mode button presents a sheet where you can create your own custom modes to play with friends.",
                              "Customise various settings of the game mechanics here. Relevant settings will also apply to online gameplay if you are the host!"])
         .onAppear() {
-            withAnimation {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.5, blendDuration: 1)) {
                 viewModel.animateLogo = true
             }
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                 
-                viewModel.showPreLaunchAnimation = false
+                withAnimation(.easeInOut) { viewModel.showPreLaunchAnimation = false }
             }
         }
         .transition(.asymmetric(insertion: AnyTransition.move(edge: .leading), removal: AnyTransition.move(edge: .trailing)))

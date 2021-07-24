@@ -92,20 +92,29 @@ struct PlayerLives: View {
     }
 }
 struct PlayerAvatar: View {
-    
+    @EnvironmentObject var viewModel: WordBombGameViewModel
     var player: Player
     
     var body: some View {
-        let text = String(player.name.first?.uppercased() ?? "")
-        Image(systemName: "circle.fill")
-            .resizable()
-            .frame(width: Game.playerAvatarSize, height: Game.playerAvatarSize, alignment: .center)
-            .foregroundColor(.gray)
-            .overlay(Text(text)
-                        .font(.system(size: 60,
-                                      weight: .regular,
-                                      design: .rounded))
-                        )
+
+        if let avatar = player.image {
+            Image(uiImage: UIImage(data: avatar)!)
+                .resizable()
+                .frame(width: Game.playerAvatarSize, height: Game.playerAvatarSize, alignment: .center)
+                .clipShape(Circle())
+        }
+        else {
+            let text = String(player.name.first?.uppercased() ?? "")
+            Image(systemName: "circle.fill")
+                .resizable()
+                .frame(width: Game.playerAvatarSize, height: Game.playerAvatarSize, alignment: .center)
+                .foregroundColor(.gray)
+                .overlay(Text(text)
+                            .font(.system(size: 60,
+                                          weight: .regular,
+                                          design: .rounded))
+                            )
+        }
             
     }
 }

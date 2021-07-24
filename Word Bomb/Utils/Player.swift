@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class Player: Codable, Equatable, Identifiable {
     
@@ -18,10 +19,14 @@ class Player: Codable, Equatable, Identifiable {
     var name:String
     var id = UUID()
     var livesLeft = UserDefaults.standard.integer(forKey: "Player Lives")
-    
+    var image: Data? = nil
     
     init(name:String) {
         self.name = name
+    }
+    
+    func setImage(_ image:UIImage?) {
+        self.image = image?.pngData()
     }
     
     func reset() {

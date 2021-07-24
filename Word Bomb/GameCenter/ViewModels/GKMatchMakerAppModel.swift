@@ -45,11 +45,12 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
             self.showAuthentication = invite.needsToAuthenticate ?? false
         }
     }
-    @Published public var gkMatch: GKMatch? {
+    @Published public var gkMatch: GKMatch?
+    {
         didSet {
             self.showInvite = false
             self.showMatch = true
-            
+
         }
     }
     
@@ -110,8 +111,12 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
         do {
             //            print(String(data: data, encoding: .utf8))
             let gameModel = try JSONDecoder().decode(WordBombGame.self, from: data)
+            print("got model successfully from host \(gameModel)")
             Game.viewModel.setGameModel(gameModel)
             Game.viewModel.startTimer()
+            if let match = GameCenter.viewModel.gkMatch {
+                Game.viewModel.setGKPlayerImages(match.players)
+            } else { print("No GKMatch found??") }
             
         } catch {
             print("error getting model from host")
@@ -137,7 +142,7 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
                                                    data: ["input" : input,
                                                           "response" : (status, nilQuery)])
                 }
-                
+
                 if let query = data["query"] {
                     print("Non host received updated query \(query)")
                     Game.viewModel.query = query
@@ -162,7 +167,6 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
                     Game.viewModel.updatePlayerLives(updatedLives)
                 }
                 
-                
             } catch {
                 print("error getting input from non-host")
                 print(String(describing: error))
@@ -186,7 +190,7 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
                 Game.viewModel.setGKPlayers(match.players)
             case false:
                 //end the game if no players left
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     
                     if !(self.gkIsConnected[player] ?? false) {
                         print(self.gkIsConnected)

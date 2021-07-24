@@ -26,6 +26,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     @Published var mpcStatus = ""
     @Published var debugging = false
+    @Published var playersReady = 0
     
     
     init(_ viewToShow: ViewToShow = .main) {
@@ -48,6 +49,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             forceHideKeyboard = true
         }
         GKMatchManager.shared.cancel()
+        playersReady = 0
         GameCenter.hostPlayerName = nil
     }
     
@@ -68,6 +70,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     }
     
     func restartGame() {
+
         if gameModel != nil {
             
             gameModel!.reset()
@@ -75,15 +78,15 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             if Multipeer.isHost {
                 setOnlinePlayers()
             }
-            
+
             model.handleGameState(.initial,
                                   data: ["query" : gameModel!.getRandQuery(input),
                                          "instruction" : model.instruction as Any])
             if !GameCenter.isHost {
                 changeViewToShow(.game)
             }
-            startTimer()
             
+            startTimer()
         }
         else {
             print("mode not found")
@@ -104,14 +107,12 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             
             let queries = decodeJSONStringtoArray(item.queries!)
             startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: Game.types[.Classic], id: -1))
-            
         }
         
     }
     
     func startGame(mode: GameMode) {
-        
-        
+
         // process the gameMode by initing the appropriate WordGameModel
         
         if mode.dataFile != nil {
@@ -218,7 +219,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                     }
                     if roundedValue % 10 == 0 && model.timeLeft > 0.1 {
                         var updatedLives = [String]()
-                        for player in model.players {
+                        for player in model.playerQueue {
                             updatedLives.append(String(player.livesLeft))
                         }
                         
@@ -290,28 +291,52 @@ extension WordBombGameViewModel {
     func setGameModel(_ model: WordBombGame) {
         self.model = model
     }
-    
+
     func setGKPlayers(_ gkPlayers: [GKPlayer]) {
+
         var players: [Player] = [Player(name: GKLocalPlayer.local.displayName)]
+        
         for player in gkPlayers {
             players.append(Player(name: player.displayName))
         }
-        model = .init(players)
+        self.model = .init(players)
+//        self.model.currentPlayer = self.model.playerQueue[0]
+        print("gkplayers \(self.model.playerQueue)")
+        print("current player \(self.model.currentPlayer)")
+        setGKPlayerImages(gkPlayers)
+        
     }
-    func updatePlayerLives(_ lives: String) {
-        let updatedLives = lives.components(separatedBy: ",")
-        for i in model.players.indices {
-            if let value: Int = Int(updatedLives[i]) {
-                model.players[i].livesLeft = value
+    
+    func setGKPlayerImages(_ gkPlayers: [GKPlayer]) {
+        for player in model.playerQueue {
+            if player.name == GKLocalPlayer.local.displayName {
+                GKLocalPlayer.local.loadPhoto(for: GKPlayer.PhotoSize.normal) { image, error in
+                    print("got image \(image) for player \(player.name) with error \(error)")
+                    player.setImage(image)
+                }
             }
-            print("updated \(model.players[i].name): \(model.players[i].livesLeft) lives")
+            else {
+                for gkPlayer in gkPlayers {
+                    if player.name == gkPlayer.displayName {
+                        gkPlayer.loadPhoto(for: GKPlayer.PhotoSize.normal) { image, error in
+                            print("got image \(image) for player \(player.name) with error \(error)")
+                            player.setImage(image)
+                        }
+                    }
+                }
+            }
         }
+    }
+    
+    func updatePlayerLives(_ lives: String) {
+        model.updatePlayerLives(lives)
     }
     
     func processGKInput() {
 
         input = input.lowercased().trim()
         print("processing input \(input)")
+        // check additonl condition that current player is still the player that sent the input
         if !(input == "" || model.timeLeft <= 0) {
             
             if GameCenter.isHost && isMyGKTurn {

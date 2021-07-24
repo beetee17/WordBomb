@@ -49,15 +49,16 @@ struct GKContentView: View {
                             Text("HOST MATCH")
                         }
                         .buttonStyle(MainButtonStyle())
+                        
+                        Game.mainButton(label: "Test Banner", systemImageName: "arrow") {
+                            withAnimation { GameCenter.viewModel.showAlert(title: "Oops, something went wrong!", message: "Please try again")}
+                        }
  
                     }
                     
-                    Button(action: { withAnimation { viewModel.changeViewToShow(.main) } }) {
-                        Image(systemName: "arrow.backward")
-                            .font(Font.title.bold())
-                            .foregroundColor(.white)
+                    Game.backButton {
+                        withAnimation { viewModel.changeViewToShow(.main) }
                     }
-                    
                 }
                 
             }

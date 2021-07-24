@@ -43,67 +43,73 @@ struct Word_BombApp: App {
     
     var body: some Scene {
         WindowGroup {
-        Group {
-            
-            if self.gkViewModel.showAuthentication {
-                GKAuthenticationView { (error) in
-                    self.gkViewModel.showAlert(title: "Authentication Failed", message: error.localizedDescription)
-                } authenticated: { (player) in
-                    self.gkViewModel.showAuthentication = false
-                }
-            } else if self.gkViewModel.showInvite {
-                GKInviteView(
-                    invite: self.gkViewModel.invite.gkInvite!
-                ) {
-                } failed: { (error) in
-                    self.gkViewModel.showAlert(title: "Invitation Failed", message: error.localizedDescription)
-                } started: { (gkMatch) in
-                    
-                    self.gkViewModel.showInvite = false
-                    self.gkViewModel.gkMatch = gkMatch
-                }
-            } else if self.gkViewModel.showMatch,
-                      let gkMatch = self.gkViewModel.gkMatch {
+            Group {
                 
-                ZStack {
-                    let hostText = "\(GameCenter.isHost ? GKLocalPlayer.local.displayName : GameCenter.hostPlayerName) IS HOSTING"
-                    Color("Background").ignoresSafeArea(.all)
-                    GamePlayView(match: gkMatch)
-                        .environmentObject(self.gkViewModel)
-                        .environmentObject(Game.viewModel)
+                if self.gkViewModel.showAuthentication {
+                    GKAuthenticationView { (error) in
+                        self.gkViewModel.showAuthentication = false
+                        self.gkViewModel.showAlert(title: "Authentication Failed", message: error.localizedDescription)
+                    } authenticated: { (player) in
+                        self.gkViewModel.showAuthentication = false
+                    }
+                } else if self.gkViewModel.showInvite {
+                    GKInviteView(
+                        invite: self.gkViewModel.invite.gkInvite!
+                    ) {
+                    } failed: { (error) in
+                        self.gkViewModel.showInvite = false
+                        self.gkViewModel.showAlert(title: "Invitation Failed", message: error.localizedDescription)
+                        
+                    } started: { (gkMatch) in
+                        self.gkViewModel.gkMatch = gkMatch
+                        
+                    }
+                } else if self.gkViewModel.showMatch, let gkMatch = self.gkViewModel.gkMatch {
                     
-                    VStack() {
-                        Spacer()
-                        HStack {
+                    ZStack {
+                        let hostText = "\(GameCenter.isHost ? GKLocalPlayer.local.displayName : GameCenter.hostPlayerName) IS HOSTING"
+                        Color("Background").ignoresSafeArea(.all)
+                        GamePlayView(match: gkMatch) // change such tht it does not load until player images are loaded
+                            .environmentObject(self.gkViewModel)
+                            .environmentObject(Game.viewModel)
+                        
+                        VStack() {
                             Spacer()
-                            Text(hostText)
-                                .font(.caption)
-                                .foregroundColor(.green)
-                                .ignoresSafeArea(.all)
+                            HStack {
+                                Spacer()
+                                Text(hostText)
+                                    .font(.caption)
+                                    .foregroundColor(.green)
+                                    .ignoresSafeArea(.all)
+                            }
                         }
                     }
-                }
-                .onAppear() {
-                    Game.viewModel.setGKPlayers(gkMatch.players)
-                    if GameCenter.isHost {
-                        Game.viewModel.startGame(mode: WordGame)
+                    .onAppear {
+                        if GameCenter.isHost {
+                            Game.viewModel.setGKPlayers(gkMatch.players)
+                            Game.viewModel.startGame(mode: WordGame)
+                        }
+                        
                     }
                 }
-            }
-            else {
-                ContentView()
-                    .environmentObject(Game.viewModel)
-                    .environmentObject(Multipeer.dataSource)
-                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                
+                else {
+                    ContentView()
+                        .environmentObject(Game.viewModel)
+                        .environmentObject(Multipeer.dataSource)
+                        .environment(\.managedObjectContext, persistenceController.container.viewContext)
                     
+                    //                        .alert(isPresented: $gkViewModel.showAlert) {
+                    //                            Alert(title: Text(self.gkViewModel.alertTitle),
+                    //                                  message: Text(self.gkViewModel.alertMessage),
+                    //                                  dismissButton: .default(Text("Ok")))
+                    //                        }
+                }
+                
             }
+            .banner(isPresented: $gkViewModel.showAlert,
+                    title: gkViewModel.alertTitle, message: gkViewModel.alertMessage)
             
-        }
-        .alert(isPresented: $gkViewModel.showAlert) {
-            Alert(title: Text(self.gkViewModel.alertTitle),
-                  message: Text(self.gkViewModel.alertMessage),
-                  dismissButton: .default(Text("Ok")))
-        }
         }
         
     }

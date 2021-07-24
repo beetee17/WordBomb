@@ -7,52 +7,47 @@
 
 import SwiftUI
 
-
-struct BannerData {
-    let title: String
-    var actionTitle: String? = nil
-    // Level to drive tint colors and importance of the banner.
-    var level: Level = .success
-
-    enum Level {
-        case warning
-        case success
-
-        var tintColor: Color {
-            switch self {
-            case .warning: return .yellow
-            case .success: return .green
-            }
-        }
-    }
-}
 struct BannerView: View {
-    let data: BannerData
-    var action: (() -> Void)
+    let title: String
+    let message: String
 
     var body: some View {
-        
-        HStack {
-            Text(data.title)
-            Spacer()
-//            Button(action:
-//                    action, label: {
-//                Text(data.actionTitle ?? "Action")
-//                    .foregroundColor(.white)
-//                    .padding(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
-//                    .background(RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/, style: /*@START_MENU_TOKEN@*/.continuous/*@END_MENU_TOKEN@*/).foregroundColor(Color.black.opacity(0.3)))
-//            })
+        ZStack {
+            Color.black.opacity(0.2)
+                .frame(width: Device.width-40, height: 100, alignment: .leading)
+                .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+                .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 10)
+                .blur(radius: 1)
             
+            VStack(alignment: .leading, spacing:10) {
+                HStack {
+                    Image("icon-gradient-180")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:25, height: 25)
+                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                    Text("Word Bomb")
+                        .foregroundColor(.white.opacity(0.7))
+                }
+                VStack(alignment: .leading, spacing:2) {
+                    Text(title)
+                        .bold()
+                    
+                    Text(message)
+                        
+                }
+            }
+            .padding(.horizontal, 5)
+            .frame(width: Device.width-40, height: 75, alignment: .leading)
         }
-        .padding(EdgeInsets(top: 12, leading: 8, bottom: 12, trailing: 8))
-        .background(data.level.tintColor)
-        .clipShape(RoundedRectangle(cornerRadius: 15, style: .circular))
+        .animation(.easeInOut)
+        .transition(AnyTransition.asymmetric(insertion: .move(edge: .top), removal: .move(edge: .bottom)).combined(with: .opacity))
     }
 }
 struct BannerViewModifier: ViewModifier {
     @Binding var isPresented: Bool
-    let data: BannerData
-    let action: (() -> Void)
+    let title: String
+    let message: String
 
     func body(content: Content) -> some View {
         ZStack {
@@ -60,12 +55,10 @@ struct BannerViewModifier: ViewModifier {
         
         VStack(spacing: 0) {
             if isPresented {
-                BannerView(data: data, action: action)
-                    .animation(.easeInOut)
-                    .transition(AnyTransition.move(edge: .top).combined(with: .opacity))
+                BannerView(title: title, message: message)
                     .onAppear() {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            self.isPresented = false
+                            withAnimation(.easeInOut) { self.isPresented = false }
                         }
                     }
             }
@@ -76,13 +69,17 @@ struct BannerViewModifier: ViewModifier {
 }
 
 extension View {
-    func banner(isPresented: Binding<Bool>, data: BannerData, action: @escaping (() -> Void)) -> some View {
-        self.modifier(BannerViewModifier(isPresented: isPresented, data: data, action: action))
+    func banner(isPresented: Binding<Bool>, title: String, message: String) -> some View {
+        self.modifier(BannerViewModifier(isPresented: isPresented, title: title, message: message))
     }
 }
 
-//struct BannerView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        BannerView()
-//    }
-//}
+struct BannerView_Previews: PreviewProvider {
+    static var previews: some View {
+        ZStack {
+            Color("Background")
+            BannerView(title: "Oops, something went wrong", message: "Please try again.")
+        }
+        
+    }
+}
