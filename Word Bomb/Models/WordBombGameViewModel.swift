@@ -14,6 +14,8 @@ import GameKitUI
 
 class WordBombGameViewModel: NSObject, ObservableObject {
     
+    @Published var showPreLaunchAnimation = true
+    @Published var animateLogo = false
     @Published private var model: WordBombGame = WordBombGame()
     @Published private var gameModel: WordGameModel? = nil
     @Published var viewToShow: ViewToShow = .main
@@ -24,6 +26,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     @Published var mpcStatus = ""
     @Published var debugging = false
+    
     
     init(_ viewToShow: ViewToShow = .main) {
         self.viewToShow = viewToShow

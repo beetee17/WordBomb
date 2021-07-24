@@ -24,7 +24,7 @@ let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", instruction
 struct Word_BombApp: App {
     
     @ObservedObject var gkViewModel = GameCenter.viewModel
-
+    
     init() {
         // register "default defaults"
         UserDefaults.standard.register(defaults: [
@@ -35,15 +35,15 @@ struct Word_BombApp: App {
             "Player Names" : ["A", "B", "C"],
             "Num Players" : 2,
             "Player Lives" : 3
-
+            
             // ... other settings
         ])
     }
-    
+    var persistenceController = PersistenceController.shared
     
     var body: some Scene {
-        
         WindowGroup {
+        Group {
             
             if self.gkViewModel.showAuthentication {
                 GKAuthenticationView { (error) in
@@ -58,7 +58,7 @@ struct Word_BombApp: App {
                 } failed: { (error) in
                     self.gkViewModel.showAlert(title: "Invitation Failed", message: error.localizedDescription)
                 } started: { (gkMatch) in
-
+                    
                     self.gkViewModel.showInvite = false
                     self.gkViewModel.gkMatch = gkMatch
                 }
@@ -71,17 +71,17 @@ struct Word_BombApp: App {
                     GamePlayView(match: gkMatch)
                         .environmentObject(self.gkViewModel)
                         .environmentObject(Game.viewModel)
-
-                    VStack {
-                        
-                        Text(hostText)
-                            .font(.caption)
-                            .foregroundColor(.green)
-                            .offset(y:-50)
-                            .ignoresSafeArea(.all)
+                    
+                    VStack() {
                         Spacer()
+                        HStack {
+                            Spacer()
+                            Text(hostText)
+                                .font(.caption)
+                                .foregroundColor(.green)
+                                .ignoresSafeArea(.all)
+                        }
                     }
-                    .offset(x:-50)
                 }
                 .onAppear() {
                     Game.viewModel.setGKPlayers(gkMatch.players)
@@ -91,18 +91,21 @@ struct Word_BombApp: App {
                 }
             }
             else {
-                Prelaunch()
+                ContentView()
                     .environmentObject(Game.viewModel)
                     .environmentObject(Multipeer.dataSource)
-                    .alert(isPresented: $gkViewModel.showAlert) {
-                        Alert(title: Text(self.gkViewModel.alertTitle),
-                              message: Text(self.gkViewModel.alertMessage),
-                              dismissButton: .default(Text("Ok")))
-                    }
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                    
             }
-
             
         }
+        .alert(isPresented: $gkViewModel.showAlert) {
+            Alert(title: Text(self.gkViewModel.alertTitle),
+                  message: Text(self.gkViewModel.alertMessage),
+                  dismissButton: .default(Text("Ok")))
+        }
+        }
+        
     }
 }
 

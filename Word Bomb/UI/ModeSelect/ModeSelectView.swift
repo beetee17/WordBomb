@@ -67,11 +67,8 @@ struct ModeSelectView: View {
             .frame(maxHeight: Device.height/2, alignment: .center)
             .frame(width: Device.width)
             
-            Button(action: { withAnimation { viewModel.changeViewToShow(.gameTypeSelect) } }) {
-                Image(systemName: "arrow.backward")
-                    .font(Font.title.bold())
-                    .foregroundColor(.white)
-                
+            Game.backButton {
+                withAnimation { viewModel.changeViewToShow(.gameTypeSelect) }
             }
             .offset(y: 25)
         }

@@ -44,6 +44,33 @@ struct Game {
         Game.timer = nil
         print("Timer stopped")
     }
+    
+    static func mainButton(label: String, systemImageName: String? = nil, image: AnyView? = nil, action: @escaping () -> Void) -> some View {
+        
+        precondition(systemImageName != nil || image != nil)
+        
+        return Button(action: action) {
+            HStack {
+                if let systemName = systemImageName {
+                    Image(systemName: systemName)
+                }
+                else if let image = image {
+                    image
+                }
+                Text(label)
+            }
+            
+        }
+        .buttonStyle(MainButtonStyle())
+    }
+    
+    static func backButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: "arrow.backward")
+                .font(Font.title.bold())
+                .foregroundColor(.white)
+        }
+    }
 }
 
 

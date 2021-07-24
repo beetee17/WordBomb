@@ -18,45 +18,23 @@ struct PauseMenuView: View {
         
         VStack(spacing: 100) {
             // RESUME, RESTART, QUIT buttons
-            
-            Button(action: {
-                print("RESUME!")
+            Game.mainButton(label: "RESUME", systemImageName: "play") {
                 withAnimation {
                     viewModel.resumeGame()
-                } })
-            {
-                HStack {
-                    Image(systemName: "play")
-                    Text("RESUME")
                 }
             }
-            .buttonStyle(MainButtonStyle())
-            
-            Button(action: {
+            Game.mainButton(label: "RESTART", systemImageName: "gobackward") {
                 if !Multipeer.isNonHost && !GameCenter.isNonHost {
                     print("Restart Game")
                     viewModel.restartGame()
                 }
-            }) {
-                HStack {
-                    Image(systemName: "gobackward")
-                    Text("RESTART")
-                }
             }
-            .buttonStyle(MainButtonStyle())
             
-            
-            Button(action: {
-                print("QUIT!")
+            Game.mainButton(label: "QUIT", systemImageName: "flag") {
                 withAnimation {
-                    viewModel.changeViewToShow(.main) }
-            }) {
-                HStack {
-                    Image(systemName: "flag")
-                    Text("QUIT")
-                }
+                viewModel.changeViewToShow(.main) }
+                
             }
-            .buttonStyle(MainButtonStyle())
             
         }
         .helpSheet(title: "Game Play",

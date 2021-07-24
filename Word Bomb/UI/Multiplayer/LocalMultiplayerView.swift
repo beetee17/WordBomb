@@ -25,66 +25,33 @@ struct LocalMultiplayerView: View {
                 
                 VStack(spacing: 50) {
                     
-                    
-                    Button(action: {
-                        
+                    Game.mainButton(label: "HOST GAME", systemImageName: "person.crop.circle.badge.plus") {
                         print("Host Game")
                         withAnimation { presentPeersSheet = true }
-                    }) {
-                        HStack {
-                            Image(systemName: "person.crop.circle.badge.plus")
-                            Text("HOST GAME")
-                        }
-                    }
                     
-                    .buttonStyle(MainButtonStyle())
+                    }
                     .sheet(isPresented: $presentPeersSheet) { LocalPeersView() }
                     
-                    Button(action:{
-                        
+                    Game.mainButton(label: "DISCONNECT", systemImageName: "wifi.slash") {
                         print("Manual Disconnect")
                         withAnimation {
                             viewModel.disconnect()
                             
                             
-                        } }) {
-                            
-                            HStack {
-                                Image(systemName: "wifi.slash")
-                                Text("DISCONNECT")
-                            }
-                            
                         }
-                        .buttonStyle(MainButtonStyle())
-                    
-                    Button(action:{
-                        
+                    }
+                    Game.mainButton(label: "RECONNECT", systemImageName: "wifi.exclamationmark") {
                         print("Reconnect")
                         withAnimation {
                             viewModel.disconnect()
                             Multipeer.reconnect()
-                            
-                            
-                        } }) {
-                            
-                            HStack {
-                                Image(systemName: "wifi.exclamationmark")
-                                Text("RECONNECT")
-                            }
-                            
                         }
-                        .buttonStyle(MainButtonStyle())
-                    
-                    
-                    
+                    }
+
                 }
-                Button(action: { withAnimation { viewModel.changeViewToShow(.main) } }) {
-                    Image(systemName: "arrow.backward")
-                        .font(Font.title.bold())
-                        .foregroundColor(.white)
-                    
+                Game.backButton {
+                    withAnimation { viewModel.changeViewToShow(.main) }
                 }
-                
             }
         }
         .helpSheet(title: "Local Multiplayer",

@@ -14,7 +14,7 @@ struct MainView: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
     @State var creatingMode = false
     @State var changingSettings = false
-    
+    @Namespace var logo
     
     var body: some View {
         
@@ -23,67 +23,56 @@ struct MainView: View {
             Color.clear
             
             VStack(spacing:0) {
-                
-                LogoView()
-                
-                VStack(spacing: 35) {
-                    Button(action: { withAnimation { viewModel.changeViewToShow(.gameTypeSelect) } }) {
-                        HStack {
-                            Image(systemName: "gamecontroller")
-                            Text("START GAME")
-                        }
-                        
-                    }
-                    .buttonStyle(MainButtonStyle())
-                    
-                    Button(action:  { withAnimation { viewModel.changeViewToShow(.gameCenterInvite)
-                    } })
-                    {
-                        HStack {
-                            Image("GK Icon")
-                                .resizable().aspectRatio(contentMode: .fit)
-                                .frame(height: 20)
-
-                            Text("GAME CENTER")
-                            
-                        }
-                    }
-                    .buttonStyle(MainButtonStyle())
-                    
-                    Button(action: { withAnimation { viewModel.changeViewToShow(.multipeer) } }) {
-                        HStack {
-                            Image(systemName: "wifi")
-                            Text("MULTIPLAYER")
-                            
-                        }
-                        
-                    }
-                    .buttonStyle(MainButtonStyle())
-                    
-                    Button(action: { withAnimation { creatingMode = true } }) {
-                        HStack {
-                            Image(systemName: "plus.circle")
-                            Text("CREATE MODE")
-                        }
-                    }
-                    .buttonStyle(MainButtonStyle())
-                    .sheet(isPresented: $creatingMode, onDismiss: {}) { CustomModeForm() }
-                    
-                    Button(action: { withAnimation { changingSettings = true } }) {
-                        HStack {
-                            Image(systemName: "gearshape")
-                            Text("SETTINGS")
-                        }
-                        
-                    }
-                    .buttonStyle(MainButtonStyle())
-                    .sheet(isPresented: $changingSettings) { SettingsMenu(isPresented: $changingSettings).environmentObject(viewModel) }
-                    
-                    
+                if viewModel.animateLogo {
+                    LogoView()
+                        .matchedGeometryEffect(id: "logo", in: logo, isSource: true)
+                        .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
                 }
                 
+                VStack(spacing: 35) {
+                    
+                    Game.mainButton(label: "START GAME", systemImageName: "gamecontroller") {
+                        withAnimation { viewModel.changeViewToShow(.gameTypeSelect) }
+                    }
+                    
+                    Game.mainButton(label: "GAME CENTER",
+                                    image: AnyView(Image("GK Icon")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(height: 20))) {
+                        withAnimation {
+                            viewModel.changeViewToShow(.gameCenterInvite)
+                        }
+                    }
+                    
+                    Game.mainButton(label: "MULTIPLAYER", systemImageName: "wifi") {
+                        withAnimation { viewModel.changeViewToShow(.multipeer) }
+                    }
+                    
+                    
+                    Game.mainButton(label: "CREATE MODE", systemImageName: "plus.circle") {
+                        withAnimation { creatingMode = true }
+                    }
+                    .sheet(isPresented: $creatingMode, onDismiss: {}) { CustomModeForm() }
+                    
+                    
+                    Game.mainButton(label: "SETTINGS", systemImageName: "gearshape") {
+                        withAnimation { changingSettings = true }
+                    }
+                    .sheet(isPresented: $changingSettings) { SettingsMenu(isPresented: $changingSettings).environmentObject(viewModel) }
+                    
+                }
+                .opacity(viewModel.showPreLaunchAnimation ? 0 : 1)
             }
             .padding(.bottom, 20)
+            
+            
+            if !viewModel.animateLogo && viewModel.showPreLaunchAnimation {
+                LogoView()
+                    .frame(width: Device.width, height: Device.height, alignment: .center)
+                    .matchedGeometryEffect(id: "logo", in: logo, isSource: false)
+                    .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
+            }
             
         }
         .helpSheet(title: "Welcome to Word Bomb",
@@ -95,7 +84,16 @@ struct MainView: View {
                              "You can also play a local multiplayer game with nearby players via the Local Multiplayer button.",
                              "The Create Mode button presents a sheet where you can create your own custom modes to play with friends.",
                              "Customise various settings of the game mechanics here. Relevant settings will also apply to online gameplay if you are the host!"])
-        
+        .onAppear() {
+            withAnimation {
+                viewModel.animateLogo = true
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                
+                viewModel.showPreLaunchAnimation = false
+            }
+        }
         .transition(.asymmetric(insertion: AnyTransition.move(edge: .leading), removal: AnyTransition.move(edge: .trailing)))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
         .zIndex(/*@START_MENU_TOKEN@*/1.0/*@END_MENU_TOKEN@*/) // transition does not work with zIndex set to 0
