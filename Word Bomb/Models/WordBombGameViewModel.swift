@@ -21,7 +21,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     @Published var viewToShow: ViewToShow = .main
     
     @Published var input = ""
-    @Published var forceHideKeyboard = true
+    @Published var forceHideKeyboard = false
     @Published var gameType: GameType? = nil
     
     @Published var mpcStatus = ""
@@ -218,12 +218,12 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                         GameCenter.sendDictionary(["Updated Time Left" : String(model.timeLeft)], toHost: false)
                     }
                     if roundedValue % 10 == 0 && model.timeLeft > 0.1 {
-                        var updatedLives = [String]()
-                        for player in model.playerQueue {
-                            updatedLives.append(String(player.livesLeft))
-                        }
+//                        var updatedLives = [String]()
+//                        for player in model.playerQueue {
+//                            updatedLives.append(String(player.livesLeft))
+//                        }
                         
-                        GameCenter.sendDictionary(["Updated Player Lives" : updatedLives.joined(separator: ",")], toHost: false)
+                        GameCenter.sendPlayers(model.playerQueue)
                     }
                     
                 }
@@ -290,6 +290,7 @@ extension WordBombGameViewModel {
     
     func setGameModel(_ model: WordBombGame) {
         self.model = model
+        self.model.currentPlayer = self.model.playerQueue[0]
     }
 
     func setGKPlayers(_ gkPlayers: [GKPlayer]) {
@@ -300,7 +301,6 @@ extension WordBombGameViewModel {
             players.append(Player(name: player.displayName))
         }
         self.model = .init(players)
-//        self.model.currentPlayer = self.model.playerQueue[0]
         print("gkplayers \(self.model.playerQueue)")
         print("current player \(self.model.currentPlayer)")
         setGKPlayerImages(gkPlayers)
@@ -328,8 +328,8 @@ extension WordBombGameViewModel {
         }
     }
     
-    func updatePlayerLives(_ lives: String) {
-        model.updatePlayerLives(lives)
+    func updatePlayerLives(_ updatedPlayers: [Player]) {
+        model.updatePlayerLives(updatedPlayers)
     }
     
     func processGKInput() {

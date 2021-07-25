@@ -13,13 +13,13 @@ struct TopBarView: View {
     // and see current time left
     
     @EnvironmentObject var viewModel: WordBombGameViewModel
-    var match: GKMatch?
+    var gkMatch: GKMatch?
     
     var body: some View {
         
         HStack {
             
-            switch self.match == nil {
+            switch gkMatch == nil {
             case true:
                 PauseButton()
             case false:
@@ -29,7 +29,7 @@ struct TopBarView: View {
             Spacer()
             
             TimerView()
-                .offset(x: self.match == nil ? 0 : -20)
+                .offset(x: gkMatch == nil ? 0 : -20)
             
             Spacer()
             

@@ -13,11 +13,19 @@ struct BannerView: View {
 
     var body: some View {
         ZStack {
-            Color.black.opacity(0.2)
-                .frame(width: Device.width-40, height: 100, alignment: .leading)
-                .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
-                .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 10)
-                .blur(radius: 1)
+            ZStack {
+                LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.03205184274, green: 0.03314970656, blue: 0.04729758212, alpha: 1)), Color("Background")]), startPoint: .top, endPoint: .bottom)
+                        
+                LinearGradient(gradient: Gradient(colors: [Color("Background").opacity(0.6), Color(#colorLiteral(red: 0.07820445112, green: 0.08963582299, blue: 0.09931479403, alpha: 1)).opacity(0.3)]), startPoint: .top, endPoint: .bottom)
+            
+                Color.black.opacity(0.2)
+
+            }
+            .frame(width: Device.width-40, height: 100, alignment: .leading)
+            .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+            .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 10)
+            .blur(radius: 1)
+            
             
             VStack(alignment: .leading, spacing:10) {
                 HStack {

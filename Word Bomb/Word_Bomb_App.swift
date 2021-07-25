@@ -69,7 +69,7 @@ struct Word_BombApp: App {
                     ZStack {
                         let hostText = "\(GameCenter.isHost ? GKLocalPlayer.local.displayName : GameCenter.hostPlayerName) IS HOSTING"
                         Color("Background").ignoresSafeArea(.all)
-                        GamePlayView(match: gkMatch) // change such tht it does not load until player images are loaded
+                        GamePlayView(gkMatch: gkMatch) // change such tht it does not load until player images are loaded
                             .environmentObject(self.gkViewModel)
                             .environmentObject(Game.viewModel)
                         
@@ -89,6 +89,7 @@ struct Word_BombApp: App {
                             Game.viewModel.setGKPlayers(gkMatch.players)
                             Game.viewModel.startGame(mode: WordGame)
                         }
+                        Game.viewModel.forceHideKeyboard = false
                         
                     }
                 }

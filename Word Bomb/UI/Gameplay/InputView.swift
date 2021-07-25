@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import GameKit
 
 struct InputView: View {
     
@@ -14,21 +14,27 @@ struct InputView: View {
     
     @EnvironmentObject var viewModel: WordBombGameViewModel
     @State var commitInput = false
-
+    var gkMatch: GKMatch?
+    
     var body: some View {
-
+        
         ZStack {
             PermanentKeyboard(text: $viewModel.input, forceResignFirstResponder: $viewModel.forceHideKeyboard)
             Text(viewModel.input)
                 .onChange(of: viewModel.input,
-                                           perform: { _ in if viewModel.input.last == "\n" {
-                                                viewModel.processInput()
-                                               viewModel.input = ""
-                                               
-                                           }
-            }).ignoresSafeArea(.keyboard)
+                          perform: { _ in if viewModel.input.last == "\n" {
+                            if gkMatch != nil {
+                                viewModel.processGKInput()
+                            }
+                            else {
+                                viewModel.processInput()
+                                
+                            }
+                            viewModel.input = ""
+                          }
+                          }).ignoresSafeArea(.keyboard)
                 
-            .font(Font.system(size: 20))
+                .font(Font.system(size: 20))
         }
     }
 }

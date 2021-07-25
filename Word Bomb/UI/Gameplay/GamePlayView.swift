@@ -12,7 +12,7 @@ import GameKitUI
 struct GamePlayView: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
     
-    var match: GKMatch? 
+    var gkMatch: GKMatch? 
     
     var instructionText: some View {
         viewModel.instruction.map { Text($0)
@@ -40,7 +40,7 @@ struct GamePlayView: View {
                 Color.clear
                 
                 VStack {
-                    TopBarView(match: match)
+                    TopBarView(gkMatch: gkMatch)
                     Spacer()
                 }
                 
@@ -58,23 +58,8 @@ struct GamePlayView: View {
                 
                 instructionText
                 queryText
-                switch self.match == nil {
-                case true:
-                    InputView()
+                InputView(gkMatch: gkMatch)
                     
-                case false:
-                    TextField("INPUT",
-                              text: $viewModel.input,
-                              onCommit: {
-                                viewModel.processGKInput()
-                                viewModel.input = ""
-                              })
-                        .disableAutocorrection(true)
-                        .autocapitalization(.words)
-                        .multilineTextAlignment(.center)
-                    
-                }
-                
                 ZStack {
                     Text("INVISIBLE PLACEHOLDER TEXT")
                         .font(.system(size: 20, weight: .bold, design: .default))
@@ -95,6 +80,6 @@ struct GamePlayView: View {
 
 struct GamePlayView_Previews: PreviewProvider {
     static var previews: some View {
-        GamePlayView(match: GKMatch()).environmentObject(WordBombGameViewModel())
+        GamePlayView(gkMatch: GKMatch()).environmentObject(WordBombGameViewModel())
     }
 }

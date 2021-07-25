@@ -171,15 +171,17 @@ struct WordBombGame: Codable {
         currentPlayer = playerQueue[0]
         
     }
-    mutating func updatePlayerLives(_ lives: String) {
-        let updatedLives = lives.components(separatedBy: ",")
-        
-        for i in playerQueue.indices {
+    mutating func updatePlayerLives(_ updatedPlayers: [Player]) {
+        for i in self.playerQueue.indices {
             print("before updated \(playerQueue[i].name): \(playerQueue[i].livesLeft) lives")
-            if let value: Int = Int(updatedLives[i]), value != playerQueue[i].livesLeft {
-                playerQueue[i].livesLeft = value
+            
+            for player in updatedPlayers {
+                if player.name == playerQueue[i].name && player.livesLeft != playerQueue[i].livesLeft{
+                    
+                    playerQueue[i].livesLeft = player.livesLeft
+                    print("updated \(playerQueue[i].name): \(playerQueue[i].livesLeft) lives")
+                }
             }
-            print("updated \(playerQueue[i].name): \(playerQueue[i].livesLeft) lives")
         }
     }
     

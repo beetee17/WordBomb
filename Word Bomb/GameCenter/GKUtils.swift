@@ -47,6 +47,17 @@ struct GameCenter {
             print(error.localizedDescription)
         }
     }
+    static func sendPlayers(_ players: [Player]) {
+        do {
+            let data = try JSONEncoder().encode(players)
+            send(data, toHost: false)
+            
+        } catch {
+            print("Could not encode players")
+            print(error.localizedDescription)
+        }
+    }
+    
     static func send(_ data: Data, toHost: Bool) {
         do {
             switch toHost {

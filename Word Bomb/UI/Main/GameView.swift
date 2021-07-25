@@ -33,7 +33,7 @@ struct GameView: View {
         default:
             ZStack {
 
-                GamePlayView()
+                GamePlayView(gkMatch: nil)
                 
                 PauseMenuView()
                     .scaleEffect(.pauseMenu == viewModel.viewToShow ? 1 : 0.01)
