@@ -23,10 +23,10 @@ struct GameMode: Identifiable, Codable {
 }
 
 
-enum gameType: Int, Codable {
-    case Classic = 0
-    case Exact = 1
-    case Reverse = 2
+enum GameType: String, CaseIterable, Codable {
+    case Classic = "Classic"
+    case Exact = "Exact"
+    case Reverse = "Reverse"
 }
 
 enum GameState: Int, Codable {

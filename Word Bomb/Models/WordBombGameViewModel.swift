@@ -102,13 +102,13 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         
         if item.gameType! == "EXACT" {
             
-            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: nil, gameType: Game.types[.Exact]))
+            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: nil, gameType: .Exact))
         }
         
         else if item.gameType! == "CLASSIC" {
             
             let queries = decodeJSONStringtoArray(item.queries!)
-            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: Game.types[.Classic]))
+            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: .Classic))
         }
         
     }
@@ -119,7 +119,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         
         if mode.dataFile != nil {
             let (words, wordSets) = loadWordSets(mode)
-            switch mode.gameType.type {
+            switch mode.gameType {
             case .Exact: gameModel = ExactWordGameModel(data: words, dataDict: wordSets)
                 
             case .Classic:
@@ -132,7 +132,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         }
         else {
             // Loading custom mode
-            switch mode.gameType.type {
+            switch mode.gameType {
             case .Exact: gameModel = ExactWordGameModel(data: mode.words!, dataDict: [:])
                 
             case .Classic:

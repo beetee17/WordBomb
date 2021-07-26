@@ -38,8 +38,8 @@ struct ModeSelectView: View {
 
                 ForEach(items) { item in
                     
-                    ForEach(Game.types) { gameType in
-                        if item.gameType! == gameType.name && self.gameType == gameType {
+                    ForEach(GameType.allCases, id: \.self) { type in
+                        if item.gameType! == type.rawValue && self.gameType == type {
 
                             CustomModeButton(item: item)
                         }
@@ -109,6 +109,6 @@ struct ModeSelectButton: View {
 struct ModeSelectView_Previews: PreviewProvider {
     
     static var previews: some View {
-        ModeSelectView(gameType: Game.types[.Classic]).environmentObject(WordBombGameViewModel())
+        ModeSelectView(gameType: .Classic).environmentObject(WordBombGameViewModel())
     }
 }

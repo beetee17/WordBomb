@@ -19,10 +19,10 @@ struct GameTypeSelectView: View {
             SelectGameTypeText()
             
             VStack(spacing: 50) {
-                ForEach(Game.types) { gameType in
-                    Button(gameType.name) {
+                ForEach(GameType.allCases, id: \.self) { type in
+                    Button(type.rawValue.uppercased()) {
                         
-                        viewModel.gameType = gameType
+                        viewModel.gameType = type
                         withAnimation { viewModel.changeViewToShow(.modeSelect) }
                         
                     }

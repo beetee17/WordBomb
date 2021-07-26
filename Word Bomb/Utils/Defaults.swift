@@ -8,11 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct GameType: Equatable, Identifiable, Codable {
-    var id = UUID()
-    var name: String
-    var type: gameType
-}
+
 
 struct Device {
     static let width = UIScreen.main.bounds.width
@@ -22,8 +18,6 @@ struct Device {
 struct Game {
     
     static var viewModel = WordBombGameViewModel()
-    
-    static let types = [GameType(name: "EXACT", type: gameType.Exact), GameType(name: "CLASSIC", type: gameType.Classic), GameType(name:"REVERSE", type: gameType.Reverse)]
     
     static let modes = [CountryGame, CountryGameReverse, WordGame, WordGameReverse]
     

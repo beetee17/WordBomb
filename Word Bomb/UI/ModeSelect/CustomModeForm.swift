@@ -14,7 +14,7 @@ enum EmptyFieldAlertType {
 struct CustomModeForm: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: WordBombGameViewModel
-    @State private var gameType = "EXACT"
+    @State private var gameType = GameType.Exact.rawValue
     @State private var modeName = ""
     @State private var words = ""
     @State private var queries = ""
@@ -28,8 +28,8 @@ struct CustomModeForm: View {
         Form {
             Section(header: Text("Game Mode")) {
                 Picker("Select a color", selection: $gameType) {
-                    ForEach(Game.types) {
-                        Text($0.name).tag($0.name)
+                    ForEach(GameType.allCases, id: \.self) { type in
+                        Text(type.rawValue).tag(type.rawValue)
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
@@ -37,7 +37,7 @@ struct CustomModeForm: View {
                     print("Chose \(gameType)")
                 })
             }
-            switch gameType != "EXACT" {
+            switch gameType != GameType.Exact.rawValue {
             case true:
                 Text("Coming Soon...")
             case false:
