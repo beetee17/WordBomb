@@ -119,7 +119,15 @@ struct WordBombGame: Codable {
     
     mutating func clearOutput() { output =  "" }
     
-
+    mutating func remove(_ player: Player) {
+        if player == currentPlayer {
+            // move to next player first if current player is to be removed
+            currentPlayer = playerQueue.nextPlayer(currentPlayer)
+            timeLeft = timeLimit
+        }
+        playerQueue.remove(at: playerQueue.firstIndex(of: player)!)
+        players.remove(at: players.firstIndex(of: player)!)
+    }
     
     mutating func currentPlayerRanOutOfTime() {
         
@@ -171,16 +179,19 @@ struct WordBombGame: Codable {
         currentPlayer = playerQueue[0]
         
     }
-    mutating func updatePlayerLives(_ updatedPlayers: [Player]) {
-        for i in self.playerQueue.indices {
-            print("before updated \(playerQueue[i].name): \(playerQueue[i].livesLeft) lives")
-            
-            for player in updatedPlayers {
-                if player.name == playerQueue[i].name && player.livesLeft != playerQueue[i].livesLeft{
-                    
-                    playerQueue[i].livesLeft = player.livesLeft
-                    print("updated \(playerQueue[i].name): \(playerQueue[i].livesLeft) lives")
+    mutating func updatePlayerLives(_ updatedPlayers: String) {
+        // string formatted in 'name1:livesLeft1,name2:livesLeft2,...'
+        let data = updatedPlayers.components(separatedBy: ",")
+        for playerData in data {
+            let nameAndLives = playerData.components(separatedBy: ":")
+            let playerName = nameAndLives.first!
+            let playerLives = nameAndLives.last!
+            for player in playerQueue {
+                print("before updated \(player.name): \(player.livesLeft) lives")
+                if player.name == playerName && player.livesLeft != Int(playerLives)! {
+                    player.livesLeft = Int(playerLives)!
                 }
+                print("updated \(player.name): \(player.livesLeft) lives")
             }
         }
     }

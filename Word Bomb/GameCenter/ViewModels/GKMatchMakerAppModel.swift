@@ -50,7 +50,7 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
         didSet {
             self.showInvite = false
             self.showMatch = true
-
+            
         }
     }
     
@@ -79,7 +79,7 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
             .shared
             .match
             .sink { (match) in
-    
+                
                 self.gkMatch = match.gkMatch
                 self.gkMatch?.delegate = self
                 if let gkMatch = match.gkMatch {
@@ -145,7 +145,7 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
                                                data: ["input" : input,
                                                       "response" : (status, nilQuery)])
             }
-
+            
             if let query = data["query"] {
                 print("Non host received updated query \(query)")
                 Game.viewModel.query = query
@@ -158,11 +158,16 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
             if let timeLeft = data["Updated Time Left"] {
                 print("Non host notified of updated time left \(String(format: "%.3f", timeLeft))")
                 Game.viewModel.timeLeft = Float(timeLeft)!
+                print("new updated time left \(Game.viewModel.timeLeft )")
                 
             }
             if let timeLimit = data["New Time Limit"] {
                 print("Non host notified of new time limit \(String(format: "%.3f", timeLimit))")
                 Game.viewModel.timeLimit = Float(timeLimit)!
+            }
+            if let updatedPlayerLives = data["Updated Player Lives"] {
+                print("Non host notifed of updated player lives, checking...")
+                Game.viewModel.updatePlayerLives(updatedPlayerLives)
             }
             
         } catch {
@@ -170,34 +175,24 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
             print(String(describing: error))
             
         }
-        
-        do {
-            print(String(data: data, encoding: .utf8))
-            let updatedPlayers = try JSONDecoder().decode([Player].self, from: data)
-           
-            print("Non host notifed of updated player queue, checking lives... \(updatedPlayers)")
-            Game.viewModel.updatePlayerLives(updatedPlayers)
-            
-        } catch {
-            print("data was not updated players from non-host")
-            print(String(describing: error))
-        }
-        
     }
+    
     func match(_ match: GKMatch, player: GKPlayer, didChange state: GKPlayerConnectionState) {
+        self.showAlert(title: "Connection Update", message: "\(player.displayName) has \(.disconnected == state ? "disconnected from the game" : "connected to the game")")
+        
         print("player \(player) connection status changed to \(state)")
         print("players left \(match.players)")
         print("$waiting to see if reconnection occurs... \(Date())")
         self.gkIsConnected[player] = .disconnected == state ? false : true
         
-        if GameCenter.isHost {
-            // set new players
-            switch match.players.count > 0 {
-            case true:
-                // simply reset players without disconnected player
-                Game.viewModel.setGKPlayers(match.players)
-            case false:
-                //end the game if no players left
+        switch match.players.count > 0 {
+        case true:
+            // simply reset players without disconnected player
+            Game.viewModel.handleDisconnected(player)
+        
+        case false:
+            //end the game as host if only one player (i.e the host) is left
+            if GameCenter.isHost {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     
                     if !(self.gkIsConnected[player] ?? false) {
@@ -220,11 +215,11 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
         
         if .disconnected == state && player.displayName == GameCenter.hostPlayerName {
             // exit the game if host disconnect
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 
                 if !(self.gkIsConnected[player] ?? false) {
                     print(self.gkIsConnected)
-                    print("player still disconnected \(Date())")
+                    print("$player still disconnected \(Date())")
                     GameCenter.hostPlayerName = nil
                     match.disconnect()
                     match.delegate = nil

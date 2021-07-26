@@ -218,12 +218,8 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                         GameCenter.sendDictionary(["Updated Time Left" : String(model.timeLeft)], toHost: false)
                     }
                     if roundedValue % 10 == 0 && model.timeLeft > 0.1 {
-//                        var updatedLives = [String]()
-//                        for player in model.playerQueue {
-//                            updatedLives.append(String(player.livesLeft))
-//                        }
                         
-                        GameCenter.sendPlayers(model.playerQueue)
+                        GameCenter.sendPlayerLives(model.playerQueue)
                     }
                     
                 }
@@ -292,7 +288,15 @@ extension WordBombGameViewModel {
         self.model = model
         self.model.currentPlayer = self.model.playerQueue[0]
     }
-
+    
+    func handleDisconnected(_ player: GKPlayer) {
+        for i in playerQueue.indices {
+            if player.displayName == playerQueue[i].name {
+                model.remove(playerQueue[i])
+            }
+            // function does not do anything if player is not in queue (e.g. the player lost just before disconnecting)
+        }
+    }
     func setGKPlayers(_ gkPlayers: [GKPlayer]) {
 
         var players: [Player] = [Player(name: GKLocalPlayer.local.displayName)]
@@ -328,7 +332,7 @@ extension WordBombGameViewModel {
         }
     }
     
-    func updatePlayerLives(_ updatedPlayers: [Player]) {
+    func updatePlayerLives(_ updatedPlayers: String) {
         model.updatePlayerLives(updatedPlayers)
     }
     

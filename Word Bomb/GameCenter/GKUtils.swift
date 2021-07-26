@@ -47,15 +47,16 @@ struct GameCenter {
             print(error.localizedDescription)
         }
     }
-    static func sendPlayers(_ players: [Player]) {
-        do {
-            let data = try JSONEncoder().encode(players)
-            send(data, toHost: false)
-            
-        } catch {
-            print("Could not encode players")
-            print(error.localizedDescription)
+    static func sendPlayerLives(_ players: [Player]) {
+        
+        var playerData: [String] = []
+        for player in players {
+            let nameAndLives = "\(player.name):\(player.livesLeft)"
+            playerData.append(nameAndLives)
         }
+        let data = playerData.joined(separator: ",")
+        sendDictionary(["Updated Player Lives" : data], toHost: false)
+        
     }
     
     static func send(_ data: Data, toHost: Bool) {
