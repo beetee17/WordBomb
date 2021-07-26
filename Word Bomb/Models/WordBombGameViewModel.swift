@@ -76,6 +76,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         if gameModel != nil {
             
             gameModel!.reset()
+            let instruction = model.instruction
             
             if Multipeer.isHost {
                 setOnlinePlayers()
@@ -83,7 +84,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             
             model.handleGameState(.initial,
                                   data: ["query" : gameModel!.getRandQuery(input),
-                                         "instruction" : model.instruction as Any])
+                                         "instruction" : instruction as Any])
             if !GameCenter.isHost {
                 changeViewToShow(.game)
             }

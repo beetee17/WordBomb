@@ -55,7 +55,7 @@ struct WordBombGame: Codable {
         self.currentPlayer = self.playerQueue[0]
         self.players = self.playerQueue
     }
-
+    
     mutating func updateTimeLimit() {
         if currentPlayer == players.first! {
             timeLimit = max(UserDefaults.standard.float(forKey:"Time Constraint"), timeLimit * UserDefaults.standard.float(forKey: "Time Multiplier"))
@@ -113,9 +113,6 @@ struct WordBombGame: Codable {
         default: break
         }
     }
-    
-    
-
     
     mutating func clearOutput() { output =  "" }
     
