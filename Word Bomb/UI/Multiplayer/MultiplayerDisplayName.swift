@@ -20,11 +20,13 @@ struct MultiplayerDisplayName: View {
     @State var changeNameWarning = false
   
     var body: some View {
-        
+//        ZStack {
+//            Color.clear
+            
         VStack {
            
-            PlayerAvatar(player: Player(name: newDisplayName))
             
+            PlayerAvatar(player: Player(name: newDisplayName))
             TextField(UserDefaults.standard.string(forKey: "Display Name")!, text: $newDisplayName) { isEditing in }
                 onCommit: {
                     newDisplayName = newDisplayName.trim()
@@ -37,8 +39,11 @@ struct MultiplayerDisplayName: View {
                 }
                 .font(Font.system(size: 32, design: .default))
                 .multilineTextAlignment(.center)
-
+            
         }
+
+//        }.ignoresSafeArea(.all)
+        
         .alert(isPresented: $changeNameWarning,
                content: { Alert(title: Text("Warning"),
                                 message: Text("Changing your display name while connected to other devices may cause connection issues."),
