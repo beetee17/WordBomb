@@ -43,12 +43,12 @@ struct Word_BombApp: App {
     
     var body: some Scene {
         WindowGroup {
-            Group {
+            ZStack {
                 
                 if self.gkViewModel.showAuthentication {
                     GKAuthenticationView { (error) in
                         self.gkViewModel.showAuthentication = false
-                        self.gkViewModel.showAlert(title: "Authentication Failed", message: error.localizedDescription)
+                        self.gkViewModel.showAlert(title: "Authentication Failed", message: String(describing: error))
                     } authenticated: { (player) in
                         self.gkViewModel.showAuthentication = false
                     }
@@ -58,7 +58,7 @@ struct Word_BombApp: App {
                     ) {
                     } failed: { (error) in
                         self.gkViewModel.showInvite = false
-                        self.gkViewModel.showAlert(title: "Invitation Failed", message: error.localizedDescription)
+                        self.gkViewModel.showAlert(title: "Invitation Failed", message: String(describing: error))
                         
                     } started: { (gkMatch) in
                         self.gkViewModel.gkMatch = gkMatch
@@ -67,22 +67,12 @@ struct Word_BombApp: App {
                 } else if self.gkViewModel.showMatch, let gkMatch = self.gkViewModel.gkMatch {
                     
                     ZStack {
-                        let hostText = "\(GameCenter.isHost ? GKLocalPlayer.local.displayName : GameCenter.hostPlayerName) IS HOSTING"
+                        
                         Color("Background").ignoresSafeArea(.all)
-                        GamePlayView(gkMatch: gkMatch) // change such tht it does not load until player images are loaded
+                        GamePlayView(gkMatch: gkMatch) 
                             .environmentObject(self.gkViewModel)
                             .environmentObject(Game.viewModel)
                         
-                        VStack() {
-                            Spacer()
-                            HStack {
-                                Spacer()
-                                Text(hostText)
-                                    .font(.caption)
-                                    .foregroundColor(.green)
-                                    .ignoresSafeArea(.all)
-                            }
-                        }
                     }
                     .onAppear {
                         if GameCenter.isHost {
