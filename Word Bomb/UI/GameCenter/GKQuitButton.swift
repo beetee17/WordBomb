@@ -16,7 +16,7 @@ struct GKQuitButton: View {
             GameCenter.hostPlayerName = nil
             Game.viewModel.resetGameModel()
             print("Manual Quit, isGKOnline \(GameCenter.isOnline)")
-           
+            
         }) {
             HStack {
                 Image(systemName: "xmark.circle")

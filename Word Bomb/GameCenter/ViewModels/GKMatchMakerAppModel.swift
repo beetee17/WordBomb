@@ -37,13 +37,9 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
     
     @Published public var showAuthentication = false
     @Published public var showInvite = false
-    @Published public var showMatch = false  {
-        didSet {
-            if showMatch == true && (Game.viewModel.viewToShow == .game || Game.viewModel.viewToShow == .pauseMenu) {
-                Game.viewModel.changeViewToShow(.main)
-            }
-        }
-    }
+    @Published public var showMatch = false  
+        
+    
     @Published public var invite: Invite = Invite.zero {
         didSet {
             self.showInvite = invite.gkInvite != nil

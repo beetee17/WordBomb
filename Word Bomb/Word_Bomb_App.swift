@@ -65,7 +65,7 @@ struct Word_BombApp: App {
                         
                     }
                 } else if self.gkViewModel.showMatch, let gkMatch = self.gkViewModel.gkMatch {
-                    
+                   
                     ZStack {
                         
                         Color("Background").ignoresSafeArea(.all)
@@ -75,6 +75,10 @@ struct Word_BombApp: App {
                         
                     }
                     .onAppear {
+                        if Game.viewModel.viewToShow == .game || Game.viewModel.viewToShow == .pauseMenu {
+                            Game.viewModel.changeViewToShow(.main)
+                        }
+                        
                         if GameCenter.isHost {
                             Game.viewModel.setGKPlayers(gkMatch.players)
                             Game.viewModel.startGame(mode: WordGame)
@@ -90,6 +94,10 @@ struct Word_BombApp: App {
                         .environmentObject(GameCenter.loginViewModel)
                         .environmentObject(Multipeer.dataSource)
                         .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                        .onAppear {
+                            GKMatchManager.shared.cancel()
+                            GameCenter.hostPlayerName = nil
+                        }
 
                 }
                 

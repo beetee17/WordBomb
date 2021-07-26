@@ -26,8 +26,6 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     @Published var mpcStatus = ""
     @Published var debugging = false
-    @Published var playersReady = 0
-    
     
     init(_ viewToShow: ViewToShow = .main) {
         self.viewToShow = viewToShow
@@ -48,9 +46,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         else {
             forceHideKeyboard = true
         }
-        GKMatchManager.shared.cancel()
-        playersReady = 0
-        GameCenter.hostPlayerName = nil
+        
     }
     
     func pauseGame() {
