@@ -42,10 +42,9 @@ struct BannerView: View {
                         .bold()
                     
                     Text(message)
-                    
                 }
             }
-            .padding(.horizontal, 5)
+            .padding(.horizontal, 15)
             .frame(width: Device.width-40, height: 75, alignment: .leading)
         }
         

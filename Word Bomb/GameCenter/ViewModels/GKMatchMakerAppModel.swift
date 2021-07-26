@@ -178,18 +178,22 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
     }
     
     func match(_ match: GKMatch, player: GKPlayer, didChange state: GKPlayerConnectionState) {
-        self.showAlert(title: "Connection Update", message: "\(player.displayName) has \(.disconnected == state ? "disconnected from the game" : "connected to the game")")
         
+        DispatchQueue.main.async {
+            self.gkIsConnected[player] = .disconnected == state ? false : true
+            self.showAlert(title: "Connection Update", message: "\(player.displayName) has \(.disconnected == state ? "disconnected from the game" : "connected to the game")")
+        }
         print("player \(player) connection status changed to \(state)")
         print("players left \(match.players)")
         print("$waiting to see if reconnection occurs... \(Date())")
-        self.gkIsConnected[player] = .disconnected == state ? false : true
         
         switch match.players.count > 0 {
         case true:
             // simply reset players without disconnected player
-            Game.viewModel.handleDisconnected(player)
-        
+            DispatchQueue.main.async {
+                Game.viewModel.handleDisconnected(from: player.displayName)
+            }
+ 
         case false:
             //end the game as host if only one player (i.e the host) is left
             if GameCenter.isHost {
@@ -201,12 +205,11 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
                         match.disconnect()
                         match.delegate = nil
                         
-                        DispatchQueue.main.async {
-                            Game.viewModel.resetGameModel()
-                            GKMatchManager.shared.cancel()
-                            self.gkMatch = nil
-                            self.showMatch = false
-                        }
+                        Game.viewModel.resetGameModel()
+                        GKMatchManager.shared.cancel()
+                        self.gkMatch = nil
+                        self.showMatch = false
+                        
                     }
                     
                 }

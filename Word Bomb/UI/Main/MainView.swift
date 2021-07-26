@@ -40,7 +40,7 @@ struct MainView: View {
                                         .aspectRatio(contentMode: .fit)
                                         .frame(height: 20))) {
                         withAnimation {
-                            viewModel.changeViewToShow(.gameCenterInvite)
+                            viewModel.changeViewToShow(.GKMain)
                         }
                     }
                     

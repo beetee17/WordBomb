@@ -28,88 +28,95 @@ struct CustomModeForm: View {
         Form {
             Section(header: Text("Game Mode")) {
                 Picker("Select a color", selection: $gameType) {
-                    ForEach(Game.types) { gameType in
-                        Text(gameType.name)
+                    ForEach(Game.types) {
+                        Text($0.name).tag($0.name)
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
+                .onChange(of: gameType, perform: { value in
+                    print("Chose \(gameType)")
+                })
             }
-            Section(header: Text("Mode Name")) {
-                TextField("Enter the name of your mode", text: $modeName)
-            }
-            Section(header: Text("Instruction"))  {
-                TextField("Enter user instruction here", text: $instruction)
+            switch gameType != "EXACT" {
+            case true:
+                Text("Coming Soon...")
+            case false:
                 
-            }
-            
-            
-            Section(header: Text("Words")) {
-                
-                ZStack {
-                    TextEditor(text: $words)
+                Section(header: Text("Mode Name")) {
+                    TextField("Enter the name of your mode", text: $modeName)
                 }
-            }
-            
-            if gameType == "Classic" {
-                Section(header: Text("Queries")) {
+                Section(header: Text("Instruction"))  {
+                    TextField("Enter user instruction here", text: $instruction)
+                    
+                }
+                Section(header: Text("Words")) {
                     
                     ZStack {
-                        TextEditor(text: $queries)
+                        TextEditor(text: $words)
                     }
                 }
-            }
-            
-
-            Button(action: {
-                addItem(modeName: modeName, words: words, queries: queries, instruction: instruction, gameType: gameType)
                 
-            })
-            {
-                HStack {
-                    Text("Save Changes")
-                    Spacer()
-                    Image(systemName: "checkmark.circle")
+                if gameType == "CLASSIC" {
+                    Section(header: Text("Queries")) {
+                        
+                        ZStack {
+                            TextEditor(text: $queries)
+                        }
+                    }
                 }
-            }
-            
-            .alert(isPresented: $showEmptyFieldAlert) {
-                switch emptyFieldAlertType {
+                
+                
+                Button(action: {
+                    addItem(modeName: modeName, words: words, queries: queries, instruction: instruction, gameType: gameType)
                     
-                case .modeName:
-                    return Alert(title: Text("Empty Mode Name"),
-                          message: Text("Please enter a name for your custom mode."),
-                          dismissButton: .default(Text("OK")) {
-                                                                print("dismissed")
-                                                                showEmptyFieldAlert = false
-                        
-                    })
-                case .words:
-                    return Alert(title: Text("No Words Added"),
-                          message: Text("Please enter some words to have fun."),
-                          dismissButton: .default(Text("OK")) {
-                                                                print("dismissed")
-                                                                showEmptyFieldAlert = false
-                        
-                    })
-                case .queries:
-                    return Alert(title: Text("No Queries Added"),
-                          message: Text("Please enter at least one query."),
-                          dismissButton: .default(Text("OK")) {
-                                                                print("dismissed")
-                                                                showEmptyFieldAlert = false
-                        
-                    })
+                })
+                {
+                    HStack {
+                        Text("Save Changes")
+                        Spacer()
+                        Image(systemName: "checkmark.circle")
+                    }
+                }
+                
+                .alert(isPresented: $showEmptyFieldAlert) {
+                    switch emptyFieldAlertType {
+                    
+                    case .modeName:
+                        return Alert(title: Text("Empty Mode Name"),
+                                     message: Text("Please enter a name for your custom mode."),
+                                     dismissButton: .default(Text("OK")) {
+                                        print("dismissed")
+                                        showEmptyFieldAlert = false
+                                        
+                                     })
+                    case .words:
+                        return Alert(title: Text("No Words Added"),
+                                     message: Text("Please enter some words to have fun."),
+                                     dismissButton: .default(Text("OK")) {
+                                        print("dismissed")
+                                        showEmptyFieldAlert = false
+                                        
+                                     })
+                    case .queries:
+                        return Alert(title: Text("No Queries Added"),
+                                     message: Text("Please enter at least one query."),
+                                     dismissButton: .default(Text("OK")) {
+                                        print("dismissed")
+                                        showEmptyFieldAlert = false
+                                        
+                                     })
+                    }
                 }
             }
         }
         .alert(isPresented: $showSaveSuccessAlert) {
             return Alert(title: Text("Save Successful"),
-                  message: Text("You can now find your new custom mode in the mode select view!."),
-                  dismissButton: .default(Text("OK")) {
-                print("dismissed")
-                showSaveSuccessAlert = false
-
-                })
+                         message: Text("You can now find your new custom mode in the mode select view!."),
+                         dismissButton: .default(Text("OK")) {
+                            print("dismissed")
+                            showSaveSuccessAlert = false
+                            
+                         })
         }
         
     }
@@ -142,18 +149,18 @@ struct CustomModeForm: View {
                 let wordsData = words.components(separatedBy: "\n")
                 newItem.words = encodeStrings(wordsData.map {
                     $0.lowercased().trim()
-               })
+                })
                 print(newItem.words!)
                 newItem.gameType = gameType
                 
                 let queryData = queries.components(separatedBy: "\n")
                 newItem.queries = encodeStrings(queryData.map {
                     $0.lowercased().trim()
-               })
+                })
                 
                 newItem.instruction = instruction
                 
-                
+                print("saving item: \(newItem)")
                 try viewContext.save()
                 showSaveSuccessAlert = true
                 
@@ -163,7 +170,6 @@ struct CustomModeForm: View {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
-            
         }
     }
 }

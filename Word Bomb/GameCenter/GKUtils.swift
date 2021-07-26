@@ -11,6 +11,8 @@ import GameKitUI
 
 struct GameCenter {
     static var viewModel = GKMatchMakerAppModel()
+    static var loginViewModel = AuthenticationViewModel()
+    
     static var hostPlayerName: String? = nil
     static var isHost: Bool {
         hostPlayerName == nil && viewModel.gkMatch != nil

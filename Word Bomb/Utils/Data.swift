@@ -24,6 +24,7 @@ func loadWordSets(_ mode: GameMode) -> (words:[String], wordSets:[String: [Strin
         for wordSet in rawData {
             // if more than one variation of the answer => wordSet will be comma separated String
             let variations:[String] = wordSet.components(separatedBy: ", ")
+            
             if variations.count > 1 {
                 for i in variations.indices {
                     words.append(variations[i])
@@ -37,6 +38,7 @@ func loadWordSets(_ mode: GameMode) -> (words:[String], wordSets:[String: [Strin
                 }
             } else { words.append(variations[0]) }
         }
+        words.sort()
     }
     
     catch let error {

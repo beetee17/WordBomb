@@ -23,7 +23,7 @@ struct Game {
     
     static var viewModel = WordBombGameViewModel()
     
-    static let types = [GameType(name: "Classic", type: gameType.Classic), GameType(name: "EXACT", type: gameType.Exact), GameType(name:"REVERSE", type: gameType.Reverse)]
+    static let types = [GameType(name: "EXACT", type: gameType.Exact), GameType(name: "CLASSIC", type: gameType.Classic), GameType(name:"REVERSE", type: gameType.Reverse)]
     
     static let modes = [CountryGame, CountryGameReverse, WordGame, WordGameReverse]
     

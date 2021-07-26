@@ -179,20 +179,14 @@ struct WordBombGame: Codable {
         currentPlayer = playerQueue[0]
         
     }
-    mutating func updatePlayerLives(_ updatedPlayers: String) {
-        // string formatted in 'name1:livesLeft1,name2:livesLeft2,...'
-        let data = updatedPlayers.components(separatedBy: ",")
-        for playerData in data {
-            let nameAndLives = playerData.components(separatedBy: ":")
-            let playerName = nameAndLives.first!
-            let playerLives = nameAndLives.last!
-            for player in playerQueue {
-                print("before updated \(player.name): \(player.livesLeft) lives")
-                if player.name == playerName && player.livesLeft != Int(playerLives)! {
-                    player.livesLeft = Int(playerLives)!
-                }
-                print("updated \(player.name): \(player.livesLeft) lives")
+    mutating func updatePlayerLives(_ updatedPlayers: [String:Int]) {
+       
+        for player in playerQueue {
+            print("before updated \(player.name): \(player.livesLeft) lives")
+            if let updatedLives = updatedPlayers[player.name], player.livesLeft != updatedLives {
+                player.livesLeft = updatedLives
             }
+            print("updated \(player.name): \(player.livesLeft) lives")
         }
     }
     
@@ -239,9 +233,11 @@ struct WordBombGame: Codable {
             }
             
         case .playerTimedOut:
+            timeLeft = 0.0 // for multiplayer games if non-host is lagging behind in their timer
             currentPlayerRanOutOfTime()
             
         case .gameOver:
+            timeLeft = 0.0 // for multiplayer games if non-host is lagging behind in their timer
             Game.stopTimer()
 
         }

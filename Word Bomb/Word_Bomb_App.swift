@@ -12,13 +12,13 @@ import GameKit
 import GameKitUI
 
 // initialise default modes
-let CountryGame = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "NAME A COUNTRY", words: nil, queries: nil, gameType: Game.types[.Exact], id: 1)
+let CountryGame = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "NAME A COUNTRY", words: nil, queries: nil, gameType: Game.types[.Exact])
 
-let CountryGameReverse = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "COUNTRIES STARTING WITH...", words: nil, queries: nil, gameType: Game.types[.Reverse], id: 2)
+let CountryGameReverse = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "COUNTRIES STARTING WITH...", words: nil, queries: nil, gameType: Game.types[.Reverse])
 
-let WordGame = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables_2", instruction: "WORDS CONTAINING...", words: nil, queries: nil, gameType: Game.types[.Classic], id: 3)
+let WordGame = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables_2", instruction: "WORDS CONTAINING...", words: nil, queries: nil, gameType: Game.types[.Classic])
 
-let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", instruction: "WORDS STARTING WITH...", words: nil, queries: nil, gameType: Game.types[.Reverse], id: 4)
+let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", instruction: "WORDS STARTING WITH...", words: nil, queries: nil, gameType: Game.types[.Reverse])
 
 @main
 struct Word_BombApp: App {
@@ -48,7 +48,7 @@ struct Word_BombApp: App {
                 if self.gkViewModel.showAuthentication {
                     GKAuthenticationView { (error) in
                         self.gkViewModel.showAuthentication = false
-                        self.gkViewModel.showAlert(title: "Authentication Failed", message: String(describing: error))
+                        self.gkViewModel.showAlert(title: "Authentication Failed", message: String(describing: error)) // change to something more user friendly on release?
                     } authenticated: { (player) in
                         self.gkViewModel.showAuthentication = false
                     }
@@ -58,7 +58,7 @@ struct Word_BombApp: App {
                     ) {
                     } failed: { (error) in
                         self.gkViewModel.showInvite = false
-                        self.gkViewModel.showAlert(title: "Invitation Failed", message: String(describing: error))
+                        self.gkViewModel.showAlert(title: "Invitation Failed", message: String(describing: error)) // change to something more user friendly on release?
                         
                     } started: { (gkMatch) in
                         self.gkViewModel.gkMatch = gkMatch
@@ -87,14 +87,10 @@ struct Word_BombApp: App {
                 else {
                     ContentView()
                         .environmentObject(Game.viewModel)
+                        .environmentObject(GameCenter.loginViewModel)
                         .environmentObject(Multipeer.dataSource)
                         .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                    
-                    //                        .alert(isPresented: $gkViewModel.showAlert) {
-                    //                            Alert(title: Text(self.gkViewModel.alertTitle),
-                    //                                  message: Text(self.gkViewModel.alertMessage),
-                    //                                  dismissButton: .default(Text("Ok")))
-                    //                        }
+
                 }
                 
             }

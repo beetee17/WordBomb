@@ -29,20 +29,23 @@ import GameKitUI
 struct MatchMakingView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @ObservedObject var viewModel = MatchMakingViewModel()
-
+    @EnvironmentObject var gameViewModel: WordBombGameViewModel
+    
     var body: some View {
         ZStack {
-            Color("Background").ignoresSafeArea()
-            VStack() {
-                Text(self.viewModel.currentState)
-                    .font(.body)
-                    .padding(8)
-                Button() {
-                    self.viewModel.showMatchMakerModal()
-                } label: {
-                    Text("HOST GAME")
+            VStack(spacing:100) {
+                VStack(spacing: 50) {
+                    
+                    Text("Status: \(self.viewModel.currentState)")
+                        .font(.title2).bold()
+
+                    Game.mainButton(label: "HOST GAME", systemImageName: "person.crop.circle.badge.plus") {
+                        self.viewModel.showMatchMakerModal()
+                    }
                 }
-                .buttonStyle(MainButtonStyle())
+                Game.backButton {
+                    gameViewModel.changeViewToShow(.GKMain)
+                }
             }
             
         }
@@ -70,6 +73,9 @@ struct MatchMakingView: View {
                   message: Text(self.viewModel.alertMessage),
                   dismissButton: .default(Text("Ok")))
         }
+        .frame(width: Device.width, height: Device.height)
+        .transition(.move(edge: .trailing))
+        .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
     }
 }
 

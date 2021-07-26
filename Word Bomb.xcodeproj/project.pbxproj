@@ -268,6 +268,19 @@
 			path = Multipeer;
 			sourceTree = "<group>";
 		};
+		6C646E7726AE8BAA003989AB /* GameCenter */ = {
+			isa = PBXGroup;
+			children = (
+				6CE00EFD26A9BBBB005406FF /* AuthenticationView.swift */,
+				6CE00EFF26A9BBBB005406FF /* MatchMakingView.swift */,
+				6CE00F1026A9BCF9005406FF /* GKContentView.swift */,
+				6CE00F1526AB015D005406FF /* GKQuitButton.swift */,
+				6C646E7526ADC9FF003989AB /* GKHostText.swift */,
+				6CE00F0F26A9BCF9005406FF /* GKPlayerView.swift */,
+			);
+			path = GameCenter;
+			sourceTree = "<group>";
+		};
 		6CE00E6D26A99FD4005406FF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -280,39 +293,9 @@
 			isa = PBXGroup;
 			children = (
 				6CE00F0426A9BBF8005406FF /* ViewModels */,
-				6CE00EFB26A9BBBB005406FF /* Views */,
 				6CE00F1326A9EE05005406FF /* GKUtils.swift */,
 			);
 			path = GameCenter;
-			sourceTree = "<group>";
-		};
-		6CE00EFB26A9BBBB005406FF /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				6CE00F1026A9BCF9005406FF /* GKContentView.swift */,
-				6CE00F1526AB015D005406FF /* GKQuitButton.swift */,
-				6C646E7526ADC9FF003989AB /* GKHostText.swift */,
-				6CE00F0F26A9BCF9005406FF /* GKPlayerView.swift */,
-				6CE00EFC26A9BBBB005406FF /* Authentication */,
-				6CE00EFE26A9BBBB005406FF /* MultiPlayer */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		6CE00EFC26A9BBBB005406FF /* Authentication */ = {
-			isa = PBXGroup;
-			children = (
-				6CE00EFD26A9BBBB005406FF /* AuthenticationView.swift */,
-			);
-			path = Authentication;
-			sourceTree = "<group>";
-		};
-		6CE00EFE26A9BBBB005406FF /* MultiPlayer */ = {
-			isa = PBXGroup;
-			children = (
-				6CE00EFF26A9BBBB005406FF /* MatchMakingView.swift */,
-			);
-			path = MultiPlayer;
 			sourceTree = "<group>";
 		};
 		6CE00F0426A9BBF8005406FF /* ViewModels */ = {
@@ -355,6 +338,7 @@
 		6CF9538A2692E92200D16E60 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				6C646E7726AE8BAA003989AB /* GameCenter */,
 				6C2D67D026A2AB9A006A0347 /* Main */,
 				6CE00F1726AB2A25005406FF /* TopBar */,
 				6C2D67CD26A2AABD006A0347 /* Gameplay */,
@@ -670,6 +654,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "brandonthio.Word-Bomb";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -693,6 +678,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "brandonthio.Word-Bomb";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

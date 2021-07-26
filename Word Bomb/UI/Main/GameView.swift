@@ -27,9 +27,13 @@ struct GameView: View {
         case .modeSelect: ModeSelectView(gameType: viewModel.gameType!)
         case .multipeer: LocalMultiplayerView()
         case .peersView: LocalPeersView()
-        case .gameCenterInvite:
+        case .GKMain:
             GKContentView()
-            
+        case .GKLogin:
+            AuthenticationView()
+        case .GKHost:
+            MatchMakingView()
+        
         default:
             ZStack {
 

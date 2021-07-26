@@ -31,40 +31,31 @@ struct GKContentView: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
     
     var body: some View {
-        NavigationView {
-            ZStack {
-                Color("Background").edgesIgnoringSafeArea(.all)
+        //        NavigationView {
+        ZStack {
+            Color("Background").edgesIgnoringSafeArea(.all)
+            
+            VStack(spacing:100) {
+                Text("GAME CENTER").font(.largeTitle).bold()
                 
-                VStack(spacing:100) {
-                    Text("GAME CENTER").font(.largeTitle).bold()
-                    
-                    VStack(alignment: .center, spacing: 32) {
-                        
-                        NavigationLink(destination: AuthenticationView()) {
-                            Text("LOGIN")
-                        }
-                        .buttonStyle(MainButtonStyle())
-                        
-                        NavigationLink(destination: MatchMakingView()) {
-                            Text("HOST MATCH")
-                        }
-                        .buttonStyle(MainButtonStyle())
-                        
-                        Game.mainButton(label: "Test Banner", systemImageName: "arrow") {
-                            withAnimation { GameCenter.viewModel.showAlert(title: "Oops, something went wrong!", message: "Please try again")}
-                        }
- 
+                VStack(alignment: .center, spacing: 32) {
+                    Game.mainButton(label: "LOGIN", systemImageName: "lock.fill") {
+                        withAnimation { viewModel.changeViewToShow(.GKLogin) }
                     }
                     
-                    Game.backButton {
-                        withAnimation { viewModel.changeViewToShow(.main) }
+                    Game.mainButton(label: "HOST MATCH", systemImageName: "person.crop.circle.badge.plus") {
+                        withAnimation { viewModel.changeViewToShow(.GKHost) }
                     }
                 }
                 
+                Game.backButton {
+                    withAnimation { viewModel.changeViewToShow(.main) }
+                }
             }
-
+            
         }
-        .navigationBarHidden(true)
+        .transition(.asymmetric(insertion: AnyTransition.move(edge: .trailing), removal: AnyTransition.move(edge: .leading)))
+        .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
     }
 }
 

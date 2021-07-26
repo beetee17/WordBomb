@@ -15,7 +15,10 @@ struct CustomModeButton: View {
     var body: some View {
         
         Button(item.name ?? "UNNAMED") {
-            withAnimation{ viewModel.selectCustomMode(item) }
+            withAnimation{
+                viewModel.selectCustomMode(item)
+                viewModel.changeViewToShow(.game)
+            }
             
         }
         .buttonStyle(MainButtonStyle())

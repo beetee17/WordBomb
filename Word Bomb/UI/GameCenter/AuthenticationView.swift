@@ -29,28 +29,36 @@ import GameKitUI
 
 struct AuthenticationView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @ObservedObject var viewModel = AuthenticationViewModel()
-
+    @EnvironmentObject var viewModel: AuthenticationViewModel
+    @EnvironmentObject var gameViewModel: WordBombGameViewModel
+    
     var body: some View {
         ZStack {
-            Color("Background").ignoresSafeArea()
-            VStack() {
-                Text(self.viewModel.currentState)
-                    .font(.body)
-                    .padding(8)
-                if self.viewModel.isAuthenticated,
-                   let player = self.viewModel.player {
-                    GKPlayerView(viewModel: GKPlayerViewModel(player))
-                } else {
-                    Button() {
-                        self.viewModel.showAuthenticationModal()
-                    } label: {
-                        Text("Login")
+            VStack(spacing:50) {
+                VStack {
+                    Text(self.viewModel.currentState)
+                        .font(.title2).bold()
+                    
+                    if self.viewModel.isAuthenticated,
+                       let player = self.viewModel.player {
+                        GKPlayerView(viewModel: GKPlayerViewModel(player))
+                        Game.mainButton(label: "REAUTHENTICATE", systemImageName: "lock.fill") {
+                            self.viewModel.showAuthenticationModal()
+                        }
+                        .padding(.top, 25)
+                    } else {
+                        Game.mainButton(label: "LOGIN", systemImageName: "lock.fill") {
+                            self.viewModel.showAuthenticationModal()
+                        }
                     }
-                    .buttonStyle(MainButtonStyle())
+                    
+                }
+                Game.backButton {
+                    gameViewModel.changeViewToShow(.GKMain)
                 }
             }
-        }
+            
+            }
         .onAppear() {
             self.viewModel.load()
         }
@@ -71,6 +79,9 @@ struct AuthenticationView: View {
                   message: Text(self.viewModel.alertMessage),
                   dismissButton: .default(Text("Ok")))
         }
+        .frame(width: Device.width, height: Device.height)
+        .transition(.move(edge: .trailing))
+        .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
     }
 }
 

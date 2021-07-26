@@ -18,7 +18,7 @@ struct GameMode: Identifiable, Codable {
     var queries: [String]?
     
     var gameType: GameType
-    var id: Int
+    var id = UUID()
     
 }
 
@@ -35,5 +35,5 @@ enum GameState: Int, Codable {
 
 
 enum ViewToShow: Int, Codable {
-    case main, gameTypeSelect, modeSelect, game, pauseMenu, multipeer, peersView, gameCenterInvite
+    case main, gameTypeSelect, modeSelect, game, pauseMenu, multipeer, peersView, GKMain, GKLogin, GKHost
 }
