@@ -31,7 +31,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     init(_ viewToShow: ViewToShow = .main) {
         self.viewToShow = viewToShow
-
+        
     }
     func updateGameSettings() {
         model = WordBombGame()
@@ -62,15 +62,17 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     }
     
     func resumeGame() {
-        if Multipeer.isHost {
-            Multipeer.transceiver.send("$PLAYING_GAME$", to: selectedPeers)
-        }
         changeViewToShow(.game)
-        startTimer()
+        if .gameOver != gameState {
+            if Multipeer.isHost {
+                Multipeer.transceiver.send("$PLAYING_GAME$", to: selectedPeers)
+            }
+            startTimer()
+        }
     }
     
     func restartGame() {
-
+        
         if gameModel != nil {
             
             gameModel!.reset()
@@ -78,7 +80,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             if Multipeer.isHost {
                 setOnlinePlayers()
             }
-
+            
             model.handleGameState(.initial,
                                   data: ["query" : gameModel!.getRandQuery(input),
                                          "instruction" : model.instruction as Any])
@@ -100,19 +102,19 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         
         if item.gameType! == "EXACT" {
             
-            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: nil, gameType: Game.types[.Classic], id: -1))
+            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: nil, gameType: Game.types[.Exact]))
         }
         
-        else if item.gameType! == "CONTAINS" {
+        else if item.gameType! == "CLASSIC" {
             
             let queries = decodeJSONStringtoArray(item.queries!)
-            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: Game.types[.Classic], id: -1))
+            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: Game.types[.Classic]))
         }
         
     }
     
     func startGame(mode: GameMode) {
-
+        
         // process the gameMode by initing the appropriate WordGameModel
         
         if mode.dataFile != nil {
@@ -135,7 +137,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                 
             case .Classic:
                 break
-                //                gameModel = ContainsWordGameModel(data: mode.words!, queries: mode.queries!)
+            //                gameModel = ContainsWordGameModel(data: mode.words!, queries: mode.queries!)
             case .Reverse:
                 gameModel = ReverseWordGameModel(data: mode.words!, dataDict: [:])
             }
@@ -155,11 +157,11 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         }
         else { model.handleGameState(.initial,
                                      data: ["instruction" : mode.instruction as Any]) }
-    
+        
         startTimer()
-
+        
     }
-
+    
     func processInput() {
         
         
@@ -192,7 +194,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         }
         
     }
-
+    
     func startTimer() {
         print("Timer started")
         
@@ -205,23 +207,18 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                     model.timeLeft = max(0, model.timeLeft - 0.1)
                 }
                 
-                if Multipeer.isHost {
+                if Multipeer.isHost || GameCenter.isHost {
                     let roundedValue = Int(round(model.timeLeft * 10))
+                    
                     if roundedValue % 5 == 0 && model.timeLeft > 0.4 {
-                        Multipeer.transceiver.send(["Updated Time Left" : model.timeLeft], to: selectedPeers)
-                    }
-                }
-                
-                if GameCenter.isHost {
-                    let roundedValue = Int(round(model.timeLeft * 10))
-                    if roundedValue % 5 == 0 && model.timeLeft > 0.4 {
-                        GameCenter.sendDictionary(["Updated Time Left" : String(model.timeLeft)], toHost: false)
+                        if Multipeer.isHost { Multipeer.transceiver.send(["Updated Time Left" : model.timeLeft], to: selectedPeers) }
+                        if GameCenter.isHost { GameCenter.sendDictionary(["Updated Time Left" : String(model.timeLeft)], toHost: false) }
+                        
                     }
                     if roundedValue % 10 == 0 && model.timeLeft > 0.1 {
-                        
-                        GameCenter.sendPlayerLives(model.playerQueue)
+                        if Multipeer.isHost { Multipeer.transceiver.send(model.playerQueue, to: selectedPeers) }
+                        if GameCenter.isHost { GameCenter.sendPlayerLives(model.playerQueue) }
                     }
-                    
                 }
             }
             
@@ -241,7 +238,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     // check if output is still the same as current to avoid clearing of new outputs
     func clearOutput(_ output: String) { if output == model.output { model.clearOutput() } }
-
+    
     // to allow contentView to read model's value and update
     var playerQueue: [Player] { model.playerQueue }
     
@@ -276,7 +273,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         set { model.animateExplosion =  newValue }
     }
     
-   
+    
 }
 
 // MARK: - GAME CENTER
@@ -289,16 +286,18 @@ extension WordBombGameViewModel {
         self.model.currentPlayer = self.model.playerQueue[0]
     }
     
-    func handleDisconnected(_ player: GKPlayer) {
+    func handleDisconnected(from playerName: String) {
         for i in playerQueue.indices {
-            if player.displayName == playerQueue[i].name {
+            guard i < playerQueue.count else { return }
+            // if multiple disconnects at the same time -> this function may be called simultaneously
+            if playerName == playerQueue[i].name {
                 model.remove(playerQueue[i])
             }
             // function does not do anything if player is not in queue (e.g. the player lost just before disconnecting)
         }
     }
     func setGKPlayers(_ gkPlayers: [GKPlayer]) {
-
+        
         var players: [Player] = [Player(name: GKLocalPlayer.local.displayName)]
         
         for player in gkPlayers {
@@ -332,12 +331,24 @@ extension WordBombGameViewModel {
         }
     }
     
-    func updatePlayerLives(_ updatedPlayers: String) {
-        model.updatePlayerLives(updatedPlayers)
+    func updatePlayerLives(_ updatedPlayersData: String) {
+
+        // string formatted in 'name1:livesLeft1,name2:livesLeft2,...'
+        let data = updatedPlayersData.components(separatedBy: ",")
+        var formattedData: [String : Int] = [:]
+        
+        for playerData in data {
+            let nameAndLives = playerData.components(separatedBy: ":")
+            let playerName = nameAndLives.first!
+            let playerLives = nameAndLives.last!
+            formattedData[playerName] = Int(playerLives)!
+        }
+        model.updatePlayerLives(formattedData)
+        
     }
     
     func processGKInput() {
-
+        
         input = input.lowercased().trim()
         print("processing input \(input)")
         // check additonl condition that current player is still the player that sent the input
@@ -355,7 +366,7 @@ extension WordBombGameViewModel {
                 print("Not host and my turn")
                 // turn for device not hosting but in multiplayer game
                 GameCenter.sendDictionary(["nonHostInput" : input], toHost: true)
-               
+                
             }
             else {
                 print("Host: \(GameCenter.hostPlayerName), Am Host: \(GameCenter.isHost)")
@@ -396,7 +407,7 @@ extension WordBombGameViewModel {
             selectedPeers.remove(at: index)
             // notify peer of disconnection
             Multipeer.transceiver.send(false, to: [peer])
-    
+            
             switch selectedPeers.count == 0 {
             case true:
                 // all players disconnected
@@ -405,14 +416,18 @@ extension WordBombGameViewModel {
             case false:
                 // some players disconnected
                 mpcStatus = "Hosting: \(selectedPeers.count) Player(s)"
-                setOnlinePlayers()
+                handleDisconnected(from: peer.name)
             }
             print("selected peers \(selectedPeers)")
             
         }
-        else { print("did not find peer") }
+        else {
+            // either the disconnected peer was not in the game -> ignore
+            // or as non-host, one of the participants disconnected
+            handleDisconnected(from: peer.name) // this function does nothing if name is not found in the playerQueue
+        }
         
-       
+        
         
         if peer == hostingPeer {
             
@@ -569,15 +584,25 @@ extension WordBombGameViewModel {
             
         }
         
+        Multipeer.transceiver.receive([Player].self) { payload, sender in
+            print("Received updated playerQueue from host \(sender.name)")
+            var updatedPlayers = [String : Int]()
+            for player in payload {
+                updatedPlayers[player.name] = player.livesLeft
+            }
+            self.model.updatePlayerLives(updatedPlayers)
+            print("Updated player queue")
+        }
+        
     }
     
     func processPeerInput(_ input: String) {
-
+        
         print("processing \(input)")
         let response = gameModel!.process(input.lowercased().trim(), model.query)
         
         model.handleGameState(.playerInput, data: ["input" : input, "response" : response])
-
+        
     }
     
     func setOnlinePlayers() {
@@ -594,7 +619,7 @@ extension WordBombGameViewModel {
     }
     
     func disconnect() {
-
+        
         Multipeer.transceiver.stop()
         
         if Multipeer.isHost {
