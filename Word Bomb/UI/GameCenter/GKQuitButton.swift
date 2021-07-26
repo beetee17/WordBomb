@@ -9,12 +9,14 @@ import SwiftUI
 import GameKitUI
 
 struct GKQuitButton: View {
+    @EnvironmentObject var gameViewModel: WordBombGameViewModel
     var body: some View {
         Button(action: {
             GKMatchManager.shared.cancel()
             GameCenter.hostPlayerName = nil
             Game.viewModel.resetGameModel()
             print("Manual Quit, isGKOnline \(GameCenter.isOnline)")
+           
         }) {
             HStack {
                 Image(systemName: "xmark.circle")
