@@ -31,6 +31,14 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         self.viewToShow = viewToShow
         
     }
+    
+    func setSharedModel(_ model: WordBombGame) {
+        self.model = model
+        self.model.currentPlayer = self.model.playerQueue[0]
+    }
+    func updatePlayerLives(_ updatedPlayers: [String:Int]) {
+        model.updatePlayerLives(updatedPlayers)
+    }
     func updateGameSettings() {
         model = WordBombGame()
         if selectedPeers.count > 0 {
@@ -51,7 +59,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
     func pauseGame() {
         if Multipeer.isHost {
-            Multipeer.transceiver.send("$PAUSED_GAME$", to: selectedPeers)
+            Multipeer.transceiver.send(GameData(state: .paused), to: selectedPeers)
         }
         changeViewToShow(.pauseMenu)
         Game.stopTimer()
@@ -61,7 +69,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         changeViewToShow(.game)
         if .gameOver != gameState {
             if Multipeer.isHost {
-                Multipeer.transceiver.send("$PLAYING_GAME$", to: selectedPeers)
+                Multipeer.transceiver.send(GameData(state: .playing), to: selectedPeers)
             }
             startTimer()
         }
@@ -166,7 +174,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         
         if !(input == "" || model.timeLeft <= 0) {
             
-            if Multipeer.isHost && isMyTurn {
+            if (Multipeer.isHost && isMyTurn) || (GameCenter.isHost && isMyGKTurn) {
                 // turn for device hosting multiplayer game
                 
                 let response = gameModel!.process(input, model.query)
@@ -174,9 +182,10 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                 model.handleGameState(.playerInput, data: ["input" : input, "response" : response])
             }
             
-            else if Multipeer.isNonHost && isMyTurn  {
+            else if (Multipeer.isNonHost && isMyTurn)  || (!GameCenter.isHost && isMyGKTurn) {
                 // turn for device not hosting but in multiplayer game
-                Multipeer.transceiver.send(input, to: [hostingPeer!])
+                Multiplayer.send(GameData(input: input), toHost: true)
+               
                 print("SENT \(input)")
                 
             }
@@ -208,13 +217,20 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                     let roundedValue = Int(round(model.timeLeft * 10))
                     
                     if roundedValue % 5 == 0 && model.timeLeft > 0.4 {
-                        if Multipeer.isHost { Multipeer.transceiver.send(["Updated Time Left" : model.timeLeft], to: selectedPeers) }
-                        if GameCenter.isHost { GameCenter.sendDictionary(["Updated Time Left" : String(model.timeLeft)], toHost: false) }
+                        
+                        if Multipeer.isHost || GameCenter.isHost {
+                            Multiplayer.send(GameData(timeLeft: timeLeft), toHost: false)
+                            
+                        }
                         
                     }
                     if roundedValue % 10 == 0 && model.timeLeft > 0.1 {
-                        if Multipeer.isHost { Multipeer.transceiver.send(model.playerQueue, to: selectedPeers) }
-                        if GameCenter.isHost { GameCenter.sendPlayerLives(model.playerQueue) }
+                        let playerLives = Dictionary(model.playerQueue.map { ($0.name, $0.livesLeft) }) { first, _ in first }
+                        if Multipeer.isHost || GameCenter.isHost {
+                            Multiplayer.send(GameData(playerLives: playerLives), toHost: false)
+                            
+                        }
+                        
                     }
                 }
             }
@@ -326,52 +342,6 @@ extension WordBombGameViewModel {
                 }
             }
         }
-    }
-    
-    func updatePlayerLives(_ updatedPlayersData: String) {
-
-        // string formatted in 'name1:livesLeft1,name2:livesLeft2,...'
-        let data = updatedPlayersData.components(separatedBy: ",")
-        var formattedData: [String : Int] = [:]
-        
-        for playerData in data {
-            let nameAndLives = playerData.components(separatedBy: ":")
-            let playerName = nameAndLives.first!
-            let playerLives = nameAndLives.last!
-            formattedData[playerName] = Int(playerLives)!
-        }
-        model.updatePlayerLives(formattedData)
-        
-    }
-    
-    func processGKInput() {
-        
-        input = input.lowercased().trim()
-        print("processing input \(input)")
-        // check additonl condition that current player is still the player that sent the input
-        if !(input == "" || model.timeLeft <= 0) {
-            
-            if GameCenter.isHost && isMyGKTurn {
-                // turn for device hosting multiplayer game
-                print("Am host and my turn")
-                let response = gameModel!.process(input, model.query)
-                model.handleGameState(.playerInput, data: ["input" : input, "response" : response])
-                
-            }
-            
-            else if !GameCenter.isHost && isMyGKTurn  {
-                print("Not host and my turn")
-                // turn for device not hosting but in multiplayer game
-                GameCenter.sendDictionary(["nonHostInput" : input], toHost: true)
-                
-            }
-            else {
-                print("Host: \(GameCenter.hostPlayerName), Am Host: \(GameCenter.isHost)")
-                print("My turn: \(isMyGKTurn)")
-            }
-            
-        }
-        
     }
     
 }
@@ -497,21 +467,11 @@ extension WordBombGameViewModel {
         
         Multipeer.transceiver.peerConnected = { peer in print("Connected to \(peer.name)") }
         
-        //participants receiving model from host
-        Multipeer.transceiver.receive(WordBombGame.self) { payload, sender in
-            DispatchQueue.main.async {
-                print("Got model from host \(sender.name)!")
-                
-                self.model = payload
-                self.model.currentPlayer = self.model.playerQueue[0]
-                for player in self.playerQueue {
-                    print("\(player.name): \(player.livesLeft) lives")
-                }
-                self.changeViewToShow(.game)
-                self.startTimer()
-            }
+        Multipeer.transceiver.receive(GameData.self) { data, sender in
             
+            data.process()
         }
+
         // participant successfully connected to peer and received data from host
         Multipeer.transceiver.receive(Bool.self) { payload, sender in
             print("Got boolean from host \(sender.name)! \(payload)")
@@ -530,66 +490,7 @@ extension WordBombGameViewModel {
         // send model at .initial game state to signify start of game by host
         // every 0.5s -> update time to keep in sync
         // on input -> send new query and output
-        Multipeer.transceiver.receive([String:String].self) { payload, sender in
-            
-            if let input = payload["input"] {
-                let newQuery: String? = nil
-                
-                print("processing input/response data from host")
-                self.model.handleGameState(.playerInput,
-                                           data: ["input" : input,
-                                                  "response" : (payload["status"], newQuery)])
-            }
-            
-            if let query = payload["query"] {
-                print("received new query from host \(payload)")
-                self.model.query = query
-            }
-            
-            
-        }
-        Multipeer.transceiver.receive([String: Float].self) { payload, sender in
-            print("got time from host")
-            if let timeLeft = payload["Updated Time Left"] {
-                self.model.timeLeft = timeLeft
-            }
-            
-            if let newTimeLimit = payload["New Time Limit"] {
-                print("receive new time limit from host \(payload)")
-                self.model.timeLeft = newTimeLimit
-            }
-        }
-        
-        
-        Multipeer.transceiver.receive(String.self) { payload, sender in
-            
-            switch payload {
-            case "Current Player Timed Out":
-                print("got player timed out update from host")
-                self.model.handleGameState(.playerTimedOut)
-                
-            case "$PAUSED_GAME$":
-                Game.stopTimer()
-            case "$PLAYING_GAME$":
-                self.startTimer()
-                
-            default:
-                // host receiving inputs from participants
-                print("Got data from non-host device \(sender.name)! \(payload)")
-                self.processPeerInput(payload)
-            }
-            
-        }
-        
-        Multipeer.transceiver.receive([Player].self) { payload, sender in
-            print("Received updated playerQueue from host \(sender.name)")
-            var updatedPlayers = [String : Int]()
-            for player in payload {
-                updatedPlayers[player.name] = player.livesLeft
-            }
-            self.model.updatePlayerLives(updatedPlayers)
-            print("Updated player queue")
-        }
+
         
     }
     

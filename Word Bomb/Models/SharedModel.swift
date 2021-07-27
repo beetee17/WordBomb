@@ -64,13 +64,13 @@ struct WordBombGame: Codable {
         timeLeft = timeLimit
     }
     mutating func process(_ input: String, _ response: (status: String, newQuery: String?)) {
-        
+        print("handling player input")
         // reset the time for other player iff answer from prev player was correct
-        if Multipeer.isHost {
-            Multipeer.transceiver.send(["input" : input, "status" : response.status], to: selectedPeers)
-        }
-        else if GameCenter.isHost {
-            GameCenter.sendDictionary(["input" : input, "status" : response.status], toHost: false)
+        
+        if Multipeer.isHost || GameCenter.isHost {
+            
+            Multiplayer.send(GameData(state: .playerInput, input: input, response: response.status), toHost: false)
+
         }
 
         switch response.status {
@@ -80,11 +80,9 @@ struct WordBombGame: Codable {
             if let newQuery = response.newQuery {
                 self.query = newQuery
                 
-                if Multipeer.isHost {
-                    Multipeer.transceiver.send(["query" : newQuery], to: selectedPeers)
-                }
-                else if GameCenter.isHost {
-                    GameCenter.sendDictionary(["query" : newQuery], toHost: false)
+                if Multipeer.isHost || GameCenter.isHost {
+                    
+                    Multiplayer.send(GameData(query: query), toHost: false)
                 }
             }
             
@@ -94,18 +92,11 @@ struct WordBombGame: Codable {
                 // only if host or offline should update time limit
                 updateTimeLimit()
             }
-            else if Multipeer.isHost  {
+            else if Multipeer.isHost  || GameCenter.isHost{
                 updateTimeLimit()
-                Multipeer.transceiver.send(["New Time Limit" : timeLimit], to: selectedPeers)
+                Multiplayer.send(GameData(timeLimit: timeLimit), toHost: false)
             }
-            else if GameCenter.isHost {
-                updateTimeLimit()
-                GameCenter.sendDictionary(["New Time Limit" : String(timeLimit)], toHost: false)
-            }
-            
-            
-            
-            
+  
         case "wrong":
             output = "\(input) IS WRONG"
         case "used":
@@ -128,11 +119,9 @@ struct WordBombGame: Codable {
     
     mutating func currentPlayerRanOutOfTime() {
         
-        if Multipeer.isHost {
-            Multipeer.transceiver.send("Current Player Timed Out", to: selectedPeers)
-        }
-        else if GameCenter.isHost {
-            GameCenter.sendDictionary(["Player Timed Out" : "true"], toHost: false)
+        
+        if Multipeer.isHost || GameCenter.isHost {
+            Multiplayer.send(GameData(state: .playerTimedOut), toHost: false)
         }
         
         // mark player as no longer in the game
@@ -214,11 +203,8 @@ struct WordBombGame: Codable {
                 self.instruction = instruction
             }
             
-            if Multipeer.isHost {
-                Multipeer.transceiver.send(self, to: selectedPeers)
-            }
-            else if GameCenter.isHost {
-                GameCenter.sendModel(self)
+            if Multipeer.isHost || GameCenter.isHost {
+                Multiplayer.send(GameData(model: self), toHost: false)
             }
             
         case .playerInput:
@@ -236,6 +222,11 @@ struct WordBombGame: Codable {
         case .gameOver:
             timeLeft = 0.0 // for multiplayer games if non-host is lagging behind in their timer
             Game.stopTimer()
+            
+        case .paused:
+            break
+        case .playing:
+            break
 
         }
     }

@@ -23,13 +23,10 @@ struct InputView: View {
             Text(viewModel.input)
                 .onChange(of: viewModel.input,
                           perform: { _ in if viewModel.input.last == "\n" {
-                            if gkMatch != nil {
-                                viewModel.processGKInput()
-                            }
-                            else {
-                                viewModel.processInput()
+                            
+                            viewModel.processInput()
                                 
-                            }
+                            
                             viewModel.input = ""
                           }
                           }).ignoresSafeArea(.keyboard)

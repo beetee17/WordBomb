@@ -75,6 +75,8 @@ struct Word_BombApp: App {
                         
                     }
                     .onAppear {
+                        Game.viewModel.disconnect()
+                        Multipeer.transceiver.resume() // disconnect from local multiplayer
                         if Game.viewModel.viewToShow == .game || Game.viewModel.viewToShow == .pauseMenu {
                             Game.viewModel.changeViewToShow(.main)
                         }

@@ -111,21 +111,14 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
 extension GKMatchMakerAppModel: GKMatchDelegate {
     func match(_ match: GKMatch, didReceive data: Data, fromRemotePlayer player: GKPlayer) {
         do {
-            //            print(String(data: data, encoding: .utf8))
-            let gameModel = try JSONDecoder().decode(WordBombGame.self, from: data)
-            print("got model successfully from host \(gameModel)")
-            Game.viewModel.setGameModel(gameModel)
-            Game.viewModel.startTimer()
-            if let match = GameCenter.viewModel.gkMatch {
-                Game.viewModel.setGKPlayerImages(match.players)
-            } else { print("No GKMatch found??") }
-            
-        } catch {
-            print("data was not model from host")
-            print(String(describing: error))
-            
+            let data = try JSONDecoder().decode(GameData.self, from: data)
+            print("got data")
+            data.process()
         }
-        
+        catch {
+            print(String(describing: error))
+        }
+
         do {
             print(String(data: data, encoding: .utf8))
             let data = try JSONDecoder().decode([String : String].self, from: data)
@@ -133,49 +126,9 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
                 GameCenter.hostPlayerName = hostPlayerName
                 print("Got host name \(hostPlayerName)")
             }
-            
-            if let input = data["nonHostInput"] {
-                print("Host received input \(input)")
-                Game.viewModel.processPeerInput(input)
-            }
-            
-            if let input = data["input"], let status = data["status"] {
-                print("Non host received response status  \(status) for input \(input)")
-                
-                let nilQuery: String? = nil
-                Game.viewModel.handleGameState(.playerInput,
-                                               data: ["input" : input,
-                                                      "response" : (status, nilQuery)])
-            }
-            
-            if let query = data["query"] {
-                print("Non host received updated query \(query)")
-                Game.viewModel.query = query
-            }
-            if let playerTimedOut = data["Player Timed Out"] {
-                print("Non host notified of player time out \(playerTimedOut)")
-                Game.viewModel.handleGameState(.playerTimedOut)
-            }
-            
-            if let timeLeft = data["Updated Time Left"] {
-                print("Non host notified of updated time left \(String(format: "%.3f", timeLeft))")
-                Game.viewModel.timeLeft = Float(timeLeft)!
-                print("new updated time left \(Game.viewModel.timeLeft )")
-                
-            }
-            if let timeLimit = data["New Time Limit"] {
-                print("Non host notified of new time limit \(String(format: "%.3f", timeLimit))")
-                Game.viewModel.timeLimit = Float(timeLimit)!
-            }
-            if let updatedPlayerLives = data["Updated Player Lives"] {
-                print("Non host notifed of updated player lives, checking...")
-                Game.viewModel.updatePlayerLives(updatedPlayerLives)
-            }
-            
-        } catch {
-            print("data was not input from non-host")
+        }
+        catch {
             print(String(describing: error))
-            
         }
     }
     

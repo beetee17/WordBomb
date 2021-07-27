@@ -29,11 +29,11 @@ enum GameType: String, CaseIterable, Codable {
     case Reverse = "Reverse"
 }
 
-enum GameState: Int, Codable {
-    case initial, playerInput, playerTimedOut, gameOver
+enum GameState: String, Codable {
+    case initial, playerInput, playerTimedOut, gameOver, paused, playing
 }
 
 
-enum ViewToShow: Int, Codable {
+enum ViewToShow: String, Codable {
     case main, gameTypeSelect, modeSelect, game, pauseMenu, multipeer, peersView, GKMain, GKLogin, GKHost
 }
