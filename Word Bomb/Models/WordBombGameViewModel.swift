@@ -97,12 +97,12 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         
         let words = decodeJSONStringtoArray(item.words!)
         
-        if item.gameType! == "EXACT" {
+        if item.gameType! == GameType.Exact.rawValue {
             
             startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: nil, gameType: .Exact))
         }
         
-        else if item.gameType! == "CLASSIC" {
+        else if item.gameType! == GameType.Classic.rawValue {
             
             let queries = decodeJSONStringtoArray(item.queries!)
             startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: .Classic))

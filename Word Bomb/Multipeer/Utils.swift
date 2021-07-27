@@ -24,26 +24,7 @@ struct Multipeer {
     static var isNonHost: Bool { hostingPeer != nil && selectedPeers.count == 0 }
     static var isOnline: Bool { isHost || isNonHost }
     static var isOffline: Bool { hostingPeer == nil && selectedPeers.count == 0 }
-    
-    
-//    static func reconnect() {
-//
-//        // RISKY????
-//
-//        print("reconnect")
-//        DispatchQueue.main.async {
-//
-//            // re-init new transceiver and dataSource
-//            let newTransceiver = MultipeerTransceiver(configuration: MultipeerConfiguration(serviceType: "word-bomb", peerName: UserDefaults.standard.string(forKey: "Display Name")!, defaults: .standard, security: .default, invitation: .automatic))
-//
-//            dataSource = MultipeerDataSource(transceiver: newTransceiver)
-//            transceiver = newTransceiver
-//
-//            // start new transceiver
-//            transceiver.resume()
-//
-//        }
-//    }
+
     static func reconnect() {
         transceiver.stop()
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
