@@ -32,11 +32,12 @@ struct GKContentView: View {
     @EnvironmentObject var gkViewModel: GKMatchMakerAppModel
     
     @State var showMatchMakerModal = false
+    @State var isFirstLaunch = UserDefaults.standard.bool(forKey: "First Launch")
     
     var body: some View {
 
         ZStack {
-            Color("Background").edgesIgnoringSafeArea(.all)
+            Color("Background").ignoresSafeArea()
             
             VStack(spacing:100) {
                 Text("GAME CENTER").font(.largeTitle).bold()
@@ -75,6 +76,7 @@ struct GKContentView: View {
         }
         .transition(.asymmetric(insertion: AnyTransition.move(edge: .trailing), removal: AnyTransition.move(edge: .leading)))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
+        
     }
 }
 

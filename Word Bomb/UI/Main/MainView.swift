@@ -17,6 +17,8 @@ struct MainView: View {
     @State var showMultiplayerOptions = false
     
     @Namespace var mainView
+//    @State var isFirstLaunch = true // for previewing
+    @State var isFirstLaunch = UserDefaults.standard.bool(forKey: "First Launch")
     
     var body: some View {
         
@@ -88,6 +90,7 @@ struct MainView: View {
                 .opacity(viewModel.showPreLaunchAnimation ? 0.01 : 1)
             }
             .padding(.bottom, 20)
+            .blur(radius: isFirstLaunch && !viewModel.showPreLaunchAnimation ? 2 : 0)
             
             
             if !viewModel.animateLogo && viewModel.showPreLaunchAnimation {
@@ -95,6 +98,15 @@ struct MainView: View {
                     
                     .matchedGeometryEffect(id: "logo", in: mainView, isSource: true)
                     .frame(width: Device.width, height: Device.height, alignment: .center)
+            }
+            
+            if isFirstLaunch && !viewModel.showPreLaunchAnimation {
+                FirstLaunchInstructionsView()
+                    .onTapGesture {
+                        UserDefaults.standard.setValue(false, forKey: "First Launch")
+                        print("set first launch to: \(UserDefaults.standard.bool(forKey: "First Launch"))")
+                        isFirstLaunch = false
+                    }
             }
             
         }
@@ -112,7 +124,7 @@ struct MainView: View {
                 viewModel.animateLogo = true
             }
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                 
                 withAnimation(.easeInOut) { viewModel.showPreLaunchAnimation = false }
             }
@@ -120,7 +132,7 @@ struct MainView: View {
         .transition(.asymmetric(insertion: AnyTransition.move(edge: .leading), removal: AnyTransition.move(edge: .trailing)))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
         .zIndex(/*@START_MENU_TOKEN@*/1.0/*@END_MENU_TOKEN@*/) // transition does not work with zIndex set to 0
-        
+      
     }
 }
 
@@ -130,7 +142,8 @@ struct MainView_Previews: PreviewProvider {
         ZStack {
             Color("Background").ignoresSafeArea()
             
-            MainView().environmentObject(WordBombGameViewModel())
+            MainView()
+                .environmentObject(WordBombGameViewModel())
         }
     }
 }

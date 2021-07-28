@@ -28,6 +28,7 @@ struct Word_BombApp: App {
     init() {
         // register "default defaults"
         UserDefaults.standard.register(defaults: [
+            "First Launch" : true,
             "Display Name": MCPeerID.defaultDisplayName.trim(),
             "Time Limit" : 10.0,
             "Time Multiplier" : 0.95,

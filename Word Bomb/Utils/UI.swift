@@ -12,22 +12,22 @@ struct MainButtonStyle: ButtonStyle {
     let height = Device.height*0.07
     
     func makeBody(configuration: Configuration) -> some View {
-
+        
         configuration.label
             .textCase(.uppercase)
             .font(Font.title2.bold())
             .frame(width: width, height: height)
             .padding(.horizontal)
             .lineLimit(1).minimumScaleFactor(0.5)
-//            .background(Color(red: 229/255, green: 142/255, blue:38/255, opacity: 1))
-//            .background(RadialGradient(colors: [.orange, .gray], center: .center, startRadius: 0 , endRadius: 400))
+            //            .background(Color(red: 229/255, green: 142/255, blue:38/255, opacity: 1))
+            //            .background(RadialGradient(colors: [.orange, .gray], center: .center, startRadius: 0 , endRadius: 400))
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-//            .shadow(color: .black, radius: 2, x: 0, y: 3)
+            //            .shadow(color: .black, radius: 2, x: 0, y: 3)
             .scaleEffect(configuration.isPressed ? 1.2 : 1.0)
             .contentShape(RoundedRectangle(cornerRadius: 10, style: .circular))
         
-            
-            
+        
+        
     }
 }
 
@@ -59,12 +59,12 @@ struct PermanentKeyboard: UIViewRepresentable {
             
             //Async to prevent updating state during view update
             DispatchQueue.main.async {
-
+                
                 if string != "" {
                     self.parent.text.append(string)
-                        
-                    }
                     
+                }
+                
                 //Allows backspace
                 else {
                     self.parent.text.removeLast()
@@ -90,28 +90,28 @@ struct PermanentKeyboard: UIViewRepresentable {
         
         //Makes textfield invisible
         textfield.textColor = .clear
-
+        
         return textfield
     }
     
     mutating func forceHideKeyboard() {
         forceResignFirstResponder = true
         print(forceResignFirstResponder)
- 
+        
     }
     
     
     
     func updateUIView(_ uiView: UITextField, context: Context) {
         uiView.text = text
-
+        
         //Makes keyboard permanent
         if !uiView.isFirstResponder && !forceResignFirstResponder {
-
+            
             uiView.becomeFirstResponder()
         }
         else if forceResignFirstResponder {
-
+            
             uiView.resignFirstResponder()
         }
         
@@ -122,25 +122,62 @@ struct PermanentKeyboard: UIViewRepresentable {
 }
 
 extension View {
-  func useScrollView(when condition: Bool) -> AnyView {
-    if condition {
-        print("condition \(condition)")
-      return AnyView(
-        ScrollView() {
-          self
+    func useScrollView(when condition: Bool) -> AnyView {
+        if condition {
+            print("condition \(condition)")
+            return AnyView(
+                ScrollView() {
+                    self
+                }
+            )
+        } else {
+            return AnyView(self)
         }
-      )
-    } else {
-      return AnyView(self)
     }
-  }
     func helpSheet(title: String, headers: [String], content: [String]) -> some View {
         self.modifier(HelpSheet(title: title, headers: headers, content: content))
     }
-
+    
+}
+// Conditional Modifier
+// Text("some Text").if(modifierEnabled) { $0.foregroundColor(.Red) }
+public extension View {
+    @ViewBuilder
+    func `if`<Content: View>(_ condition: Bool, content: (Self) -> Content) -> some View {
+        if condition {
+            content(self)
+        } else {
+            self
+        }
+    }
 }
 
 
+struct HelpButton: View {
+    
+    var action: () -> Void
+    var border: Bool
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Spacer()
+                Button(action: action ) {
+                    Image(systemName: "questionmark.circle")
+                        .font(.title2)
+                        .foregroundColor(.white)
+                        
+                        .frame(width: 70, height: 100, alignment:.center) // tappable area
+                        .background(border ? Color.white.opacity(0.2) : Color.clear)
+                  
+                }
+                .clipShape(Circle().scale(0.8))
+            }
+            Spacer()
+        }
+        
+    }
+}
 struct HelpSheet: ViewModifier {
     
     @State private var showHelpSheet = false
@@ -151,40 +188,30 @@ struct HelpSheet: ViewModifier {
     func body(content: Content) -> some View {
         ZStack{
             content
-            VStack {
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        print("HELP")
-                        showHelpSheet = true}) {
-                        Image(systemName: "questionmark.circle")
-                            .font(.title2)
-                            .foregroundColor(.white)
-                            .frame(width: 70, height: 100, alignment:.center) // tappable area
-                            .sheet(isPresented: $showHelpSheet) {
-                                NavigationView {
-                                    List {
-                                        ForEach(Array(zip(self.headers, self.content)), id: \.0) { item in
-                                            Section(header: Text(item.0)) {
-                                                Text(item.1).foregroundColor(.white)
-                                            }
-                                        }
-                                    }
-                                    .navigationBarTitle(Text(title))
-                                    .listStyle(GroupedListStyle())
-                                    
-                                }
-                            
+            HelpButton(action: {
+                print("Show Help")
+                showHelpSheet = true
+            }, border: false)
+            .sheet(isPresented: $showHelpSheet) {
+                NavigationView {
+                    List {
+                        ForEach(Array(zip(self.headers, self.content)), id: \.0) { item in
+                            Section(header: Text(item.0)) {
+                                Text(item.1).foregroundColor(.white)
                             }
-                            
                         }
+                    }
+                    .navigationBarTitle(Text(title))
+                    .listStyle(GroupedListStyle())
+                    
                 }
-                Spacer()
+                
             }
-            .ignoresSafeArea(.all) 
         }
+        .ignoresSafeArea(.all)
     }
 }
+
 
 
 
