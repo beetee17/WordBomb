@@ -28,10 +28,13 @@ import GameKit
 import GameKitUI
 
 struct GKContentView: View {
-    @EnvironmentObject var viewModel: WordBombGameViewModel
+    @EnvironmentObject var gameViewModel: WordBombGameViewModel
+    @EnvironmentObject var gkViewModel: GKMatchMakerAppModel
+    
+    @State var showMatchMakerModal = false
     
     var body: some View {
-        //        NavigationView {
+
         ZStack {
             Color("Background").edgesIgnoringSafeArea(.all)
             
@@ -40,16 +43,32 @@ struct GKContentView: View {
                 
                 VStack(alignment: .center, spacing: 32) {
                     Game.mainButton(label: "LOGIN", systemImageName: "lock.fill") {
-                        withAnimation { viewModel.changeViewToShow(.GKLogin) }
+                        withAnimation { gameViewModel.changeViewToShow(.GKLogin) }
                     }
                     
                     Game.mainButton(label: "HOST MATCH", systemImageName: "person.crop.circle.badge.plus") {
-                        withAnimation { viewModel.changeViewToShow(.GKHost) }
+                        showMatchMakerModal = true
+                    }
+                    
+                    .sheet(isPresented: $showMatchMakerModal) {
+                        GKMatchmakerView(
+                            minPlayers: 2,
+                            maxPlayers: 4,
+                            inviteMessage: "Let us play together!"
+                        ) {
+                            showMatchMakerModal = false
+                            
+                        } failed: { (error) in
+                            showMatchMakerModal = false
+                            gkViewModel.showAlert(title: "Match Making Failed", message: error.localizedDescription)
+                        } started: { (match) in
+                            showMatchMakerModal = false
+                        }
                     }
                 }
                 
                 Game.backButton {
-                    withAnimation { viewModel.changeViewToShow(.main) }
+                    withAnimation { gameViewModel.changeViewToShow(.main) }
                 }
             }
             
