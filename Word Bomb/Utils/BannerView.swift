@@ -39,13 +39,13 @@ struct BannerView: View {
         .frame(width: Device.width-40, alignment: .leading)
         .background(
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.03205184274, green: 0.03314970656, blue: 0.04729758212, alpha: 1)).opacity(0.2), Color("Background").opacity(0.1)]), startPoint: .top, endPoint: .bottom)
+                LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.03205184274, green: 0.03314970656, blue: 0.04729758212, alpha: 1)).opacity(0.4), Color("Background").opacity(0.6)]), startPoint: .top, endPoint: .bottom)
             
-            LinearGradient(gradient: Gradient(colors: [Color("Background").opacity(0.2), Color(#colorLiteral(red: 0.07820445112, green: 0.08963582299, blue: 0.09931479403, alpha: 1)).opacity(0.1)]), startPoint: .top, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [Color("Background").opacity(0.5), Color(#colorLiteral(red: 0.07820445112, green: 0.08963582299, blue: 0.09931479403, alpha: 1)).opacity(0.5)]), startPoint: .top, endPoint: .bottom)
             
             Color.black.opacity(0.2)
             }
-            .blur(radius: 1)
+            
         )
         .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
         .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 10)
@@ -91,6 +91,7 @@ struct BannerView_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
             Color("Background")
+            Text("Some Text")
             BannerView(title: "Oops, something went wrong", message: "Line 1.\nLine 1.\nLine 2.\nLine 3.\nLine 4.\nLine 5.")
         }
         
