@@ -9,7 +9,7 @@ import Foundation
 
 struct ExactWordGameModel: WordGameModel {
     var words: [String]
-    var dataDict: [String : [String]]
+    var variants: [String : [String]]?
     var usedWords = Set<String>()
     
     mutating func process(_ input: String, _ query: String? = nil) -> (status: InputStatus, query: String?) {
@@ -25,10 +25,11 @@ struct ExactWordGameModel: WordGameModel {
             print("\(input.uppercased()) IS CORRECT")
             
             usedWords.insert(input)
-            for variation in dataDict[input, default: []] {
-                usedWords.insert(variation)
+            if let variants = variants {
+                for variation in variants[input, default: []] {
+                    usedWords.insert(variation)
+                }
             }
-            
             return (.Correct, nil)
             
         }

@@ -107,13 +107,15 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         
         if item.gameType! == GameType.Exact.rawValue {
             
-            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: nil, gameType: .Exact))
+            startGame(mode: GameMode(modeName: item.name!, instruction: item.instruction, words: words, gameType: .Exact))
         }
         
         else if item.gameType! == GameType.Classic.rawValue {
             
-            let queries = decodeJSONStringtoArray(item.queries!)
-            startGame(mode: GameMode(modeName: item.name!, dataFile: nil, queryFile: nil, instruction: item.instruction ?? nil, words: words, queries: queries, gameType: .Classic))
+            let queryArray = decodeJSONStringtoArray(item.queries!)
+            let queries = queryArray.map { ($0, 1) }
+            
+            startGame(mode: GameMode(modeName: item.name!, instruction: item.instruction, words: words, queries: queries, gameType: .Classic))
         }
         
     }
@@ -121,34 +123,16 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     func startGame(mode: GameMode) {
         
         // process the gameMode by initing the appropriate WordGameModel
-        
-        if mode.dataFile != nil {
-            let (words, wordSets) = loadWordSets(mode)
-            switch mode.gameType {
-            case .Exact: gameModel = ExactWordGameModel(words: words, dataDict: wordSets)
-                
-            case .Classic:
-                let queries = loadSyllables(mode)
-                gameModel = ContainsWordGameModel(words: words, queries: queries)
-                
-            case .Reverse:
-                gameModel = ReverseWordGameModel(words: words, dataDict: wordSets)
-            }
+
+        switch mode.gameType {
+        case .Exact: gameModel = ExactWordGameModel(words: mode.words!, variants: mode.variants)
+            
+        case .Classic:
+            gameModel = ContainsWordGameModel(words: mode.words!, queries: mode.queries!)
+            
+        case .Reverse:
+            gameModel = ReverseWordGameModel(words: mode.words!, variants: mode.variants)
         }
-        else {
-            // Loading custom mode
-            switch mode.gameType {
-            case .Exact: gameModel = ExactWordGameModel(words: mode.words!, dataDict: [:])
-                
-            case .Classic:
-                break
-            //                gameModel = ContainsWordGameModel(data: mode.words!, queries: mode.queries!)
-            case .Reverse:
-                gameModel = ReverseWordGameModel(words: mode.words!, dataDict: [:])
-            }
-            print("CUSTOM GAME! \(String(describing: gameModel))")
-        }
-        
         
         print("host is \(String(describing: hostingPeer))")
         print("selected peers \(selectedPeers)")

@@ -8,18 +8,37 @@
 import Foundation
 import SwiftUI
 
-
-
 struct Device {
     static let width = UIScreen.main.bounds.width
     static let height = UIScreen.main.bounds.height
+}
+class Database: Identifiable {
+    let id = UUID()
+    let name: String
+    let words: [String]
+    init(name: String, words: [String]) {
+        self.name = name
+        self.words = words
+    }
 }
 
 struct Game {
     
     static var viewModel = WordBombGameViewModel()
     
-    static let modes = [CountryGame, CountryGameReverse, WordGame, WordGameReverse]
+    static let dictionary = loadWordSets("words").0
+    static let syllables = loadSyllables("syllables_2")
+    static let (countries, countryVariants) = loadWordSets("countries")
+    
+    static let CountryGame = GameMode(modeName:"COUNTRY", instruction: "NAME A COUNTRY", words: Game.countries, variants: Game.countryVariants, gameType: .Exact)
+    
+    static let CountryGameReverse = GameMode(modeName:"COUNTRY", instruction: "COUNTRIES STARTING WITH...", words: Game.countries, gameType: .Reverse)
+
+    static let WordGame = GameMode(modeName: "WORDS", instruction: "WORDS CONTAINING...", words: Game.dictionary, queries: Game.syllables, gameType: .Classic)
+
+    static let WordGameReverse = GameMode(modeName: "WORDS", instruction: "WORDS STARTING WITH...", words: Game.dictionary, gameType: .Reverse)
+    
+    static let defaultModes = [CountryGame, CountryGameReverse, WordGame, WordGameReverse]
     
     static let playerAvatarSize = Device.width/3.5
     
