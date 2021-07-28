@@ -12,20 +12,7 @@ struct BannerView: View {
     let message: String
     
     var body: some View {
-        ZStack {
-            ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.03205184274, green: 0.03314970656, blue: 0.04729758212, alpha: 1)), Color("Background")]), startPoint: .top, endPoint: .bottom)
-                
-                LinearGradient(gradient: Gradient(colors: [Color("Background").opacity(0.6), Color(#colorLiteral(red: 0.07820445112, green: 0.08963582299, blue: 0.09931479403, alpha: 1)).opacity(0.3)]), startPoint: .top, endPoint: .bottom)
-                
-                Color.black.opacity(0.2)
-                
-            }
-            .frame(width: Device.width-40, height: 100, alignment: .leading)
-            .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
-            .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 10)
-            .blur(radius: 1)
-            
+        Button(action: { }) {
             
             VStack(alignment: .leading, spacing:10) {
                 HStack {
@@ -40,13 +27,29 @@ struct BannerView: View {
                 VStack(alignment: .leading, spacing:2) {
                     Text(title)
                         .bold()
-                    
                     Text(message)
                 }
+                .lineLimit(5)
+                .foregroundColor(.white)
             }
-            .padding(.horizontal, 15)
-            .frame(width: Device.width-40, height: 75, alignment: .leading)
+            .padding(15)
+
+            
         }
+        .frame(width: Device.width-40, alignment: .leading)
+        .background(
+            ZStack {
+                LinearGradient(gradient: Gradient(colors: [Color(#colorLiteral(red: 0.03205184274, green: 0.03314970656, blue: 0.04729758212, alpha: 1)).opacity(0.2), Color("Background").opacity(0.1)]), startPoint: .top, endPoint: .bottom)
+            
+            LinearGradient(gradient: Gradient(colors: [Color("Background").opacity(0.2), Color(#colorLiteral(red: 0.07820445112, green: 0.08963582299, blue: 0.09931479403, alpha: 1)).opacity(0.1)]), startPoint: .top, endPoint: .bottom)
+            
+            Color.black.opacity(0.2)
+            }
+            .blur(radius: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+        .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 10)
+        
         
     }
 }
@@ -88,7 +91,7 @@ struct BannerView_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
             Color("Background")
-            BannerView(title: "Oops, something went wrong", message: "Please try again.")
+            BannerView(title: "Oops, something went wrong", message: "Line 1.\nLine 1.\nLine 2.\nLine 3.\nLine 4.\nLine 5.")
         }
         
     }
