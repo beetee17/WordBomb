@@ -58,8 +58,9 @@ struct HelpSheet: ViewModifier {
                     List(messages, children: \.subMessages) {
                         item in
                         Text(item.content)
-                            .font(item.subMessages == nil ? .system(.body, design: .rounded) : .system(.title3, design: .rounded))
+                            .font(item.subMessages == nil ? .system(.body, design: .rounded) : .system(.title3, design: .rounded).bold())
                     }
+                    .listStyle(InsetGroupedListStyle())
                     .navigationTitle(Text("Help"))
                 }
                 
@@ -79,11 +80,11 @@ extension Game {
     static let reverseHelp = "A Reverse game is similar to the Exact game, with the added constraint that the answer must start with the ending letter of the previous player's answer."
     
     static let startGameHelp = "Press to start a game! If you are not in an ongoing multiplayer game, you may start an offline, pass-and-play style game with a specified number of players and custom player names (you can change this in the settings menu). Useful if you do not have a good network connection.\n\nIf you are hosting other players via local multiplayer, start a game in the same way to play with them!"
-    static let gameCenterHelp = "Clicking the Game Center button allows you to play a truly online game with others via Game Center! Simply navigate to the Host Game screen and invite your friends!\n\nCurrently does not support custom modes."
+    static let gameCenterHelp = "In order to play a game using Game Center, you need to be friends with the person who you are trying to play with. To do this, proceed to Settings App ⭢ Game Center ⭢ Add Friends.\n\nAfter you are friends with the people you want to play with, you can play with them by simply navigating to Game Center ⭢ Host Game and inviting them to a game!"
     
-    static let localNetworkHelp = "You can also play a local multiplayer game with nearby players via the Local Multiplayer button."
+    static let localNetworkHelp = "You can also play a multiplayer game with nearby players using the Local Network button. This works for players in close proximity and who do not want to use Game Center. You may also prefer to play via local network over game center as it supports custom modes!\n\nThe steps are as follows:\n\n1. Navigate to Multiplayer ⭢ Local Network ⭢ Host Game.\n\n2. You should see your friends' names pop up there!\n\n3. When the indicator beside a friend's name turns green, you may connect to each other by tapping on their names."
     
-    static let customModeHelp = "The Create Mode button presents a sheet where you can create your own custom modes to play with friends."
+    static let createModeHelp = "The Create Mode button presents a sheet where you can create your own custom modes to play with friends."
     
     static let settingHelp = "Customise various settings of the game mechanics here. Relevant settings will also apply to online gameplay if you are the host!"
     
@@ -93,7 +94,7 @@ extension Game {
          
          HelpMessage(content: "Game Types",
                      subMessages: [
-                        HelpMessage(content: "There are 3 game types currently implemented: Classic, Exact and Reverse."),
+                        HelpMessage(content: "There are 3 game types currently available: Classic, Exact and Reverse."),
                         HelpMessage(content: "Classic", subMessages: [HelpMessage(content: classicHelp)]),
                         HelpMessage(content: "Exact", subMessages:[HelpMessage(content: exactHelp)]),
                         HelpMessage(content: "Reverse", subMessages: [HelpMessage(content: reverseHelp)])
@@ -108,7 +109,7 @@ extension Game {
                         HelpMessage(content: "Local Network", subMessages: [HelpMessage(content: localNetworkHelp)])
                      ]),
          
-         HelpMessage(content: "Custom Modes", subMessages: [HelpMessage(content: customModeHelp)]),
+         HelpMessage(content: "Create Mode", subMessages: [HelpMessage(content: createModeHelp)]),
          
          HelpMessage(content: "Settings", subMessages: [HelpMessage(content: settingHelp)])
         ]
