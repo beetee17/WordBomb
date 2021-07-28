@@ -14,7 +14,7 @@ struct OutputText: View {
     var body: some View {
         
         
-        let output = viewModel.output
+        let output = viewModel.output.trim().lowercased()
         let outputText = Text(output)
         //            .padding(.top, 150)
             .font(.system(size: 20, weight: .bold, design: .default))
@@ -28,7 +28,7 @@ struct OutputText: View {
                                               execute: { viewModel.clearOutput(newOutput) })
             })
         
-        switch viewModel.output.contains("CORRECT") {
+        switch output.contains("correct") {
         case true:
             outputText
                 .foregroundColor(.green)
