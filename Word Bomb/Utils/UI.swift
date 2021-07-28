@@ -157,8 +157,8 @@ struct HelpSheet: ViewModifier {
                     Button(action: {
                         print("HELP")
                         showHelpSheet = true}) {
-                        Image(systemName: "info.circle")
-                            
+                        Image(systemName: "questionmark.circle")
+                            .font(.title2)
                             .foregroundColor(.white)
                             .frame(width: 70, height: 100, alignment:.center) // tappable area
                             .sheet(isPresented: $showHelpSheet) {
