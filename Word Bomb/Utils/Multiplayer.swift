@@ -107,7 +107,7 @@ struct GameData: Codable {
         }
         else if let input = self.input {
             print("Got data from non-host device ! \(input)")
-            Game.viewModel.processPeerInput(input)
+            Game.viewModel.processNonHostInput(input)
         }
         else if let timeLeft = self.timeLeft {
             print("received updated time left from host \(timeLeft)")

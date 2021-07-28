@@ -35,5 +35,5 @@ enum GameState: String, Codable {
 
 
 enum ViewToShow: String, Codable {
-    case main, gameTypeSelect, modeSelect, game, pauseMenu, multipeer, peersView, GKMain, GKLogin, GKHost
+    case main, gameTypeSelect, modeSelect, game, pauseMenu, multipeer, peersView, GKMain, GKLogin
 }

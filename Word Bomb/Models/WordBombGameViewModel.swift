@@ -42,7 +42,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     func updateGameSettings() {
         model = WordBombGame()
         if selectedPeers.count > 0 {
-            setOnlinePlayers()
+            setOnlinePlayers(selectedPeers)
         }
     }
     
@@ -83,7 +83,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
             let instruction = model.instruction
             
             if Multipeer.isHost {
-                setOnlinePlayers()
+                setOnlinePlayers(selectedPeers)
             }
             
             model.handleGameState(.initial,
@@ -125,26 +125,26 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         if mode.dataFile != nil {
             let (words, wordSets) = loadWordSets(mode)
             switch mode.gameType {
-            case .Exact: gameModel = ExactWordGameModel(data: words, dataDict: wordSets)
+            case .Exact: gameModel = ExactWordGameModel(words: words, dataDict: wordSets)
                 
             case .Classic:
                 let queries = loadSyllables(mode)
-                gameModel = ContainsWordGameModel(data: words, queries: queries)
+                gameModel = ContainsWordGameModel(words: words, queries: queries)
                 
             case .Reverse:
-                gameModel = ReverseWordGameModel(data: words, dataDict: wordSets)
+                gameModel = ReverseWordGameModel(words: words, dataDict: wordSets)
             }
         }
         else {
             // Loading custom mode
             switch mode.gameType {
-            case .Exact: gameModel = ExactWordGameModel(data: mode.words!, dataDict: [:])
+            case .Exact: gameModel = ExactWordGameModel(words: mode.words!, dataDict: [:])
                 
             case .Classic:
                 break
             //                gameModel = ContainsWordGameModel(data: mode.words!, queries: mode.queries!)
             case .Reverse:
-                gameModel = ReverseWordGameModel(data: mode.words!, dataDict: [:])
+                gameModel = ReverseWordGameModel(words: mode.words!, dataDict: [:])
             }
             print("CUSTOM GAME! \(String(describing: gameModel))")
         }
@@ -153,7 +153,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
         print("host is \(String(describing: hostingPeer))")
         print("selected peers \(selectedPeers)")
         
-        if Multipeer.isHost || Multipeer.isOffline {
+        if !(Multipeer.isNonHost || GameCenter.isNonHost) {
             print("getting query")
             // should query only if device is not in multiplayer game or is hosting a game
             model.handleGameState(.initial,
@@ -178,7 +178,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                 // turn for device hosting multiplayer game
                 
                 let response = gameModel!.process(input, model.query)
-                
+                    
                 model.handleGameState(.playerInput, data: ["input" : input, "response" : response])
             }
             
@@ -189,9 +189,8 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                 print("SENT \(input)")
                 
             }
-            
-            
-            else if Multipeer.isOffline {
+
+            else if Multipeer.isOffline && GameCenter.isOffline{
                 // device not hosting or participating in multiplayer game i.e offline
                 let response = gameModel!.process(input, model.query)
                 
@@ -235,7 +234,7 @@ class WordBombGameViewModel: NSObject, ObservableObject {
                 }
             }
             
-            if model.timeLeft <= 0 && (Multipeer.isHost || GameCenter.isHost || (GameCenter.isOffline && Multipeer.isOffline)) {
+            if model.timeLeft <= 0 && !(Multipeer.isNonHost || GameCenter.isNonHost) {
                 // only handle time out in offline play or if host of online match
                 
                 DispatchQueue.main.async {
@@ -289,14 +288,34 @@ class WordBombGameViewModel: NSObject, ObservableObject {
     
 }
 
-// MARK: - GAME CENTER
+// MARK: - MULTIPLAYER
 extension WordBombGameViewModel {
     
     var isMyGKTurn: Bool { GKLocalPlayer.local.displayName == model.currentPlayer.name }
+    var isMyTurn: Bool { UserDefaults.standard.string(forKey: "Display Name")! == model.currentPlayer.name }
     
-    func setGameModel(_ model: WordBombGame) {
-        self.model = model
-        self.model.currentPlayer = self.model.playerQueue[0]
+    var selectedPeers: [Peer] {
+        get { Multipeer.selectedPeers }
+        set {
+            Multipeer.selectedPeers = newValue
+            mpcStatus = newValue.count == 0 ? "" : "Hosting: \(newValue.count) Player(s)"
+        }
+    }
+    var hostingPeer: Peer? {
+        get { Multipeer.hostingPeer }
+        set {
+            let oldValue = Multipeer.hostingPeer
+            Multipeer.hostingPeer = newValue
+            
+            if newValue != nil && selectedPeers.count == 0 { mpcStatus = "Connected to Host: \(newValue!.name)" }
+            else if oldValue != nil && newValue == nil && selectedPeers.count == 0 { mpcStatus = "Lost Connection to Host"}
+        }
+    }
+    
+    func resetGameModel() {
+        // called when a multiplayer game has ended either due to lack of players, lost of connection or game just ended
+        model = .init()
+        Game.stopTimer()
     }
     
     func handleDisconnected(from playerName: String) {
@@ -309,25 +328,54 @@ extension WordBombGameViewModel {
             // function does not do anything if player is not in queue (e.g. the player lost just before disconnecting)
         }
     }
-    func setGKPlayers(_ gkPlayers: [GKPlayer]) {
+    func processNonHostInput(_ input: String) {
         
-        var players: [Player] = [Player(name: GKLocalPlayer.local.displayName)]
+        print("processing \(input)")
+        let response = gameModel!.process(input.lowercased().trim(), model.query)
         
-        for player in gkPlayers {
-            players.append(Player(name: player.displayName))
-        }
-        self.model = .init(players)
-        print("gkplayers \(self.model.playerQueue)")
-        print("current player \(self.model.currentPlayer)")
-        setGKPlayerImages(gkPlayers)
+        model.handleGameState(.playerInput, data: ["input" : input, "response" : response])
         
     }
     
+    func setOnlinePlayers(_ players: [Any])  {
+        switch players {
+        case let (peers as [Peer]) as Any:
+            var players: [Player] = [Player(name: UserDefaults.standard.string(forKey: "Display Name")!)]
+            
+            for peer in peers {
+                players.enqueue(Player(name: peer.name))
+            }
+            
+            model = .init(players)
+            print("online peers \(model.playerQueue)")
+            print("current player \(model.currentPlayer)")
+            
+        case let (gkPlayers as [GKPlayer]) as Any:
+            var players: [Player] = [Player(name: GKLocalPlayer.local.displayName)]
+            
+            for player in gkPlayers {
+                players.append(Player(name: player.displayName))
+            }
+            model = .init(players)
+            print("gkplayers \(model.playerQueue)")
+            print("current player \(model.currentPlayer)")
+            setGKPlayerImages(gkPlayers)
+            
+        default:
+            fatalError("Not a valid array of players")
+        }
+        
+        
+    }
+}
+
+// MARK: - GAME CENTER
+extension WordBombGameViewModel {
     func setGKPlayerImages(_ gkPlayers: [GKPlayer]) {
         for player in model.playerQueue {
             if player.name == GKLocalPlayer.local.displayName {
                 GKLocalPlayer.local.loadPhoto(for: GKPlayer.PhotoSize.normal) { image, error in
-                    print("got image \(image) for player \(player.name) with error \(error)")
+                    print("got image \(image ?? nil) for player \(player.name) with error \(String(describing: error))")
                     player.setImage(image)
                 }
             }
@@ -335,7 +383,7 @@ extension WordBombGameViewModel {
                 for gkPlayer in gkPlayers {
                     if player.name == gkPlayer.displayName {
                         gkPlayer.loadPhoto(for: GKPlayer.PhotoSize.normal) { image, error in
-                            print("got image \(image) for player \(player.name) with error \(error)")
+                            print("got image \(image ?? nil) for player \(player.name) with error \(String(describing: error))")
                             player.setImage(image)
                         }
                     }
@@ -343,25 +391,9 @@ extension WordBombGameViewModel {
             }
         }
     }
-    
 }
-
-
 // MARK: - Multipeer
-
 extension WordBombGameViewModel {
-    
-    var selectedPeers: [Peer] {
-        get { Multipeer.selectedPeers }
-        set { Multipeer.selectedPeers = newValue }
-    }
-    var hostingPeer: Peer? {
-        get { Multipeer.hostingPeer }
-        set { Multipeer.hostingPeer = newValue }
-    }
-    var isMyTurn: Bool { UserDefaults.standard.string(forKey: "Display Name")! == model.currentPlayer.name }
-    
-    // MARK: - Multipeer Functionality
     
     func disconnectedFrom(_ peer: Peer) {
         print("available \(Multipeer.transceiver.availablePeers)")
@@ -378,11 +410,9 @@ extension WordBombGameViewModel {
             switch selectedPeers.count == 0 {
             case true:
                 // all players disconnected
-                mpcStatus = ""
                 resetGameModel()
             case false:
                 // some players disconnected
-                mpcStatus = "Hosting: \(selectedPeers.count) Player(s)"
                 handleDisconnected(from: peer.name)
             }
             print("selected peers \(selectedPeers)")
@@ -393,14 +423,10 @@ extension WordBombGameViewModel {
             // or as non-host, one of the participants disconnected
             handleDisconnected(from: peer.name) // this function does nothing if name is not found in the playerQueue
         }
-        
-        
-        
         if peer == hostingPeer {
             
             // reset hostPeer to nil and update status
             hostingPeer = nil
-            mpcStatus = "Lost Connection to Host: \(peer.name)"
             resetGameModel()
             
         }
@@ -412,9 +438,9 @@ extension WordBombGameViewModel {
         
         // first remove any unavailable peers from selected peers
         for p in selectedPeers {
-            if Multipeer.transceiver.availablePeers.find(p) == nil {
+            if Multipeer.transceiver.availablePeers.find(p) == nil, let index = selectedPeers.firstIndex(of: p){
                 // peer is unavailable
-                selectedPeers.remove(at: selectedPeers.firstIndex(of: p)!)
+                selectedPeers.remove(at: index)
             }
         }
         
@@ -433,10 +459,8 @@ extension WordBombGameViewModel {
         // after removing -> check if host selected >0 peers
         switch Multipeer.isHost {
         case true:
-            mpcStatus = "Hosting: \(selectedPeers.count) Player(s)"
-            setOnlinePlayers()
+            setOnlinePlayers(selectedPeers)
         case false:
-            mpcStatus = "" // not hosting a game
             resetGameModel()
         }
         
@@ -458,14 +482,6 @@ extension WordBombGameViewModel {
                 print("\(peer) Removed")
                 self.disconnectedFrom(peer) }
         }
-        Multipeer.transceiver.peerAdded = { peer in
-            DispatchQueue.main.async {
-                print("\(peer) Added")
-                
-            }
-        }
-        
-        Multipeer.transceiver.peerConnected = { peer in print("Connected to \(peer.name)") }
         
         Multipeer.transceiver.receive(GameData.self) { data, sender in
             
@@ -478,11 +494,9 @@ extension WordBombGameViewModel {
             switch payload {
             case true: // host selected this peer to join game
                 self.hostingPeer = sender
-                self.mpcStatus = "Connected to Host: \(sender.name)"
                 
             case false: // host deselected this peer
                 self.hostingPeer = nil
-                self.mpcStatus = ""
             }
             
         }
@@ -494,27 +508,6 @@ extension WordBombGameViewModel {
         
     }
     
-    func processPeerInput(_ input: String) {
-        
-        print("processing \(input)")
-        let response = gameModel!.process(input.lowercased().trim(), model.query)
-        
-        model.handleGameState(.playerInput, data: ["input" : input, "response" : response])
-        
-    }
-    
-    func setOnlinePlayers() {
-        
-        var players: [Player] = [Player(name: UserDefaults.standard.string(forKey: "Display Name")!)]
-        
-        for i in selectedPeers.indices {
-            let player = Player(name: selectedPeers[i].name)
-            players.enqueue(player)
-        }
-        print("players set \(players)")
-        model = .init(players)
-        
-    }
     
     func disconnect() {
         
@@ -530,9 +523,5 @@ extension WordBombGameViewModel {
         hostingPeer = nil
     }
     
-    func resetGameModel() {
-        // called when a multiplayer game has ended either due to lack of players, lost of connection or game just ended
-        model = .init()
-        Game.stopTimer()
-    }
+   
 }

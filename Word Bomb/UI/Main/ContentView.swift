@@ -30,8 +30,6 @@ struct ContentView: View {
             Multipeer.transceiver.resume()
             viewModel.setUpTransceiver()
         }
-        .environmentObject(viewModel)
-        .environmentObject(mpcDataSource)
         
     }
    

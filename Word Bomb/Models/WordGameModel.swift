@@ -8,8 +8,8 @@
 import Foundation
 
 protocol WordGameModel {
-    var data:[String] { get }
-    var usedWords: Set<Int> { get set }
+    var words: [String] { get }
+    var usedWords: Set<String> { get set }
     
     
     mutating func process(_ input: String, _ query: String?) -> (status: String, query: String?)

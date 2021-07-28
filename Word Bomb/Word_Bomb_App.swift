@@ -82,7 +82,7 @@ struct Word_BombApp: App {
                         }
                         
                         if GameCenter.isHost {
-                            Game.viewModel.setGKPlayers(gkMatch.players)
+                            Game.viewModel.setOnlinePlayers(gkMatch.players)
                             Game.viewModel.startGame(mode: WordGame)
                         }
                         Game.viewModel.forceHideKeyboard = false
@@ -93,6 +93,7 @@ struct Word_BombApp: App {
                 else {
                     ContentView()
                         .environmentObject(Game.viewModel)
+                        .environmentObject(GameCenter.viewModel)
                         .environmentObject(GameCenter.loginViewModel)
                         .environmentObject(Multipeer.dataSource)
                         .environment(\.managedObjectContext, persistenceController.container.viewContext)

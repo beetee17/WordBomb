@@ -50,9 +50,10 @@ class GKMatchMakerAppModel: NSObject, ObservableObject {
     @Published public var gkMatch: GKMatch?
     {
         didSet {
-            self.showInvite = false
-            self.showMatch = true
-            
+            if gkMatch != nil {
+                self.showInvite = false
+                self.showMatch = true
+            }
         }
     }
     
@@ -120,7 +121,7 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
         }
 
         do {
-            print(String(data: data, encoding: .utf8))
+            print(String(data: data, encoding: .utf8) as Any)
             let data = try JSONDecoder().decode([String : String].self, from: data)
             if let hostPlayerName = data["Host Name"] {
                 GameCenter.hostPlayerName = hostPlayerName
@@ -136,7 +137,7 @@ extension GKMatchMakerAppModel: GKMatchDelegate {
         
         DispatchQueue.main.async {
             self.gkIsConnected[player] = .disconnected == state ? false : true
-            self.showAlert(title: "Connection Update", message: "\(player.displayName) has \(.disconnected == state ? "disconnected from the game" : "connected to the game")")
+            self.showAlert(title: "Connection Update", message: "\(player.displayName) has \(.disconnected == state ? "disconnected" : "connected")")
         }
         print("player \(player) connection status changed to \(state)")
         print("players left \(match.players)")

@@ -9,25 +9,27 @@ import Foundation
 
 struct ReverseWordGameModel: WordGameModel {
     
-    var data: [String]
+    var words: [String]
     var dataDict: [String : [String]]
-    var usedWords = Set<Int>()
+    var usedWords = Set<String>()
     
     mutating func process(_ input: String, _ query: String? = nil) -> (status: String, query: String?) {
-        let searchResult = data.search(element: input)
-        
-        if usedWords.contains(searchResult) {
+  
+        if usedWords.contains(input) {
             print("\(input.uppercased()) ALREADY USED")
             return ("used", nil)
            
         }
-        
-        else if (searchResult != -1) && input.first == query!.last {
+        let searchResult = words.search(element: input)
+        if searchResult != -1 && input.first == query!.last {
             print("\(input.uppercased()) IS CORRECT")
+            
+            usedWords.insert(input)
+            
             for variation in dataDict[input, default: []] {
-                usedWords.insert(data.search(element: variation))
+                usedWords.insert(variation)
             }
-            usedWords.insert(searchResult)
+            
             return ("correct", getRandQuery(input))
  
         }
@@ -40,7 +42,7 @@ struct ReverseWordGameModel: WordGameModel {
     }
     
     mutating func reset() {
-        usedWords = Set<Int>()
+        usedWords = Set<String>()
     }
     
     mutating func getRandQuery(_ input: String? = nil) -> String {
@@ -49,7 +51,7 @@ struct ReverseWordGameModel: WordGameModel {
             
         }
         else {
-            return String(data.randomElement()!.trim().last!)
+            return String(words.randomElement()!.trim().last!)
         }
     }
 

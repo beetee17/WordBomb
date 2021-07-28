@@ -17,7 +17,7 @@ struct RestartButton: View {
                 // do not allow restart for non host in online match
                 
                 if GameCenter.isHost {
-                    viewModel.setGKPlayers(GameCenter.viewModel.gkMatch!.players)
+                    viewModel.setOnlinePlayers(GameCenter.viewModel.gkMatch!.players)
                     viewModel.startGame(mode: WordGame)
                     
                 }

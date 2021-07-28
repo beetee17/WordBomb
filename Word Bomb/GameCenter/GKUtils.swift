@@ -14,16 +14,12 @@ struct GameCenter {
     static var loginViewModel = AuthenticationViewModel()
     
     static var hostPlayerName: String? = nil
-    static var isHost: Bool {
-        hostPlayerName == nil && viewModel.gkMatch != nil
-    }
-    static var isNonHost: Bool { hostPlayerName != nil && viewModel.gkMatch != nil }
-    static var isOffline: Bool {
-        viewModel.gkMatch == nil
-    }
-    static var isOnline: Bool {
-        !isOffline
-    }
+    
+    static var isOffline: Bool { !isOnline }
+    static var isOnline: Bool { viewModel.showMatch }
+    static var isHost: Bool { hostPlayerName == nil && isOnline }
+    static var isNonHost: Bool { hostPlayerName != nil && isOnline  }
+    
     static func getGKHostPlayer() -> [GKPlayer] {
         guard let gkMatch = viewModel.gkMatch else { return [] }
         for gkPlayer in gkMatch.players {
@@ -32,33 +28,6 @@ struct GameCenter {
             }
         }
         return []
-    }
-    
-    static func sendDictionary(_ dictionary: [String : String], toHost: Bool) {
-        if let data = encodeDict(dictionary) {
-            send(data, toHost: toHost)
-        }
-    }
-    static func sendModel(_ model: WordBombGame) {
-        do {
-            let data = try JSONEncoder().encode(model)
-            send(data, toHost: false)
-            
-        } catch {
-            print("Could not encode model")
-            print(error.localizedDescription)
-        }
-    }
-    static func sendPlayerLives(_ players: [Player]) {
-        
-        var playerData: [String] = []
-        for player in players {
-            let nameAndLives = "\(player.name):\(player.livesLeft)"
-            playerData.append(nameAndLives)
-        }
-        let data = playerData.joined(separator: ",")
-        sendDictionary(["Updated Player Lives" : data], toHost: false)
-        
     }
     
     static func send(_ data: Data, toHost: Bool) {

@@ -8,11 +8,11 @@
 import Foundation
 
 struct ContainsWordGameModel: WordGameModel {
-    var data: [String]
+    var words: [String]
     var queries: [(String, Int)]
     var queriesCopy: [(String, Int)]
     
-    var usedWords = Set<Int>()
+    var usedWords = Set<String>()
     
     var pivot: Int
     var numTurns = 0
@@ -20,17 +20,17 @@ struct ContainsWordGameModel: WordGameModel {
     //    var difficultyMultiplier = UserDefaults.standard.double(forKey: "Difficulty Multiplier")
     var syllableDifficulty = UserDefaults.standard.double(forKey: "Syllable Difficulty")
     
-    init(data: [String], queries: [(String, Int)]) {
-        self.data = data
+    init(words: [String], queries: [(String, Int)]) {
+        self.words = words
         self.queries = queries
         self.queriesCopy = queries
         self.pivot = queries.bisect(at: Int(syllableDifficulty*100.0))
     }
     
     mutating func process(_ input: String, _ query: String? = nil) -> (status: String, query: String?) {
-        let searchResult = data.search(element: input)
+        let searchResult = words.search(element: input)
         //        return ("correct", getRandQuery(input))
-        if usedWords.contains(searchResult) {
+        if usedWords.contains(input) {
             print("\(input.uppercased()) ALREADY USED")
             return ("used", nil)
             
@@ -38,7 +38,7 @@ struct ContainsWordGameModel: WordGameModel {
         
         else if (searchResult != -1) && input.contains(query!) {
             print("\(input.uppercased()) IS CORRECT")
-            usedWords.insert(searchResult)
+            usedWords.insert(input)
             return ("correct", getRandQuery(input))
         }
         
@@ -51,7 +51,7 @@ struct ContainsWordGameModel: WordGameModel {
     }
     
     mutating func reset() {
-        usedWords = Set<Int>()
+        usedWords = Set<String>()
         queries = queriesCopy
         numTurns = 0
     }
@@ -60,7 +60,7 @@ struct ContainsWordGameModel: WordGameModel {
         
         var query = weightedRandomElement(items: queries).trim()
         
-        while query.count == 0 {
+        while query.count == 0 && checkIfHasAtLeastOneUsableAnswer(query){
             // prevent blank query
             query = weightedRandomElement(items: queries).trim()
             print("getting random query \(query)")
@@ -75,6 +75,23 @@ struct ContainsWordGameModel: WordGameModel {
         
         numTurns += 1
         return query
+        
+    }
+    func checkIfHasAtLeastOneUsableAnswer(_ query: String) -> Bool {
+        // first check in used words -> iff there has been no answers used then there must be at least one usable answer
+        var atLeastOneUsableAnswer = true
+        for word in usedWords {
+            if word.contains(query) { atLeastOneUsableAnswer = false}
+        }
+
+        if atLeastOneUsableAnswer { return true }
+        
+        // need to check database for one usable answer
+        for word in words {
+            if word.contains(query) && !usedWords.contains(word) { return true }
+        }
+        
+        return false
         
     }
     
