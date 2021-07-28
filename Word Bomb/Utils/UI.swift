@@ -134,8 +134,8 @@ extension View {
             return AnyView(self)
         }
     }
-    func helpSheet(title: String, headers: [String], content: [String]) -> some View {
-        self.modifier(HelpSheet(title: title, headers: headers, content: content))
+    func helpSheet(title: String, messages: [HelpMessage]) -> some View {
+        self.modifier(HelpSheet(title: title, messages: messages))
     }
     
 }
@@ -169,7 +169,7 @@ struct HelpButton: View {
                         
                         .frame(width: 70, height: 100, alignment:.center) // tappable area
                         .background(border ? Color.white.opacity(0.2) : Color.clear)
-                  
+                    
                 }
                 .clipShape(Circle().scale(0.8))
             }
@@ -178,12 +178,21 @@ struct HelpButton: View {
         
     }
 }
+
+struct HelpMessage: Identifiable {
+    var id = UUID()
+    var content: String
+    var subMessages: [HelpMessage]?
+    
+    
+}
+
 struct HelpSheet: ViewModifier {
     
     @State private var showHelpSheet = false
+    
     var title: String
-    var headers: [String]
-    var content: [String]
+    var messages: [HelpMessage]
     
     func body(content: Content) -> some View {
         ZStack{
@@ -193,21 +202,17 @@ struct HelpSheet: ViewModifier {
                 showHelpSheet = true
             }, border: false)
             .sheet(isPresented: $showHelpSheet) {
-                NavigationView {
-                    List {
-                        ForEach(Array(zip(self.headers, self.content)), id: \.0) { item in
-                            Section(header: Text(item.0)) {
-                                Text(item.1).foregroundColor(.white)
-                            }
-                        }
-                    }
-                    .navigationBarTitle(Text(title))
-                    .listStyle(GroupedListStyle())
-                    
+                
+                List(messages, children: \.subMessages) {
+                    item in
+                    Text(item.content)
                 }
+                .navigationTitle(Text(title))
                 
             }
+            
         }
+        
         .ignoresSafeArea(.all)
     }
 }
