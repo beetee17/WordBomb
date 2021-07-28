@@ -47,7 +47,7 @@ struct HelpSheet: ViewModifier {
     var messages = Game.helpMessages
     
     func body(content: Content) -> some View {
-        ZStack{
+        ZStack {
             content
             HelpButton(action: {
                 print("Show Help")
@@ -65,7 +65,6 @@ struct HelpSheet: ViewModifier {
             }
             
         }
-        
         .ignoresSafeArea(.all)
     }
 }

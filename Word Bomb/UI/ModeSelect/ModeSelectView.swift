@@ -72,6 +72,7 @@ struct ModeSelectView: View {
             }
             .offset(y: 25)
         }
+        .helpSheet()
         .transition(.move(edge: .trailing))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
     }

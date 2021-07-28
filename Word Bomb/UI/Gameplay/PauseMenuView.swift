@@ -37,7 +37,6 @@ struct PauseMenuView: View {
             }
             
         }
-        .helpSheet()
     }
 }
 

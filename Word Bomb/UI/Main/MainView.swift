@@ -25,7 +25,7 @@ struct MainView: View {
             
             Color.clear
             
-            VStack(spacing:30) {
+            VStack(spacing:1) {
                 if viewModel.animateLogo {
                     LogoView()
                         .matchedGeometryEffect(id: "logo", in: mainView, isSource: false)
@@ -86,7 +86,7 @@ struct MainView: View {
                     .sheet(isPresented: $changingSettings) { SettingsMenu(isPresented: $changingSettings).environmentObject(viewModel) }
                     
                 }
-                .opacity(viewModel.showPreLaunchAnimation ? 0.01 : 1)
+                .opacity(viewModel.showPreLaunchAnimation ? 0 : 1)
             }
             .padding(.bottom, 20)
             .blur(radius: isFirstLaunch && !viewModel.showPreLaunchAnimation ? 2 : 0)
@@ -110,7 +110,6 @@ struct MainView: View {
             
         }
         .helpSheet()
-
         .onAppear() {
             withAnimation(.spring(response: 0.6, dampingFraction: 0.5, blendDuration: 1)) {
                 viewModel.animateLogo = true

@@ -38,6 +38,7 @@ struct GameView: View {
                 GamePlayView(gkMatch: nil)
                 
                 PauseMenuView()
+                    .helpSheet()
                     .scaleEffect(.pauseMenu == viewModel.viewToShow ? 1 : 0.01)
                     .ignoresSafeArea(.all)
             }

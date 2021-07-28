@@ -22,10 +22,9 @@ struct ContentView: View {
             
             GameView()
             MPCText()
-            
-            
-                
+    
         }
+        
         .onAppear() {
             Multipeer.transceiver.resume()
             viewModel.setUpTransceiver()

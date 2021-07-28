@@ -74,6 +74,7 @@ struct GKContentView: View {
             }
             
         }
+        .helpSheet()
         .transition(.asymmetric(insertion: AnyTransition.move(edge: .trailing), removal: AnyTransition.move(edge: .leading)))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
         
