@@ -7,15 +7,13 @@
 
 import Foundation
 
-struct GameMode: Identifiable, Codable {
+struct GameMode: Identifiable {
     var modeName: String
-    var dataFile: String?
-    var queryFile: String?
     var instruction: String?
-    
-    // for custom modes
+
     var words: [String]?
-    var queries: [String]?
+    var variants: [String:[String]]?
+    var queries: [(String, Int)]?
     
     var gameType: GameType
     var id = UUID()

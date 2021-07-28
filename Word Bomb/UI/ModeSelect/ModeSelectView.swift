@@ -28,7 +28,7 @@ struct ModeSelectView: View {
             
             VStack(spacing: 50) {
 
-                ForEach(Game.modes) { mode in
+                ForEach(Game.defaultModes) { mode in
                     if mode.gameType == gameType {
                         ModeSelectButton(gameMode: mode)
                     }

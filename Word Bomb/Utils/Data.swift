@@ -9,14 +9,14 @@ import Foundation
 
 // Loading of Data
 
-func loadWordSets(_ mode: GameMode) -> (words:[String], wordSets:[String: [String]])  {
+func loadWordSets(_ filename: String) -> (words:[String], wordSets:[String: [String]])  {
     
     var wordSets: [String: [String]] = [:]
     var words: [String] = []
     
     do {
-        print("loading \(String(describing: mode.dataFile))")
-        let path = Bundle.main.path(forResource: mode.dataFile, ofType: "txt", inDirectory: "Data")
+        print("loading \(String(describing: filename))")
+        let path = Bundle.main.path(forResource: filename, ofType: "txt", inDirectory: "Data")
         print(path ?? "no path found")
         
         let rawData = try String(contentsOfFile: path!, encoding: String.Encoding.utf8).components(separatedBy: "\n")
@@ -49,36 +49,35 @@ func loadWordSets(_ mode: GameMode) -> (words:[String], wordSets:[String: [Strin
 }
 
 
-func loadSyllables(_ mode: GameMode) -> [(String, Int)] {
+func loadSyllables(_ filename: String) -> [(String, Int)] {
     var syllables = [(String, Int)]()
     
-    if let queryFile = mode.queryFile {
+    
+    do {
+        let path = Bundle.main.path(forResource: filename, ofType: "txt", inDirectory: "Data")
+        let string = try String(contentsOfFile: path!, encoding: String.Encoding.utf8)
         
-        do {
-            let path = Bundle.main.path(forResource: queryFile, ofType: "txt", inDirectory: "Data")
-            let string = try String(contentsOfFile: path!, encoding: String.Encoding.utf8)
-            
-            let items = string.components(separatedBy: "\n")
-            
-            for item in items {
-                let components = item.components(separatedBy: " ")
-                if components.count == 2 {
-                    let syllable = components[0]
-
-                    let frequency = Int(components[1])!
-                    syllables.append((syllable, frequency))
-                }
-                else {
-                    print(components)
-                }
+        let items = string.components(separatedBy: "\n")
+        
+        for item in items {
+            let components = item.components(separatedBy: " ")
+            if components.count == 2 {
+                let syllable = components[0]
+                
+                let frequency = Int(components[1])!
+                syllables.append((syllable, frequency))
             }
-            
+            else {
+                print(components)
+            }
         }
         
-        catch let error {
-            Swift.print("Fatal Error: \(error.localizedDescription)")
-        }
     }
+    
+    catch let error {
+        Swift.print("Fatal Error: \(error.localizedDescription)")
+    }
+    
     
     return syllables
     

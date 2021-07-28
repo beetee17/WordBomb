@@ -18,7 +18,7 @@ struct RestartButton: View {
                 
                 if GameCenter.isHost {
                     viewModel.setOnlinePlayers(GameCenter.viewModel.gkMatch!.players)
-                    viewModel.startGame(mode: WordGame)
+                    viewModel.startGame(mode: Game.WordGame)
                     
                 }
                 else {

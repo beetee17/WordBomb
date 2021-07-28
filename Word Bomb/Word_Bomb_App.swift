@@ -11,14 +11,6 @@ import MultipeerConnectivity
 import GameKit
 import GameKitUI
 
-// initialise default modes
-let CountryGame = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "NAME A COUNTRY", words: nil, queries: nil, gameType: .Exact)
-
-let CountryGameReverse = GameMode(modeName:"COUNTRY", dataFile: "countries", queryFile: nil, instruction: "COUNTRIES STARTING WITH...", words: nil, queries: nil, gameType: .Reverse)
-
-let WordGame = GameMode(modeName: "WORDS", dataFile: "words", queryFile: "syllables_2", instruction: "WORDS CONTAINING...", words: nil, queries: nil, gameType: .Classic)
-
-let WordGameReverse = GameMode(modeName: "WORDS", dataFile: "words", instruction: "WORDS STARTING WITH...", words: nil, queries: nil, gameType: .Reverse)
 
 @main
 struct Word_BombApp: App {
@@ -84,7 +76,7 @@ struct Word_BombApp: App {
                         
                         if GameCenter.isHost {
                             Game.viewModel.setOnlinePlayers(gkMatch.players)
-                            Game.viewModel.startGame(mode: WordGame)
+                            Game.viewModel.startGame(mode: Game.WordGame)
                         }
                         Game.viewModel.forceHideKeyboard = false
                         
