@@ -22,6 +22,11 @@ struct GameMode: Identifiable, Codable {
     
 }
 
+enum InputStatus: String, Codable {
+    case Correct
+    case Used
+    case Wrong
+}
 
 enum GameType: String, CaseIterable, Codable {
     case Classic = "Classic"

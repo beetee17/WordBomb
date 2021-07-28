@@ -35,28 +35,11 @@ struct GameData: Codable {
     var state: GameState?
     var model: WordBombGame?
     var input: String?
-    var response: String?
+    var response: InputStatus?
     var query: String?
     var timeLeft: Float?
     var timeLimit: Float?
     var playerLives: [String:Int]?
-    
-    public init(state:GameState? = nil, model: WordBombGame? = nil, input: String? = nil, response: String? = nil, query: String? = nil) {
-        self.state = state
-        self.model = model
-        self.input = input
-        self.response = response
-        self.query = query
-    }
-    public init(timeLeft: Float?) {
-        self.timeLeft = timeLeft
-    }
-    public init(timeLimit: Float?) {
-        self.timeLimit = timeLimit
-    }
-    public init(playerLives: [String:Int]?) {
-        self.playerLives = playerLives
-    }
     
     public func process() {
         if let model = self.model {

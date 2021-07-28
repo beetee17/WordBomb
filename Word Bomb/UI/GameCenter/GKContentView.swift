@@ -52,9 +52,10 @@ struct GKContentView: View {
                     }
                     
                     .sheet(isPresented: $showMatchMakerModal) {
+                        // From Apple Docs: The maximum number of players for the GKMatchType.peerToPeer, GKMatchType.hosted, and GKMatchType.turnBased types is 16.
                         GKMatchmakerView(
                             minPlayers: 2,
-                            maxPlayers: 4,
+                            maxPlayers: 10,
                             inviteMessage: "Let us play together!"
                         ) {
                             showMatchMakerModal = false

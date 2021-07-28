@@ -13,11 +13,11 @@ struct ReverseWordGameModel: WordGameModel {
     var dataDict: [String : [String]]
     var usedWords = Set<String>()
     
-    mutating func process(_ input: String, _ query: String? = nil) -> (status: String, query: String?) {
+    mutating func process(_ input: String, _ query: String? = nil) -> (status: InputStatus, query: String?) {
   
         if usedWords.contains(input) {
             print("\(input.uppercased()) ALREADY USED")
-            return ("used", nil)
+            return (.Used, nil)
            
         }
         let searchResult = words.search(element: input)
@@ -30,13 +30,13 @@ struct ReverseWordGameModel: WordGameModel {
                 usedWords.insert(variation)
             }
             
-            return ("correct", getRandQuery(input))
+            return (.Correct, getRandQuery(input))
  
         }
                 
         else {
             print("\(input.uppercased()) IS WRONG")
-            return ("wrong", nil)
+            return (.Wrong, nil)
           
         }
     }

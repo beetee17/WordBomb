@@ -63,7 +63,7 @@ struct WordBombGame: Codable {
         }
         timeLeft = timeLimit
     }
-    mutating func process(_ input: String, _ response: (status: String, newQuery: String?)) {
+    mutating func process(_ input: String, _ response: (status: InputStatus, newQuery: String?)) {
         print("handling player input")
         // reset the time for other player iff answer from prev player was correct
         
@@ -74,7 +74,7 @@ struct WordBombGame: Codable {
         }
 
         switch response.status {
-        case "correct":
+        case .Correct:
             output = "\(input) IS CORRECT"
 
             if let newQuery = response.newQuery {
@@ -97,9 +97,9 @@ struct WordBombGame: Codable {
                 Multiplayer.send(GameData(timeLimit: timeLimit), toHost: false)
             }
   
-        case "wrong":
+        case .Wrong:
             output = "\(input) IS WRONG"
-        case "used":
+        case .Used:
             output = "ALREADY USED \(input)"
         default: break
         }
@@ -208,7 +208,7 @@ struct WordBombGame: Codable {
             }
             
         case .playerInput:
-            if let input = data?["input"] as? String, let response = data?["response"] as? (String, String?) {
+            if let input = data?["input"] as? String, let response = data?["response"] as? (InputStatus, String?) {
                 
                 process(input, response)
                 print("shared model processing input")

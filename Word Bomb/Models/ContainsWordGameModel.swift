@@ -27,24 +27,24 @@ struct ContainsWordGameModel: WordGameModel {
         self.pivot = queries.bisect(at: Int(syllableDifficulty*100.0))
     }
     
-    mutating func process(_ input: String, _ query: String? = nil) -> (status: String, query: String?) {
+    mutating func process(_ input: String, _ query: String? = nil) -> (status: InputStatus, query: String?) {
         let searchResult = words.search(element: input)
         //        return ("correct", getRandQuery(input))
         if usedWords.contains(input) {
             print("\(input.uppercased()) ALREADY USED")
-            return ("used", nil)
+            return (.Used, nil)
             
         }
         
         else if (searchResult != -1) && input.contains(query!) {
             print("\(input.uppercased()) IS CORRECT")
             usedWords.insert(input)
-            return ("correct", getRandQuery(input))
+            return (.Correct, getRandQuery(input))
         }
         
         else {
             print("\(input.uppercased()) IS WRONG")
-            return ("wrong", nil)
+            return (.Wrong, nil)
             
         }
         

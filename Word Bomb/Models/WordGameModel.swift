@@ -12,7 +12,7 @@ protocol WordGameModel {
     var usedWords: Set<String> { get set }
     
     
-    mutating func process(_ input: String, _ query: String?) -> (status: String, query: String?)
+    mutating func process(_ input: String, _ query: String?) -> (status: InputStatus, query: String?)
     mutating func reset()
     mutating func getRandQuery(_ input: String?) -> String
 }
