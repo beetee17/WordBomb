@@ -14,7 +14,9 @@ struct MainView: View {
     @EnvironmentObject var viewModel: WordBombGameViewModel
     @State var creatingMode = false
     @State var changingSettings = false
-    @Namespace var logo
+    @State var showMultiplayerOptions = false
+    
+    @Namespace var mainView
     
     var body: some View {
         
@@ -22,33 +24,55 @@ struct MainView: View {
             
             Color.clear
             
-            VStack(spacing:0) {
+            VStack(spacing:30) {
                 if viewModel.animateLogo {
                     LogoView()
-                        .matchedGeometryEffect(id: "logo", in: logo, isSource: false)
+                        .matchedGeometryEffect(id: "logo", in: mainView, isSource: false)
                 }
                 
-                VStack(spacing: 35) {
+                VStack(spacing: 30) {
                     
                     Game.mainButton(label: "START GAME", systemImageName: "gamecontroller") {
                         withAnimation { viewModel.changeViewToShow(.gameTypeSelect) }
                     }
                     
-                    Game.mainButton(label: "GAME CENTER",
-                                    image: AnyView(Image("GK Icon")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(height: 20))) {
+                    
+                    Game.mainButton(label: "MULTIPLAYER", systemImageName: "person.3") {
                         withAnimation {
-                            viewModel.changeViewToShow(.GKMain)
+                            showMultiplayerOptions.toggle()
                         }
                     }
                     
-                    Game.mainButton(label: "MULTIPLAYER", systemImageName: "wifi") {
-                        withAnimation { viewModel.changeViewToShow(.multipeer) }
+                if showMultiplayerOptions {
+                    
+                    VStack(spacing:10) {
+                        Game.mainButton(label: "GAME CENTER",
+                                        image: AnyView(Image("GK Icon")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(height: 20))) {
+                            withAnimation {
+                                
+                                // bug where tapping the back button in game center screen sometimes selected the local network button?
+                                if viewModel.viewToShow == .main {
+                                    print("selected game center")
+                                    showMultiplayerOptions = false
+                                    viewModel.changeViewToShow(.GKMain)
+                                }
+                            }
+                        }
+                        Game.mainButton(label: "LOCAL NETWORK", systemImageName: "wifi") {
+                            withAnimation {
+                                if viewModel.viewToShow == .main {
+                                    print("selected local network")
+                                    showMultiplayerOptions = false
+                                    viewModel.changeViewToShow(.multipeer)
+                                }
+                            }
+                        }
                     }
                     
-                    
+                }
                     Game.mainButton(label: "CREATE MODE", systemImageName: "plus.circle") {
                         withAnimation { creatingMode = true }
                     }
@@ -69,7 +93,7 @@ struct MainView: View {
             if !viewModel.animateLogo && viewModel.showPreLaunchAnimation {
                 LogoView()
                     
-                    .matchedGeometryEffect(id: "logo", in: logo, isSource: true)
+                    .matchedGeometryEffect(id: "logo", in: mainView, isSource: true)
                     .frame(width: Device.width, height: Device.height, alignment: .center)
             }
             
@@ -103,6 +127,10 @@ struct MainView: View {
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView().environmentObject(WordBombGameViewModel())
+        ZStack {
+            Color("Background").ignoresSafeArea()
+            
+            MainView().environmentObject(WordBombGameViewModel())
+        }
     }
 }

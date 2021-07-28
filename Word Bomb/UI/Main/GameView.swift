@@ -31,8 +31,6 @@ struct GameView: View {
             GKContentView()
         case .GKLogin:
             AuthenticationView()
-        case .GKHost:
-            MatchMakingView()
         
         default:
             ZStack {
