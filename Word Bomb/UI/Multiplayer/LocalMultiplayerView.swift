@@ -52,12 +52,8 @@ struct LocalMultiplayerView: View {
             }
             
         }
-        .helpSheet(title: "Local Multiplayer",
-                   headers: ["How To", "Display Name", "Host Game", "Reconnect"],
-                   content: ["You may connect with players nearby by connecting to the same network with bluetooth enabled! One player should assume responsibility of the host by inviting players via the 'HOST GAME' button.\n\nOnce all players have been invited, the host can simply start a game (including custom modes he/she created) for all to play!",
-                             "You may edit your multiplayer display name by tapping on the text field.",
-                             "Invite nearby players to join your game!",
-                             "Reconnect your device to the network if you encounter multiplayer related issues."])
+        .helpSheet()
+
         .transition(.asymmetric(insertion: AnyTransition.move(edge: .trailing), removal: AnyTransition.move(edge: .leading)))
         .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
         .ignoresSafeArea(.all)
