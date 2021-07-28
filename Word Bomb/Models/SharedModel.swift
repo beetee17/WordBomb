@@ -72,10 +72,10 @@ struct WordBombGame: Codable {
             Multiplayer.send(GameData(state: .playerInput, input: input, response: response.status), toHost: false)
 
         }
-
-        switch response.status {
-        case .Correct:
-            output = "\(input) IS CORRECT"
+        
+        output = response.status.outputText(input)
+        
+        if response.status == .Correct {
 
             if let newQuery = response.newQuery {
                 self.query = newQuery
@@ -96,13 +96,10 @@ struct WordBombGame: Codable {
                 updateTimeLimit()
                 Multiplayer.send(GameData(timeLimit: timeLimit), toHost: false)
             }
-  
-        case .Wrong:
-            output = "\(input) IS WRONG"
-        case .Used:
-            output = "ALREADY USED \(input)"
-        default: break
         }
+        
+        
+    
     }
     
     mutating func clearOutput() { output =  "" }

@@ -24,14 +24,27 @@ struct GameMode: Identifiable, Codable {
 
 enum InputStatus: String, Codable {
     case Correct
-    case Used
     case Wrong
+    case Used
+    
+    func outputText(_ input: String) -> String {
+        switch self {
+        
+        case .Correct:
+            return "\(input) is Correct"
+        case .Wrong:
+            return "\(input) is Wrong"
+        case .Used:
+            return "Already used \(input)"
+        }
+    }
 }
 
 enum GameType: String, CaseIterable, Codable {
     case Classic = "Classic"
     case Exact = "Exact"
     case Reverse = "Reverse"
+    
 }
 
 enum GameState: String, Codable {
