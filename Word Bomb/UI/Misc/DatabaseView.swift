@@ -53,56 +53,91 @@ struct DatabaseView: View {
     @State private var searchText = ""
     @State private var showCancelButton: Bool = false
     @State private var filteredDatabase: [String] = []
-    private func searchDatabase(_ searchText: String) -> [String] {
-        database.words.filter{$0.contains(searchText.trim().lowercased()) || searchText == ""}
+    
+    @State private var isLoadingItems = false
+    
+    private func searchDatabase() {
+        
+        
+        DispatchQueue.global(qos: .userInteractive).async {
+            print("searching")
+            isLoadingItems = true
+            filteredDatabase = database.words.filter{$0.contains(searchText.trim().lowercased()) || searchText == ""}
+    
+            isLoadingItems = false
+            print("Search complete")
+        }
+        
+        
     }
     
     var body: some View {
         
         VStack {
+            HStack {
                 HStack {
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                        
-                        TextField("search", text: $searchText, onEditingChanged: { isEditing in
-                            self.showCancelButton = true
-                        }, onCommit: {
-                            filteredDatabase = searchDatabase(searchText)
-                            print("onCommit")
-                        }).foregroundColor(.primary)
-                        
-                        Button(action: {
-                            self.searchText = ""
-                        }) {
-                            Image(systemName: "xmark.circle.fill").opacity(searchText == "" ? 0 : 1)
-                        }
-                    }
-                    .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
-                    .foregroundColor(.secondary)
-                    .background(Color(.secondarySystemBackground))
-                    .cornerRadius(10.0)
+                    Image(systemName: "magnifyingglass")
                     
-                    if showCancelButton  {
-                        Button("Cancel") {
-                            UIApplication.shared.endEditing(true) // this must be placed before the other commands here
-                            self.searchText = ""
-                            self.showCancelButton = false
-                        }
-                        .foregroundColor(Color(.systemBlue))
+                    TextField("Search", text: $searchText, onEditingChanged: { isEditing in
+                        self.showCancelButton = true
+                    }, onCommit: {
+                        
+                        print("onCommit")
+                    })
+                    .onAppear(perform: {searchDatabase()})
+                    .onChange(of: self.searchText, perform: {_ in
+
+                                searchDatabase()
+                            
+                    })
+                    .foregroundColor(.primary)
+                    
+                    if isLoadingItems {
+                        ProgressView()
+                    }
+                    Button(action: {
+                        self.searchText = ""
+                    }) {
+                        Image(systemName: "xmark.circle.fill").opacity(searchText == "" ? 0 : 1)
                     }
                 }
-                .padding(.horizontal)
-            
-                List {
+                .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
+                .foregroundColor(.secondary)
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(10.0)
+                
+                if showCancelButton  {
+                    Button("Cancel") {
+                        UIApplication.shared.endEditing(true) // this must be placed before the other commands here
+                        self.searchText = ""
+                        self.showCancelButton = false
+                    }
+                    .foregroundColor(Color(.systemBlue))
+                }
+            }
+            .padding(.horizontal)
+
+                
+            ScrollView {
+                LazyVStack {
                     // Filtered list of names
                     ForEach(filteredDatabase, id:\.self) {
-                        searchText in Text(searchText.capitalized)
+                        item in
+                        VStack(alignment: .leading) {
+                                Text(item.capitalized)
+                                    .font(.system(.body, design: .rounded))
+                                    
+                                Divider()
+                            }
+                            .padding(.horizontal)
                     }
                 }
-                .id(UUID())
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle(Text("Search"))
-                .resignKeyboardOnDragGesture()
+                .frame(maxWidth: Device.width, alignment: .leading)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(Text("Search"))
+            .resignKeyboardOnDragGesture()
+
         }
     }
 }
