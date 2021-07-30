@@ -34,7 +34,7 @@ struct ModeSelectView: View {
                     }
                 }
                 .transition(.move(edge: .trailing))
-                .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
+                .animation(Game.mainAnimation)
 
                 ForEach(items) { item in
                     
@@ -46,7 +46,7 @@ struct ModeSelectView: View {
                     }
                 }
                 .transition(.move(edge: .trailing))
-                .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
+                .animation(Game.mainAnimation)
                 .frame(width: Device.width)
                 
             }
@@ -74,7 +74,7 @@ struct ModeSelectView: View {
         }
         .helpSheet()
         .transition(.move(edge: .trailing))
-        .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
+        .animation(Game.mainAnimation)
     }
 }
 

@@ -82,7 +82,7 @@ struct AuthenticationView: View {
         }
         .frame(width: Device.width, height: Device.height)
         .transition(.move(edge: .trailing))
-        .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
+        .animation(Game.mainAnimation)
     }
 }
 

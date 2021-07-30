@@ -32,7 +32,7 @@ struct PlayerView: View {
                     
             }
         }
-        .animation(.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0))
+        .animation(Game.mainAnimation)
     }
 }
 

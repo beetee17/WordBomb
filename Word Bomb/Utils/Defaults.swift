@@ -58,6 +58,7 @@ struct Game {
         print("Timer stopped")
     }
     
+    static let mainAnimation = Animation.spring(response: 0.3, dampingFraction: 0.5, blendDuration: 0)
     static func mainButton(label: String, systemImageName: String? = nil, image: AnyView? = nil, action: @escaping () -> Void) -> some View {
         
         precondition(systemImageName != nil || image != nil)
