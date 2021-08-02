@@ -27,16 +27,22 @@ func loadWordSets(_ filename: String) -> (words:[String], wordSets:[String: [Str
             
             if variations.count > 1 {
                 for i in variations.indices {
-                    words.append(variations[i])
-                    wordSets[variations[i]] = []
-                    for j in variations.indices {
-                        if i != j {
-                            // iterate through all of the other variations
-                            wordSets[variations[i]]?.append(variations[j])
+                    if variations[i].trim().count != 0 {
+                        words.append(variations[i])
+                        wordSets[variations[i]] = []
+                        for j in variations.indices {
+                            if i != j {
+                                // iterate through all of the other variations
+                                wordSets[variations[i]]?.append(variations[j])
+                            }
                         }
                     }
                 }
-            } else { words.append(variations[0]) }
+            } else {
+                if variations[0].trim().count != 0 {
+                    words.append(variations[0])
+                }
+            }
         }
         words.sort()
     }
@@ -61,7 +67,7 @@ func loadSyllables(_ filename: String) -> [(String, Int)] {
         
         for item in items {
             let components = item.components(separatedBy: " ")
-            if components.count == 2 {
+            if components.count == 2 && components[0].trim().count != 0 {
                 let syllable = components[0]
                 
                 let frequency = Int(components[1])!

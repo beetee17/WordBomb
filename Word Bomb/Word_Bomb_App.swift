@@ -10,6 +10,7 @@ import MultipeerKit
 import MultipeerConnectivity
 import GameKit
 import GameKitUI
+import CoreData
 
 
 @main
@@ -21,6 +22,7 @@ struct Word_BombApp: App {
         // register "default defaults"
         UserDefaults.standard.register(defaults: [
             "First Launch" : true,
+            "Initialised Database" : false,
             "Display Name": MCPeerID.defaultDisplayName.trim(),
             "Time Limit" : 10.0,
             "Time Multiplier" : 0.95,
@@ -31,8 +33,12 @@ struct Word_BombApp: App {
             
             // ... other settings
         ])
+        privateContext.automaticallyMergesChangesFromParent = true
+        
     }
     var persistenceController = PersistenceController.shared
+
+    let privateContext = PersistenceController.shared.container.newBackgroundContext()
     
     var body: some Scene {
         WindowGroup {
@@ -89,7 +95,7 @@ struct Word_BombApp: App {
                         .environmentObject(GameCenter.viewModel)
                         .environmentObject(GameCenter.loginViewModel)
                         .environmentObject(Multipeer.dataSource)
-                        .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                        
                         .onAppear {
                             GKMatchManager.shared.cancel()
                             GameCenter.hostPlayerName = nil
@@ -100,9 +106,79 @@ struct Word_BombApp: App {
             }
             .banner(isPresented: $gkViewModel.showAlert,
                     title: gkViewModel.alertTitle, message: gkViewModel.alertMessage)
+            .onAppear {
+                if !UserDefaults.standard.bool(forKey: "Initialised Database") {
+                    initDatabases()
+                }
+            }
+//            .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            .environment(\.managedObjectContext, privateContext)
             
         }
         
     }
+    
+    func initDatabases() {
+        privateContext.perform {
+            let wordDB = Database(context: privateContext)
+            wordDB.name = "words"
+
+            let countryDB = Database(context: privateContext)
+            countryDB.name = "country"
+            
+            try! privateContext.save()
+            print("Initialised Databases")
+            
+            populateDatabases()
+            UserDefaults.standard.setValue(true, forKey: "Initialised Database")
+        }
+        
+    }
+    
+    func populateDatabases() {
+        var count = 0
+        let request: NSFetchRequest<Database> = Database.fetchRequest()
+        
+        request.predicate = NSPredicate(format: "TRUEPREDICATE")
+        let databases = try! privateContext.fetch(request)
+        print(databases)
+        
+        var database = databases.first(where: {$0.wrappedName == "words"})
+        for word in Game.dictionary {
+            count += 1
+            
+            let newWord = Word(context: privateContext)
+            newWord.content = word
+            newWord.database = database
+            
+            if count % 100000 == 0 {
+                print(count, database!)
+                try! privateContext.save()
+            }
+        }
+        
+        try! privateContext.save()
+        print("Initialised Dictionary")
+        
+        count = 0
+        database = databases.first(where: {$0.wrappedName == "country"})
+        
+        for word in Game.countries {
+            count += 1
+            
+            let newWord = Word(context: privateContext)
+            newWord.content = word
+            newWord.database = database
+            
+            if count % 100 == 0 {
+                print(count, database!)
+                try! privateContext.save()
+            }
+        }
+        
+        try! privateContext.save()
+        print("Initialised Countries")
+    }
+    
 }
 

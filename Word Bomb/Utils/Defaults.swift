@@ -12,15 +12,7 @@ struct Device {
     static let width = UIScreen.main.bounds.width
     static let height = UIScreen.main.bounds.height
 }
-class Database: Identifiable {
-    let id = UUID()
-    let name: String
-    let words: [String]
-    init(name: String, words: [String]) {
-        self.name = name
-        self.words = words
-    }
-}
+
 
 struct Game {
     

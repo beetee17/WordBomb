@@ -10,7 +10,7 @@ import GameKit
 import GameKitUI
 
 struct MainView: View {
-    
+    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var viewModel: WordBombGameViewModel
     @State var creatingMode = false
     @State var changingSettings = false
@@ -32,7 +32,7 @@ struct MainView: View {
                         .matchedGeometryEffect(id: "logo", in: mainView, isSource: false)
                 }
                 
-                VStack(spacing: 30) {
+                VStack(spacing: 20) {
                     
                     Game.mainButton(label: "START GAME", systemImageName: "gamecontroller") {
                         withAnimation { viewModel.changeViewToShow(.gameTypeSelect) }
@@ -84,7 +84,7 @@ struct MainView: View {
                         searchingDatabase = true
                     }
                     .sheet(isPresented: $searchingDatabase) {
-                        DatabaseListView()
+                        DatabaseListView().environment(\.managedObjectContext, viewContext)
                     }
                     
                     Game.mainButton(label: "SETTINGS", systemImageName: "gearshape") {
