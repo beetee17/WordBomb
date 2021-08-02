@@ -22,22 +22,22 @@ struct DatabaseListView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Database.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Database.name, ascending: true)]) var databases: FetchedResults<Database>
-
+    
     var body: some View {
         NavigationView {
-                List {
-                    ForEach(databases, id:\.self) { db in
-                        NavigationLink(
-                            destination: LazyNavigationLink(DatabaseView(dbName: db.wrappedName)),
-                            label: {
-                                Text("\(db.wrappedName.capitalized)")
-                            })
-                            
-                    }
+            List {
+                ForEach(databases, id:\.self) { db in
+                    NavigationLink(
+                        destination: LazyNavigationLink(DatabaseView(dbName: db.wrappedName)),
+                        label: {
+                            Text("\(db.wrappedName.capitalized)")
+                        })
+                    
                 }
-                .onAppear() { print(databases)}
-                .navigationTitle(Text("Databases"))
             }
+            .onAppear() { print(databases)}
+            .navigationTitle(Text("Databases"))
+        }
     }
 }
 
@@ -47,17 +47,18 @@ struct DatabaseView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Database.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Database.name, ascending: true)]) var databases: FetchedResults<Database>
-    @State var words: [Word] = []
-    @State private var isLoading = false
-    @State var searchText = ""
     
-    @State var index: [String:String] = [:]
-    init(dbName: String) {
-        self.dbName = dbName
-        print("Viewing database: \(dbName)")
-    }
-    func fetchSearchResults() {
-        
+    @State private var isLoading = false
+    @State private var searchText = ""
+    @State private var prevFilter = ""
+    
+    @State private var words: [String] = []
+    @State private var filteredWords: [String] = []
+    
+    @State private var index: [String:String] = [:]
+    
+    func getWords() {
+        // performs an initial fetch to get load words in the database to memory as an array
         viewContext.perform {
             
             isLoading = true
@@ -65,26 +66,76 @@ struct DatabaseView: View {
             let request: NSFetchRequest<Word> = Word.fetchRequest()
             let db = databases.first(where: {$0.wrappedName == dbName})!
             
-            request.predicate = searchText == "" ? NSPredicate(format: "database == %@", db) : NSPredicate(format:"content CONTAINS[c] %@ AND database == %@", searchText, db)
+            request.predicate = NSPredicate(format: "database == %@", db)
             print("selected database \(db)")
-//            request.fetchBatchSize = 100
+            //            request.fetchBatchSize = 100
             
             // sort words
             request.sortDescriptors = [
                 NSSortDescriptor(keyPath: \Word.content, ascending: true)
             ]
             
-            words = try! viewContext.fetch(request)
-
-            for word in words {
-                let letter = String((word.wrappedContent.first)!)
+            words = try! viewContext.fetch(request).map({$0.wrappedContent})
+            filteredWords = words
+            
+            for word in filteredWords {
+                let letter = String((word.first)!)
                 
                 if index[letter] == nil {
-                    index[letter] = word.wrappedContent
-//                    print("first word \(index[letter]!) found for \(letter)")
+                    index[letter] = word
                 }
             }
             print(index)
+            isLoading = false
+        }
+    }
+    
+    
+    func updateFilter() {
+        // in memory filtering instead of repeated fetching from core data
+        // can be optimised by checking if filter was appended to (if so, can filter on subset of words)
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            
+            let filter = searchText.trim().lowercased()
+            
+            isLoading = true
+            var newWords:[String] = []
+            var newIndex:[String:String] = [:]
+            
+            print("\(filter) starts with \(prevFilter) \(filter.starts(with: prevFilter))")
+            
+            if filter.starts(with: prevFilter) && prevFilter != "" {
+                print("going the short route")
+                for word in filteredWords {
+                    if word.contains(filter) {
+                        newWords.append(word)
+                        let prefix = String(word.first!)
+                        if newIndex[prefix] == nil {
+                            newIndex[prefix] = word
+                        }
+                    }
+                }
+            } else {
+                print("going the long route")
+                for word in words {
+                    if filter == "" || word.contains(filter) {
+                        newWords.append(word)
+                        let prefix = String(word.first!)
+                        if newIndex[prefix] == nil {
+                            newIndex[prefix] = word
+                        }
+                    }
+                }
+            }
+
+            if filter == searchText.trim().lowercased() {
+                // by the end of the loop the user may have entered a new search query
+                // only return the results of the latest query
+                filteredWords = newWords
+                index = newIndex
+                prevFilter = filter
+            }
             isLoading = false
         }
         
@@ -92,65 +143,48 @@ struct DatabaseView: View {
     }
     
     var body: some View {
-        
-        VStack {
-            HStack {
-                Image(systemName: "magnifyingglass")
-                
-                TextField("Search", text: $searchText)
-                    .foregroundColor(.primary)
-                
-                if isLoading {
-                    ProgressView()
-                }
-                Button(action: {
-                    searchText = ""
-
-                }) {
-                    Image(systemName: "xmark.circle.fill").opacity(searchText == "" ? 0 : 1)
-                }
-            }
-            .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
-            .foregroundColor(.secondary)
-            .background(Color(.secondarySystemBackground))
-            .cornerRadius(10.0)
-            
-            DatabaseItemsView(index: index, words: words)
-        }
-        
-        .onChange(of: searchText, perform: {text in fetchSearchResults()})
-//        .onAppear { fetchSearchResults() }
-        
-        
-    }
-}
-
-struct DatabaseItemsView: View {
-    let alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y", "z"]
-    var index: [String:String] = [:]
-    var words: [Word]
-    
-    var body: some View {
         ScrollViewReader { value in
-            ZStack {
+            VStack {
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                    
+                    TextField("Search", text: $searchText)
+                        .foregroundColor(.primary)
+                    
+                    if isLoading {
+                        ProgressView()
+                    }
+                    Button(action: {
+                        searchText = ""
+                        
+                    }) {
+                        Image(systemName: "xmark.circle.fill").opacity(searchText == "" ? 0 : 1)
+                    }
+                }
+                .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
+                .foregroundColor(.secondary)
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(10.0)
+                
+                
                 ScrollView {
                     
                     LazyVStack {
                         
-                        ForEach(words) { word in
+                        ForEach(filteredWords, id:\.self) { word in
                             VStack {
-                                Text(word.wrappedContent.capitalized)
+                                Text(word.capitalized)
                                     .frame(maxWidth: Device.width, maxHeight: 20, alignment:.leading)
                                     .padding(.leading)
                                     .font(.system(.body, design: .rounded))
                                 Divider()
-                            }
-                           .id(word)
+                            }.id(word)
                         }
                     }
+                    .onChange(of: searchText) { filter in updateFilter() }
+                    .onAppear { getWords() }
                     .resignKeyboardOnDragGesture()
                 }
-                
                 .overlay(
                     HStack {
                         Spacer()
@@ -170,10 +204,8 @@ struct DatabaseItemsView: View {
                 .navigationTitle(Text("Search"))
                 .ignoresSafeArea(.all)
             }
-            
         }
     }
-    
 }
 
 
