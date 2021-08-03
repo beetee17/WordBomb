@@ -66,8 +66,9 @@ struct DatabaseView: View {
             
             let request: NSFetchRequest<Word> = Word.fetchRequest()
             let db = databases.first(where: {$0.wrappedName == dbName})!
+            print(databases)
             
-            request.predicate = NSPredicate(format: "database == %@", db)
+            request.predicate = NSPredicate(format: "databases CONTAINS %@", db)
             print("selected database \(db)")
             //            request.fetchBatchSize = 100
             

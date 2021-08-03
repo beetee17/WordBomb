@@ -143,16 +143,16 @@ struct Word_BombApp: App {
         let databases = try! privateContext.fetch(request)
         print(databases)
         
-        var database = databases.first(where: {$0.wrappedName == "words"})
+        var database = databases.first(where: {$0.wrappedName == "words"})!
         for word in Game.dictionary {
             count += 1
             
             let newWord = Word(context: privateContext)
             newWord.content = word
-            newWord.database = database
+            newWord.addToDatabases(database)
             
             if count % 100000 == 0 {
-                print(count, database!)
+                print(count, newWord.databases!)
                 try! privateContext.save()
             }
         }
@@ -161,17 +161,17 @@ struct Word_BombApp: App {
         print("Initialised Dictionary")
         
         count = 0
-        database = databases.first(where: {$0.wrappedName == "country"})
+        database = databases.first(where: {$0.wrappedName == "country"})!
         
         for word in Game.countries {
             count += 1
             
             let newWord = Word(context: privateContext)
             newWord.content = word
-            newWord.database = database
+            newWord.addToDatabases(database)
             
             if count % 100 == 0 {
-                print(count, database!)
+                print(count, newWord.databases!)
                 try! privateContext.save()
             }
         }

@@ -2,7 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20F71" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Database" representedClassName="Database" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="words" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Word" inverseName="database" inverseEntity="Word"/>
+        <relationship name="words" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Word" inverseName="databases" inverseEntity="Word"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="name"/>
@@ -19,7 +19,7 @@
     </entity>
     <entity name="Word" representedClassName="Word" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String"/>
-        <relationship name="database" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Database" inverseName="words" inverseEntity="Database"/>
+        <relationship name="databases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Database" inverseName="words" inverseEntity="Database"/>
     </entity>
     <elements>
         <element name="Database" positionX="-182.5402832031251" positionY="160.2005920410156" width="128" height="73"/>
