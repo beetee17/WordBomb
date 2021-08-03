@@ -107,6 +107,7 @@ struct DatabaseView: View {
             print("\(filter) starts with \(prevFilter) \(filter.starts(with: prevFilter))")
             
             if filter.starts(with: prevFilter) && prevFilter != "" {
+                // optimised search if the current filter has a prefix of the prevFilter (thus all search results should be a subset of the current results)
                 print("going the short route")
                 for word in filteredWords {
                     if word.contains(filter) {
