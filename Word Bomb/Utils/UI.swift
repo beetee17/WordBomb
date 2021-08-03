@@ -22,11 +22,11 @@ struct MainButtonStyle: ButtonStyle {
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
             .scaleEffect(configuration.isPressed ? 1.2 : 1.0)
             .contentShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-        
-        
-        
+ 
     }
 }
+
+
 
 extension Text {
     func boldText() -> some View {

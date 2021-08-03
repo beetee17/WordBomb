@@ -51,6 +51,7 @@ struct DatabaseView: View {
     @State private var isLoading = false
     @State private var searchText = ""
     @State private var prevFilter = ""
+    @State private var prefix: String? = nil
     
     @State private var words: [String] = []
     @State private var filteredWords: [String] = []
@@ -128,7 +129,7 @@ struct DatabaseView: View {
                     }
                 }
             }
-
+            
             if filter == searchText.trim().lowercased() {
                 // by the end of the loop the user may have entered a new search query
                 // only return the results of the latest query
@@ -138,72 +139,76 @@ struct DatabaseView: View {
             }
             isLoading = false
         }
-        
-        
     }
     
+    
+    
     var body: some View {
-        ScrollViewReader { value in
-            VStack {
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                    
-                    TextField("Search", text: $searchText)
-                        .foregroundColor(.primary)
-                    
-                    if isLoading {
-                        ProgressView()
-                    }
-                    Button(action: {
-                        searchText = ""
-                        
-                    }) {
-                        Image(systemName: "xmark.circle.fill").opacity(searchText == "" ? 0 : 1)
-                    }
-                }
-                .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
-                .foregroundColor(.secondary)
-                .background(Color(.secondarySystemBackground))
-                .cornerRadius(10.0)
+        
+        VStack {
+            HStack {
+                Image(systemName: "magnifyingglass")
                 
+                TextField("Search", text: $searchText)
+                    .foregroundColor(.primary)
                 
-                ScrollView {
-                    
-                    LazyVStack {
-                        
-                        ForEach(filteredWords, id:\.self) { word in
-                            VStack {
-                                Text(word.capitalized)
-                                    .frame(maxWidth: Device.width, maxHeight: 20, alignment:.leading)
-                                    .padding(.leading)
-                                    .font(.system(.body, design: .rounded))
-                                Divider()
-                            }.id(word)
-                        }
-                    }
-                    .onChange(of: searchText) { filter in updateFilter() }
-                    .onAppear { getWords() }
-                    .resignKeyboardOnDragGesture()
+                if isLoading {
+                    ProgressView()
                 }
-                .overlay(
-                    HStack {
-                        Spacer()
+                Button(action: {
+                    searchText = ""
+                    
+                }) {
+                    Image(systemName: "xmark.circle.fill").opacity(searchText == "" ? 0 : 1)
+                }
+            }
+            .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
+            .foregroundColor(.secondary)
+            .background(Color(.secondarySystemBackground))
+            .cornerRadius(10.0)
+            
+            
+            ScrollView {
+                
+                LazyVStack {
+                    
+                    ForEach(prefix != nil ? filteredWords.filter({$0.starts(with: prefix!)}) : filteredWords, id:\.self) { word in
                         VStack {
-                            ForEach(alphabet, id: \.self) { letter in
-                                Button(letter.uppercased()) {
-                                    withAnimation {
-                                        value.scrollTo(index[letter, default: "$"], anchor: .top)
-                                        print("scrolling to \(index[letter, default: "$"]) for letter \(letter)")
-                                    }
+                            Text(word.capitalized)
+                                .frame(maxWidth: Device.width, maxHeight: 20, alignment:.leading)
+                                .padding(.leading)
+                                .font(.system(.body, design: .rounded))
+                            Divider()
+                        }
+                        .id(word)
+                    }
+                }
+                .onChange(of: searchText) { filter in updateFilter() }
+                .onAppear { getWords() }
+                .resignKeyboardOnDragGesture()
+            }
+            .overlay(
+                HStack {
+                    Spacer()
+                    VStack(spacing: 0) {
+                        ForEach(alphabet, id: \.self) { letter in
+                            Button(letter) {
+                                withAnimation {
+                                    prefix = prefix == letter ? nil : letter
                                 }
                             }
+                            .textCase(.uppercase)
+                            .foregroundColor(.blue)
+                            .frame(width: 22, height: 22) // for drawing of background
+                            .background(prefix == letter ? Color.gray.opacity(0.3) : Color.clear)
+                            .clipShape(RoundedRectangle(cornerRadius: 5, style: .circular))
+                            .frame(width: 75, height: 25) // button tappable region
                         }
                     }
-                    .padding(.trailing)
-                )
-                .navigationTitle(Text("Search"))
-                .ignoresSafeArea(.all)
-            }
+                }
+            )
+            .navigationTitle(Text("Search"))
+            .ignoresSafeArea(.all)
         }
     }
 }
