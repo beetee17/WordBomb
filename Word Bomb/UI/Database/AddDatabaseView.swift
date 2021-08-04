@@ -32,28 +32,39 @@ struct AddDatabaseView: View {
     @State private var alertIsPresented = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
-    @State var selection = Set<Database>()
+    @State var selection: Database?
     
     func addDatabase() {
-        
-        let newDB = Database(context: viewContext)
-        newDB.name = dbName
-  
-        for db in selection {
-            for word in databases.first(where: {$0.wrappedName == db.wrappedName})!.wordsArray {
-                newDB.addToWords(word)
+        let name = dbName.trim().lowercased()
+        if databases.map({$0.wrappedName}).contains(name) {
+            showAlert(title: "Error saving database", message: "\(name.capitalized) already exists")
+            dbName = ""
+        } else if name == "" {
+            showAlert(title: "Error saving database", message: "Invalid database name")
+            dbName = ""
+        } else {
+            let newDB = Database(context: viewContext)
+            newDB.name = name
+            
+            if let selectedDB = selection {
+                for word in databases.first(where: {$0.wrappedName == selectedDB.wrappedName})!.wordsArray {
+                    newDB.addToWords(word)
+                }
             }
+            
+            do {
+                try viewContext.save()
+            } catch {
+                showAlert(title: "Error saving database", message: String(describing: error))
+            }
+            presentationMode.wrappedValue.dismiss()
         }
-        do {
-            try viewContext.save()
-        } catch {
-            showAlert(title: "Error saving database", message: String(describing: error))
-        }
-        presentationMode.wrappedValue.dismiss()
     }
     
     func showAlert(title: String, message: String) {
         alertIsPresented = true
+        alertTitle = title
+        alertMessage = message
     }
     
     var body: some View {
@@ -61,18 +72,20 @@ struct AddDatabaseView: View {
             VStack(alignment:.leading) {
                 SectionHeaderText("Database Name")
                 
-                TextField("Enter the name of your database", text: $dbName)
+                TextField("Name", text: $dbName)
                     .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
-                    .foregroundColor(.secondary)
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(10.0)
-                    .padding(.horizontal, 25)
+                    .padding(.horizontal, 20)
                 
-                SectionHeaderText("Copy Existing")
-                
-                List(databases, id: \.self, selection: $selection) { db in
-                    Text(db.wrappedName.capitalized)
+                List(selection: $selection) {
+                    Text("Copy Existing")
+                        .font(.system(.body, design: .rounded))
                     
+                    ForEach(databases, id: \.self) { db in
+                        Text(db.wrappedName.capitalized)
+                        
+                    }
                 }
                 .environment(\.editMode, .constant(EditMode.active))
             }
@@ -86,6 +99,7 @@ struct AddDatabaseView: View {
                 }
             }
         }
+        .banner(isPresented: $alertIsPresented, title: alertTitle, message: alertMessage)
     }
 }
 

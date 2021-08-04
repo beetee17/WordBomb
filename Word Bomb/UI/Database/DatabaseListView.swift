@@ -7,11 +7,21 @@
 
 import SwiftUI
 
+struct LazyNavigationView<Content: View>: View {
+    let build: () -> Content
+    init(_ build: @autoclosure @escaping () -> Content) {
+        self.build = build
+    }
+    var body: Content {
+        build()
+    }
+}
 struct DatabaseListView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Database.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Database.name, ascending: true)]) var databases: FetchedResults<Database>
     @State var presentAddDBSheet = false
+    @StateObject var dbHandler = DatabaseHandler()
     
     func deleteDB(at offsets: IndexSet) {
         viewContext.perform {
@@ -38,7 +48,7 @@ struct DatabaseListView: View {
             List {
                 ForEach(databases, id:\.self) { db in
                     NavigationLink(
-                        destination: DatabaseView(dbName: db.wrappedName, databases: databases),
+                        destination: LazyNavigationView(DatabaseItemsView(dbHandler: dbHandler, dbName: db.wrappedName, databases: databases)),
                         label: {
                             Text("\(db.wrappedName.capitalized)")
                                 .contextMenu {
@@ -72,6 +82,7 @@ struct DatabaseListView: View {
                 }
             }
         }
+        .banner(isPresented: $dbHandler.showAlert, title: dbHandler.alertTitle, message: dbHandler.alertMessage)
     }
 }
 

@@ -17,6 +17,7 @@ struct NewWordButton: View {
                     HStack {
                         Image(systemName:"plus.circle.fill")
                             .foregroundColor(.green)
+                            .imageScale(.large)
                         Text("Add Word")
                             .foregroundColor(.white)
                     }
@@ -32,6 +33,6 @@ struct NewWordButton: View {
 
 struct NewWordButton_Previews: PreviewProvider {
     static var previews: some View {
-        NewWordButton(dbHandler: DatabaseHandler(db: Database(context: privateContext)))
+        NewWordButton(dbHandler: DatabaseHandler())
     }
 }

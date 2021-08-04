@@ -37,6 +37,6 @@ struct AlphabetScrollList: View {
 
 struct AlphabetScrollList_Previews: PreviewProvider {
     static var previews: some View {
-        AlphabetScrollList(dbHandler: DatabaseHandler(db: Database(context: privateContext)))
+        AlphabetScrollList(dbHandler: DatabaseHandler())
     }
 }

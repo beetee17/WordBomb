@@ -36,6 +36,6 @@ struct WordSearchBar: View {
 
 struct WordSearchBar_Previews: PreviewProvider {
     static var previews: some View {
-        WordSearchBar(dbHandler: DatabaseHandler(db: Database(context: privateContext)))
+        WordSearchBar(dbHandler: DatabaseHandler())
     }
 }

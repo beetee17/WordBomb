@@ -17,6 +17,7 @@ struct NewWordsView: View {
                     Button(action: { withAnimation{dbHandler.removeNewWordTextField(word)} }) {
                         Image(systemName: "minus.circle.fill")
                             .foregroundColor(.red)
+                            .imageScale(.large)
                     }
                     
                     TextField("Enter Word",
@@ -40,6 +41,6 @@ struct NewWordsView: View {
 
 struct NewWordsView_Previews: PreviewProvider {
     static var previews: some View {
-        NewWordsView(dbHandler: DatabaseHandler(db: Database(context: privateContext)))
+        NewWordsView(dbHandler: DatabaseHandler())
     }
 }

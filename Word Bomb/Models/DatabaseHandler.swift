@@ -30,11 +30,21 @@ class DatabaseHandler: ObservableObject {
     @Published var alertMessage = ""
     
     var moc: NSManagedObjectContext
-    var db: Database
+    var db: Database?
     
-    init(db: Database) {
+    init() {
         self.moc = privateContext
+    }
+    
+    func reset() {
+        wordsToAdd = [WordToAdd]()
+        filter = ""
+        prefix = nil
+        initWords()
+    }
+    func setDB(db: Database) {
         self.db = db
+        reset()
     }
     
     func showAlert(title: String, message: String) {
@@ -49,7 +59,7 @@ class DatabaseHandler: ObservableObject {
 
             let request: NSFetchRequest<Word> = Word.fetchRequest()
 
-            request.predicate = NSPredicate(format: "databases CONTAINS %@", db)
+            request.predicate = NSPredicate(format: "databases CONTAINS %@", db!)
             //            request.fetchBatchSize = 100
 
             // sort words
@@ -150,7 +160,7 @@ class DatabaseHandler: ObservableObject {
                 let newWord = Word(context: moc)
 
                 newWord.content = content
-                db.addToWords(newWord)
+                db!.addToWords(newWord)
                 
                 do {
                     try moc.save()
@@ -181,14 +191,14 @@ class DatabaseHandler: ObservableObject {
             
             let request: NSFetchRequest<Word> = Word.fetchRequest()
             print("deleting selected words: \(selectedWords)")
-            request.predicate = NSPredicate(format: "content IN %@ AND databases CONTAINS %@", selectedWords, db)
+            request.predicate = NSPredicate(format: "content IN %@ AND databases CONTAINS %@", selectedWords, db!)
             
             do {
                 let fetchedWords = try moc.fetch(request)
                 
                 for word in fetchedWords {
                     print("removing \(word.wrappedContent)")
-                    db.removeFromWords(word)
+                    db!.removeFromWords(word)
                 }
                 try moc.save()
             
