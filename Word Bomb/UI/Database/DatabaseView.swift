@@ -20,14 +20,13 @@ struct DatabaseView: View {
     
     var body: some View {
         
-        VStack {
+        VStack(spacing:15) {
             
             WordSearchBar(dbHandler: dbHandler)
             
             ScrollView {
                 
                 LazyVStack {
-                    
                     
                     NewWordButton(dbHandler: dbHandler)
                     NewWordsView(dbHandler: dbHandler)
@@ -41,7 +40,6 @@ struct DatabaseView: View {
                                 Text(word.capitalized)
                                     .frame(maxWidth: Device.width, maxHeight: 20, alignment:.leading)
                                     .padding(.leading)
-                                    .font(.system(.body, design: .rounded))
                                 
                             }
                             Divider()
@@ -75,6 +73,7 @@ struct DatabaseView: View {
             }
             .ignoresSafeArea(.all)
         }
+        .font(.system(.body, design: .rounded))
         .banner(isPresented: $dbHandler.showAlert, title: dbHandler.alertTitle, message: dbHandler.alertMessage)
     }
 }

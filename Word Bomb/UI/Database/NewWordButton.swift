@@ -22,9 +22,9 @@ struct NewWordButton: View {
                     }
                 }
                 Spacer()
-                
             }
             .padding(.leading)
+            
             Divider()
         }
     }

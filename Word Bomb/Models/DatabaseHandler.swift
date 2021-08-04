@@ -159,16 +159,19 @@ class DatabaseHandler: ObservableObject {
                         // quite inefficient to prepend element
                         filteredWords.insert(content, at: 0)
                         words.insert(content, at: 0)
-                        
-                        if let index = wordsToAdd.firstIndex(of: word) {
-                            // to remove the textfield after saving the word
-                            wordsToAdd.remove(at: index)
-                        }
+                        removeNewWordTextField(word)
                     }
                 } catch {
                     showAlert(title: "Error saving \(content)", message: String(describing: error))
                 }
             }
+        }
+    }
+    
+    func removeNewWordTextField(_ word: WordToAdd) {
+        if let index = wordsToAdd.firstIndex(of: word) {
+            // to remove the textfield after saving the word
+            wordsToAdd.remove(at: index)
         }
     }
     

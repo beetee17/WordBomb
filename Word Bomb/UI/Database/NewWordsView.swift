@@ -13,17 +13,25 @@ struct NewWordsView: View {
     var body: some View {
         ForEach(dbHandler.wordsToAdd) { word in
             VStack {
-                TextField("Enter Word",
-                          text: Binding(
-                            get: {word.content},
-                            set: {word.content = $0}),
-                          onCommit: {
-                            withAnimation{
-                                dbHandler.saveNewWord(word)
-                            }
-                          })
-                            
-                    .padding(.leading)
+                HStack {
+                    Button(action: { withAnimation{dbHandler.removeNewWordTextField(word)} }) {
+                        Image(systemName: "minus.circle.fill")
+                            .foregroundColor(.red)
+                    }
+                    
+                    TextField("Enter Word",
+                              text: Binding(
+                                get: {word.content},
+                                set: {word.content = $0}),
+                              onCommit: {
+                                withAnimation{
+                                    dbHandler.saveNewWord(word)
+                                }
+                              })
+                        .padding(.vertical, 5)
+                }
+                .padding(.leading)
+                
                 Divider()
             }
         }
