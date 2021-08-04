@@ -12,6 +12,8 @@ import GameKit
 import GameKitUI
 import CoreData
 
+var persistenceController = PersistenceController.shared
+let privateContext = PersistenceController.shared.container.newBackgroundContext()
 
 @main
 struct Word_BombApp: App {
@@ -36,9 +38,8 @@ struct Word_BombApp: App {
         privateContext.automaticallyMergesChangesFromParent = true
         
     }
-    var persistenceController = PersistenceController.shared
+    
 
-    let privateContext = PersistenceController.shared.container.newBackgroundContext()
     
     var body: some Scene {
         WindowGroup {

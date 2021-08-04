@@ -7,8 +7,8 @@
 
 import Foundation
 
-// Loading of Data
 
+// Loading of Data
 func loadWordSets(_ filename: String) -> (words:[String], wordSets:[String: [String]])  {
     
     var wordSets: [String: [String]] = [:]
