@@ -58,6 +58,10 @@
 		6CA33F9F26BAB8FB00080CE6 /* AlphabetScrollList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA33F9E26BAB8FB00080CE6 /* AlphabetScrollList.swift */; };
 		6CA33FA126BAB91100080CE6 /* WordSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA33FA026BAB91100080CE6 /* WordSearchBar.swift */; };
 		6CA33FA326BAB94400080CE6 /* NewWordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA33FA226BAB94400080CE6 /* NewWordsView.swift */; };
+		6CA3402026BAE51700080CE6 /* syllables.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6CA3401C26BAE51700080CE6 /* syllables.txt */; };
+		6CA3402126BAE51700080CE6 /* syllables_2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6CA3401D26BAE51700080CE6 /* syllables_2.txt */; };
+		6CA3402226BAE51700080CE6 /* countries.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6CA3401E26BAE51700080CE6 /* countries.txt */; };
+		6CA3402326BAE51700080CE6 /* words.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6CA3401F26BAE51700080CE6 /* words.txt */; };
 		6CB6F93F268F627300FA9654 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB6F93E268F627300FA9654 /* GameView.swift */; };
 		6CB6F942268F62C000FA9654 /* PauseMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB6F941268F62C000FA9654 /* PauseMenuView.swift */; };
 		6CB6F945268F62D800FA9654 /* ModeSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB6F944268F62D800FA9654 /* ModeSelectView.swift */; };
@@ -87,7 +91,6 @@
 		6CF953972692F65700D16E60 /* ContainsWordGameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF953962692F65700D16E60 /* ContainsWordGameModel.swift */; };
 		6CF9539C2692F68E00D16E60 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF9539B2692F68E00D16E60 /* Data.swift */; };
 		6CF9539F2692F6D100D16E60 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF9539E2692F6D100D16E60 /* Player.swift */; };
-		6CF953B62692F9F900D16E60 /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 6CF953B52692F9F900D16E60 /* Data */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -102,7 +105,6 @@
 		6C0CEEE62695BEAF007717E1 /* wordbomb.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = wordbomb.xcdatamodel; sourceTree = "<group>"; };
 		6C0CEEE92695BEFE007717E1 /* Persistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		6C0FB7EF26975ACB0038751A /* LocalPeersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPeersView.swift; sourceTree = "<group>"; };
-		6C14A80826A988740005F8C9 /* MultipeerKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = MultipeerKit; path = ../../Downloads/MultipeerKit; sourceTree = "<group>"; };
 		6C249D452698B2D400B9C002 /* MultiplayerDisplayName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerDisplayName.swift; sourceTree = "<group>"; };
 		6C249D472698B31E00B9C002 /* ReverseWordGameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseWordGameModel.swift; sourceTree = "<group>"; };
 		6C249D492698B33800B9C002 /* GameTypeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTypeSelectView.swift; sourceTree = "<group>"; };
@@ -143,6 +145,11 @@
 		6CA33F9E26BAB8FB00080CE6 /* AlphabetScrollList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlphabetScrollList.swift; sourceTree = "<group>"; };
 		6CA33FA026BAB91100080CE6 /* WordSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordSearchBar.swift; sourceTree = "<group>"; };
 		6CA33FA226BAB94400080CE6 /* NewWordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewWordsView.swift; sourceTree = "<group>"; };
+		6CA3401126BAE36B00080CE6 /* MultipeerKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = MultipeerKit; path = ../../../Downloads/MultipeerKit; sourceTree = "<group>"; };
+		6CA3401C26BAE51700080CE6 /* syllables.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syllables.txt; sourceTree = "<group>"; };
+		6CA3401D26BAE51700080CE6 /* syllables_2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syllables_2.txt; sourceTree = "<group>"; };
+		6CA3401E26BAE51700080CE6 /* countries.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = countries.txt; sourceTree = "<group>"; };
+		6CA3401F26BAE51700080CE6 /* words.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = words.txt; sourceTree = "<group>"; };
 		6CB6F93E268F627300FA9654 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		6CB6F941268F62C000FA9654 /* PauseMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseMenuView.swift; sourceTree = "<group>"; };
 		6CB6F944268F62D800FA9654 /* ModeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectView.swift; sourceTree = "<group>"; };
@@ -171,7 +178,6 @@
 		6CF953962692F65700D16E60 /* ContainsWordGameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainsWordGameModel.swift; sourceTree = "<group>"; };
 		6CF9539B2692F68E00D16E60 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		6CF9539E2692F6D100D16E60 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
-		6CF953B52692F9F900D16E60 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Data; path = ../../../Downloads/Data; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -250,7 +256,6 @@
 		6C2E20B5268DD81600CECD3F = {
 			isa = PBXGroup;
 			children = (
-				6C14A80826A988740005F8C9 /* MultipeerKit */,
 				6C2E20C0268DD81600CECD3F /* Word Bomb */,
 				6C2E20BF268DD81600CECD3F /* Products */,
 				6CE00E6D26A99FD4005406FF /* Frameworks */,
@@ -268,10 +273,11 @@
 		6C2E20C0268DD81600CECD3F /* Word Bomb */ = {
 			isa = PBXGroup;
 			children = (
+				6CA3401126BAE36B00080CE6 /* MultipeerKit */,
 				6CD96F8C26B7E24600CB2FA2 /* CoreData */,
 				6CE00E7926A9AD4D005406FF /* GameCenter */,
-				6CF953B52692F9F900D16E60 /* Data */,
 				6C2E20C1268DD81600CECD3F /* Word_Bomb_App.swift */,
+				6CA3401B26BAE51700080CE6 /* Data */,
 				6C403FE626A94049001B4CF1 /* Multipeer */,
 				6CF953902692F61200D16E60 /* Models */,
 				6CF9538A2692E92200D16E60 /* UI */,
@@ -328,6 +334,17 @@
 				6CA33F9826BA921900080CE6 /* AddDatabaseView.swift */,
 			);
 			path = Database;
+			sourceTree = "<group>";
+		};
+		6CA3401B26BAE51700080CE6 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				6CA3401C26BAE51700080CE6 /* syllables.txt */,
+				6CA3401D26BAE51700080CE6 /* syllables_2.txt */,
+				6CA3401E26BAE51700080CE6 /* countries.txt */,
+				6CA3401F26BAE51700080CE6 /* words.txt */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 		6CD96F8C26B7E24600CB2FA2 /* CoreData */ = {
@@ -514,10 +531,13 @@
 			files = (
 				6C2E20C9268DD82900CECD3F /* Preview Assets.xcassets in Resources */,
 				6C0CEEBF2695975B007717E1 /* Correct.wav in Resources */,
+				6CA3402126BAE51700080CE6 /* syllables_2.txt in Resources */,
+				6CA3402026BAE51700080CE6 /* syllables.txt in Resources */,
+				6CA3402326BAE51700080CE6 /* words.txt in Resources */,
 				6C65A32A26A1BA8C004209F4 /* explosion-2-merge.gif in Resources */,
 				6C2E20C6268DD82900CECD3F /* Assets.xcassets in Resources */,
 				6C65A32826A199AD004209F4 /* explosion.gif in Resources */,
-				6CF953B62692F9F900D16E60 /* Data in Resources */,
+				6CA3402226BAE51700080CE6 /* countries.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -802,7 +822,7 @@
 			repositoryURL = "https://github.com/insidegui/MultipeerKit";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.4.0;
+				minimumVersion = 0.3.0;
 			};
 		};
 		6C65A31E26A180D6004209F4 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
